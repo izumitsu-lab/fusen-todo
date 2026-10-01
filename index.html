@@ -118,7 +118,7 @@ svg.i{width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .stk-min{font-family:var(--f-num);font-size:10.5px;letter-spacing:0;font-weight:500;display:flex;align-items:center;gap:3px}
 .stk-min svg.i{width:11px;height:11px}
 .stk-title{font-size:15px;font-weight:700;line-height:1.38;word-break:break-word;text-wrap:pretty;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;flex:none}
-.stk-note{font-size:12px;line-height:1.5;opacity:.78;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.stk-note{flex:none;font-size:12px;line-height:1.5;opacity:.78;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .stk-wait{font-family:var(--f-ui);font-size:11px;opacity:.75;display:flex;gap:4px;align-items:center}
 .stk-foot{margin-top:auto;display:flex;align-items:flex-end;gap:6px;padding-top:4px}
 .stk-tags{display:flex;flex-wrap:wrap;gap:4px;flex:1}
@@ -1478,7 +1478,7 @@ function stickyInner(t){
 let justAdded=null;
 function stickyHTML(t){
   const info=t.status==='calendar'&&t.info;
-  return `<div class="stk ${info?'infonote ':''}${colorOf(t)} ${justAdded===t.id?'new':''}" data-id="${t.id}" style="left:${t.x}px;top:${t.y}px;height:${stkH(t)}px;--r:${rot(t.id)}deg">${stickyInner(t)}</div>`;
+  return `<div class="stk ${info?'infonote ':''}${colorOf(t)} ${justAdded===t.id?'new':''}" data-id="${t.id}" style="left:${t.x}px;top:${t.y}px;min-height:${stkH(t)}px;--r:${rot(t.id)}deg">${stickyInner(t)}</div>`;
 }
 
 /* ---------- zone boards (area / today), stacked vertically ---------- */
