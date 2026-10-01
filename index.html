@@ -70,6 +70,7 @@ svg.i{width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .brand i{width:18px;height:18px;border-radius:5px;background:#FFE48C;box-shadow:inset 0 -5px 0 rgba(0,0,0,.06),2px 2px 0 -1px #BFEBD3,4px 4px 0 -2px #FBD0DC;transform:rotate(-6deg)}
 .cap{font-size:11px;font-weight:600;color:var(--ink3);padding:14px 8px 5px;letter-spacing:.02em;display:flex;justify-content:space-between;align-items:center}
 .cap button{color:var(--ink3);display:flex;border-radius:5px;padding:2px}
+.cap-b{display:flex;gap:4px;align-items:center}
 .cap button:hover{color:var(--ink);background:var(--sel)}
 .nav{display:flex;align-items:center;gap:9px;width:100%;padding:6px 8px;border-radius:7px;color:var(--ink);text-align:left;position:relative;transition:background .15s,box-shadow .15s}
 .nav:hover{background:var(--sel)}
@@ -232,7 +233,9 @@ svg.i{width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .ghost.as-block .stk-title{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ghost.as-block .g-time{display:block}
 .ghost.to-done{opacity:.6}
-body.is-dragging,body.is-dragging *{cursor:grabbing!important}
+body.is-dragging,body.is-dragging *{cursor:grabbing!important;-webkit-user-select:none!important;user-select:none!important}
+.stk,.blk,.row,.pad,.zone-h,.ghost{-webkit-user-select:none;-webkit-touch-callout:none}
+.stk.draft,.stk.draft *{-webkit-user-select:text;user-select:text}
 
 /* modal */
 .scrim{position:fixed;inset:0;background:var(--scrim);z-index:900;display:flex;align-items:flex-start;justify-content:center;padding:9vh 16px 16px;animation:fade .18s}
@@ -1301,6 +1304,8 @@ const I={
  more:'<circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/>',
  move:'<path d="M4 12h15M13.5 6.5 19 12l-5.5 5.5"/>',
  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+ foldall:'<path d="M8 4.5l4 4 4-4M8 19.5l4-4 4 4"/>',
+ unfoldall:'<path d="M8 8.5l4-4 4 4M8 15.5l4 4 4-4"/>',
  sort:'<path d="M4 7h11M4 12h8M4 17h5M17.5 5v14M14.5 16l3 3 3-3"/>'
 };
 const ic=(n,cls='i')=>`<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[n]||''}</svg>`;
@@ -1478,7 +1483,7 @@ function renderSide(){
    <div class="sgrp">${['waiting','someday','tickler'].map(nav).join('')}
    <button class="nav gtd g-projects ${sec==='projects'&&!F.area?'on':''}" data-sec="projects"><span class="sq">${ic('clip')}</span><span class="lbl">プロジェクト</span><span class="n">${projects().length||''}</span></button></div>
    ${(n=>`<button class="ibx-card ${n?'':'empty'} ${sec==='inbox'&&!F.area?'on':''}" data-sec="inbox" data-drop="inbox" title="Inbox (1)"><span class="sq">${ic('inbox')}</span><span class="tt"><b>Inbox</b><small>${n?n+'件が仕分け待ち':'空っぽです。頭もすっきり'}</small></span>${n?`<span class="pile" aria-hidden="true"><i></i><i></i><i>${n>99?'99+':n}</i></span>`:''}</button>`)(S.tasks.filter(t=>t.status==='inbox').length)}
-   <div class="cap">エリア<button id="addArea" aria-label="エリアを追加">${ic('plus')}</button></div>
+   <div class="cap">エリア<span class="cap-b">${(fs=>fs.length?(op=>`<button id="foldAll" data-open="${op?1:''}" title="${op?'すべてたたむ':'すべて開く'}" aria-label="${op?'すべてたたむ':'すべて開く'}">${ic(op?'foldall':'unfoldall')}</button>`)(fs.some(t=>!(S.ui.fold||{})[t.id])):'')(foldables())}<button id="addArea" aria-label="エリアを追加" title="エリアを追加">${ic('plus')}</button></span></div>
    <div id="areaAddSlot"></div>
    <div class="sgrp sareas">${orderedAreas().map(a=>{const sub=rootOf(a)!==a;const n=S.tasks.filter(t=>inArea(t,a.id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length;const ps=projects().filter(p=>p.area===a.id);const R=rootOf(a);const fold=!!(S.ui.fold||{})[R.id];if(sub&&fold)return '';const hid=sub?0:kids(a.id).length+projects().filter(p=>p.area===a.id||kids(a.id).some(k=>k.id===p.area)).length;const open=!fold;
      return `<button class="nav area ${sub?'sub':''} c-${areaColor(a)} ${F.area===a.id?'on':''} ${sub&&F.area===a.parent?'in':''}" data-area="${a.id}" data-parent="${sub?a.parent:''}" data-drop="area:${a.id}"><span class="dot"></span><span class="lbl">${esc(a.name)}</span>${!sub&&hid?`<span class="caret ${open?'open':''}" data-toggle="${a.id}" role="button" aria-label="${open?'折りたたむ':'広げる'}">${ic('chev')}${open?'':`<em>${hid}</em>`}</span>`:''}<span class="n">${n||''}</span></button>
@@ -1497,6 +1502,7 @@ function renderSide(){
     const tg=e.target.closest('[data-toggle]');if(tg){e.stopPropagation();S.ui.fold=S.ui.fold||{};S.ui.fold[tg.dataset.toggle]=!S.ui.fold[tg.dataset.toggle];save();renderSide();return}
     F.area=F.area===b.dataset.area?null:b.dataset.area;S.ui.section='next';render();closeSide()});
   $('#addArea').onclick=showAreaAdd;
+  const fa=$('#foldAll');if(fa)fa.onclick=()=>{const close=!!fa.dataset.open;S.ui.fold=S.ui.fold||{};foldables().forEach(t=>{S.ui.fold[t.id]=close});save();renderSide()};
   $('#sTl').onclick=()=>{closeSide();if(!S.ui.tl)toggleTL()};$('#sGuide').onclick=()=>{closeSide();openGuide()};
   $('#sCfg').onclick=e=>{e.stopPropagation();openConfig($('#sCfg'));closeSide()};
   $('#sSet').onclick=e=>{e.stopPropagation();const b=$('#sSet');openSettings(b);closeSide()};
@@ -1537,6 +1543,7 @@ function showAreaAdd(){
   const done=()=>{if(fin)return;fin=true;const v=inp.value.trim();if(v){S.areas.push({id:uid(),name:v,color});save()}render()};
   inp.onkeydown=e=>{if(isIME(e))return;if(e.key==='Enter'){e.preventDefault();done()}if(e.key==='Escape'){fin=true;render()}};inp.onblur=done;
 }
+const foldables=()=>tops().filter(t=>kids(t.id).length||projects().some(p=>p.area===t.id||kids(t.id).some(k=>k.id===p.area)));
 function closeSide(){$('#side').classList.remove('open')}
 document.addEventListener('pointerdown',e=>{const sd=$('#side');if(sd&&sd.classList.contains('open')&&!e.target.closest('#side,#menuBtn,[data-tab="more"],.fpop,.setpop'))closeSide()},true);
 
@@ -2076,6 +2083,7 @@ function bindItem(el,u,from){
     if(e.target.closest('.ra,.sw-bg'))return;
     if(e.target.closest('.rsz')){startResize(e,el,u);return}
     if(from==='list'&&e.pointerType!=='mouse'){swipeDown(e,el,u);return}
+    if(e.pointerType==='mouse'&&!e.target.closest('input,textarea,select,[contenteditable]'))e.preventDefault();
     const r=el.getBoundingClientRect();
     D={u,t:u.t,el,from,sx:e.clientX,sy:e.clientY,cx:e.clientX,cy:e.clientY,active:false,ox:e.clientX-r.left,oy:e.clientY-r.top,zone:null};
     window.addEventListener('pointermove',pmove);window.addEventListener('pointerup',pup);window.addEventListener('pointercancel',pup);
@@ -2083,7 +2091,7 @@ function bindItem(el,u,from){
   const c=$('.chk',el);if(c)c.onclick=e=>{e.stopPropagation();complete(u,el,from)};
 }
 function activate(){
-  D.active=true;const t=D.t,g=document.createElement('div');
+  D.active=true;try{window.getSelection().removeAllRanges()}catch(_){}const t=D.t,g=document.createElement('div');
   g.className='stk ghost '+colorOf(t);g.style.setProperty('--r','0deg');g.innerHTML=stickyInner(t);
   const gz=D.from==='board'?S.ui.zoom:1;g.style.setProperty('--gz',gz);
   g.style.width='176px';g.style.minHeight='0';g.style.height=stkH(t)+'px';
@@ -3089,7 +3097,7 @@ function openSearch(){
 }
 
 /* ---------- auto arrange ---------- */
-const ARR=[{id:'due',l:'締切が近い順'},{id:'area',l:'エリアごと'},{id:'min',l:'所要時間が短い順'}];
+const ARR=[{id:'tidy',l:'整頓（いまの並びのまま左上から詰める）'},{id:'due',l:'締切が近い順'},{id:'area',l:'エリアごと'},{id:'min',l:'所要時間が短い順'}];
 function openArrangePop(btn){
   if(POP&&POP.kind==='arr'){closePop();return}closePop();
   if(isList())return openSortPop(btn);
@@ -3115,7 +3123,11 @@ function arrangeBoard(kind){
   const byCreated=(a,b)=>(a.created||0)-(b.created||0);
   const SORT={due:(a,b)=>sc_(dk(a),dk(b))||byCreated(a,b),area:(a,b)=>areaRank(a)-areaRank(b)||sc_(dk(a),dk(b))||byCreated(a,b),
     min:(a,b)=>(a.minutes??9999)-(b.minutes??9999)||byCreated(a,b),new:(a,b)=>byCreated(b,a),old:byCreated};
-  const groups=list=>{const L=list.slice().sort(SORT[kind]);if(kind!=='area')return [L];const g=[];L.forEach(t=>{const k=areaRank(t);if(!g.length||g[g.length-1].k!==k)g.push({k,a:[]});g[g.length-1].a.push(t)});return g.map(x=>x.a)};
+  const posOf=t=>zoneMode()?(AP(t)||{x:0,y:0}):{x:t.x||0,y:t.y||0};
+  const reading=list=>{const L=list.slice().sort((a,b)=>posOf(a).y-posOf(b).y||posOf(a).x-posOf(b).x);const rows=[];
+    L.forEach(t=>{const y=posOf(t).y;const r=rows[rows.length-1];if(r&&y-r.y0<110)r.a.push(t);else rows.push({y0:y,a:[t]})});
+    return rows.flatMap(r=>r.a.sort((a,b)=>posOf(a).x-posOf(b).x))};
+  const groups=list=>{if(kind==='tidy')return [reading(list)];const L=list.slice().sort(SORT[kind]);if(kind!=='area')return [L];const g=[];L.forEach(t=>{const k=areaRank(t);if(!g.length||g[g.length-1].k!==k)g.push({k,a:[]});g[g.length-1].a.push(t)});return g.map(x=>x.a)};
   const hOf=t=>{const e=$(`.plane .stk[data-id="${t.id}"]`);return Math.max(stkH(t),e?e.offsetHeight:0)};
   const grid=(gs,x0,y0)=>{const out=new Map();let y=y0;gs.forEach((g,gi)=>{for(let i=0;i<g.length;i+=cols){const row=g.slice(i,i+cols);row.forEach((t,j)=>out.set(t,{x:x0+j*222,y}));y+=Math.max(...row.map(hOf))+34}if(gi<gs.length-1)y+=26});return out};
   const snap=S.tasks.map(t=>[t,t.x,t.y,t.apos?JSON.parse(JSON.stringify(t.apos)):undefined]);
@@ -3130,7 +3142,7 @@ function arrangeBoard(kind){
   const moved=[];$$('.plane .stk[data-id]').forEach(e=>{const b=before.get(e.dataset.id);if(!b||e.classList.contains('gone'))return;const a=e.getBoundingClientRect();const dx=(b.left-a.left)/z,dy=(b.top-a.top)/z;if(Math.abs(dx)+Math.abs(dy)<1)return;
     e.style.transition='none';e.style.transform=`translate(${dx}px,${dy}px) rotate(var(--r))`;moved.push(e)});
   if(moved.length){moved[0].getBoundingClientRect();requestAnimationFrame(()=>moved.forEach(e=>{e.style.transition='transform .5s cubic-bezier(.2,.85,.25,1.1)';e.style.transform='';setTimeout(()=>{e.style.transition=''},560)}))}
-  toast(`${ARR.find(x=>x.id===kind).l}に並べました`,{label:'元に戻す',fn:restore});
+  toast(kind==='tidy'?'整頓しました':`${ARR.find(x=>x.id===kind).l}に並べました`,{label:'元に戻す',fn:restore});
 }
 
 /* ---------- export / import ---------- */
