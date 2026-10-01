@@ -364,6 +364,13 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;-webkit-user-selec
 .chip.del.armed{background:var(--now);color:#fff;border-color:var(--now);border-style:solid}
 .chip.lab-add{border-style:dashed;color:var(--ink3);padding:2px 10px}.chip.lab-add svg.i{width:12px;height:12px}
 .chip.lab-add input{width:96px;text-align:left}
+.chip-sep{display:inline-block;width:1px;align-self:stretch;min-height:20px;margin:2px 3px;background:var(--line2)}
+.tr-sep{display:inline-block;width:1px;height:16px;margin:0 2px;background:var(--line2)}
+.chip.lsep{color:var(--ink3)}.chip.lsep .lsep-l{display:inline-flex;align-items:center;gap:6px}.chip.lsep .lsep-l::before{content:"";width:1px;height:12px;background:currentColor}
+.chip.dragging{opacity:.4}
+.prow.psep{padding:2px 2px}.prow.psep .psl{flex:1;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink3)}
+.prow.psep .psl::after{content:"";flex:1;border-top:1.5px dashed var(--line2)}
+.sadd-row{display:flex;gap:8px;align-items:stretch;margin-top:6px}.sadd-row .sadd{flex:1;margin-top:0}.psadd{white-space:nowrap;font-size:12px}
 .fp-none{font-size:12px;color:var(--ink3);line-height:1.7;padding:6px 9px 8px;max-width:230px}
 .row .rm .mlab{color:var(--ink2)}
 .fp-sep{border-top:1px solid var(--line);margin:4px 2px}
@@ -1313,12 +1320,22 @@ const I={
  foldall:'<path d="M8 4.5l4 4 4-4M8 19.5l4-4 4 4"/>',
  unfoldall:'<path d="M8 8.5l4-4 4 4M8 15.5l4 4 4-4"/>',
  tag:'<path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1 1 0 0 1 0 1.4l-7.3 7.3a1 1 0 0 1-1.4 0z"/><circle cx="8" cy="8" r="1.4"/>',
+ moon:'<path d="M19.5 14.5A7.5 7.5 0 0 1 9.5 4.5a7.5 7.5 0 1 0 10 10z"/>',
+ sunrise:'<path d="M3.5 18.5h17M7 15.5a5 5 0 0 1 10 0M12 4.5v3M5.6 9l1.5 1.5M18.4 9l-1.5 1.5"/>',
+ dusk:'<path d="M3.5 18.5h17M8 18.5a4 4 0 0 1 8 0M12 9v2.5M6.5 12.5l1.3 1.3M17.5 12.5l-1.3 1.3M4 14.5h1.5M18.5 14.5H20"/>',
+ mail:'<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7l8 6 8-6"/>',
+ phone:'<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/>',
  sort:'<path d="M4 7h11M4 12h8M4 17h5M17.5 5v14M14.5 16l3 3 3-3"/>'
 };
 const ic=(n,cls='i')=>`<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[n]||''}</svg>`;
 
 let TAGS=[];
-const DEF_PLACES=[{id:'home',name:'自宅',icon:'home'},{id:'office',name:'職場',icon:'building'},{id:'out',name:'外出先',icon:'out'},{id:'pc',name:'PC',icon:'pc'},{id:'contact',name:'電話・メール',icon:'contact'}];
+const OLD_PLACES='home:自宅,office:職場,out:外出先,pc:PC,contact:電話・メール';
+const DEF_PLACES=[{id:'office',name:'職場',icon:'building'},{id:'home',name:'自宅',icon:'home'},{id:'s1',sep:true},{id:'morning',name:'朝',icon:'sunrise'},{id:'am',name:'午前',icon:'today'},{id:'pm',name:'午後',icon:'dusk'},{id:'night',name:'夜',icon:'moon'},{id:'s2',sep:true},{id:'pc',name:'PC',icon:'pc'},{id:'mail',name:'メール',icon:'mail'},{id:'phone',name:'電話',icon:'phone'}];
+const isSep=x=>!!(x&&x.sep);
+const PL=()=>TAGS.filter(x=>!x.sep);
+/* 区切りを含む一覧を描く（先頭・末尾・連続の区切りは省く） */
+const sepMap=(arr,fn,sepHTML)=>{const out=[];let pend=false;(arr||[]).forEach(x=>{if(x.sep){pend=out.length>0;return}if(pend){out.push(sepHTML);pend=false}out.push(fn(x))});return out.join('')};
 const ENERGY=[{id:'deep',l:'深い集中',s:'集中'},{id:'normal',l:'普通',s:'普通'},{id:'light',l:'軽い',s:'軽い'}];
 const enChip=t=>t.energy&&t.energy!=='normal'?`<span class="en en-${t.energy}">${ic('bolt')}${ENERGY.find(e=>e.id===t.energy)?.s||''}</span>`:'';
 const labName=g=>((S&&S.labels)||[]).find(x=>x.id===g)?.name||'';
@@ -1336,7 +1353,7 @@ const MINS=[5,10,15,30,45,60,90,120];
 const KEY='fusen.v1';
 let S=null;
 const mkStep=(title,minutes=15,tags=[])=>({id:uid(),title,minutes,tags,done:false,doneAt:null,sched:null});
-const sampleSteps=()=>[mkStep('構成案をメモする',15,['deep']),mkStep('競合3社を調べる',30,['pc']),mkStep('本文を書く',40,['deep','pc']),mkStep('見直して田中さんに送る',15,['contact'])];
+const sampleSteps=()=>[mkStep('構成案をメモする',15,['deep']),mkStep('競合3社を調べる',30,['pc']),mkStep('本文を書く',40,['deep','pc']),mkStep('見直して田中さんに送る',15,['mail'])];
 function seed(){
   const areas=[['work','仕事','lemon'],['health','健康','mint'],['family','家族','rose'],['learn','学び','sky'],['home','家','peach']].map(([id,name,color])=>({id,name,color}));
   const tasks=[];const t0=Date.now();
@@ -1345,26 +1362,26 @@ function seed(){
   add('inbox','年末の旅行の行き先',null,null,[],280,90);
   add('inbox','プリンターのインクが切れそう',null,null,[],120,270);
   add('next','企画書のドラフト','work',100,['deep','pc'],60,50,{note:'Q4の新規事業案。3ページ以内でまとめる',steps:sampleSteps()});
-  add('next','田中さんに見積もりの返信','work',10,['contact'],275,78,{due:todayKey()});
+  add('next','田中さんに見積もりの返信','work',10,['mail'],275,78,{due:todayKey()});
   add('next','経費精算をする','work',20,['pc'],80,310,{due:addDays(-2)});
   add('next','週次レビュー','work',30,['deep'],280,300,{sched:{date:todayKey(),start:17*60},rep:{type:'weekly',dows:[new Date().getDay()],dom:1,anchor:0},due:todayKey()});
-  add('next','ジムで筋トレ','health',60,['out'],560,60,{note:'脚の日',due:todayKey()});
-  add('next','母に電話する','family',15,['contact'],520,290);
+  add('next','ジムで筋トレ','health',60,['night'],560,60,{note:'脚の日',due:todayKey()});
+  add('next','母に電話する','family',15,['phone'],520,290);
   add('next','旅行の宿を予約','family',20,['pc'],720,260);
   add('next','論文を1本読む','learn',45,['deep'],800,48,{due:addDays(3)});
   add('next','Swiftの練習','learn',60,['pc','deep'],1000,90,{note:'SwiftUIのアニメーション'});
-  add('next','郵便局で荷物を出す','home',15,['out'],600,510);
-  add('waiting','契約書の返送','work',5,['contact'],80,70,{waitingFor:'佐藤さん',due:todayKey()});
-  add('waiting','給湯器の修理見積もり','home',10,['contact'],300,110,{waitingFor:'管理会社'});
+  add('next','郵便局で荷物を出す','home',15,['am'],600,510);
+  add('waiting','契約書の返送','work',5,['mail'],80,70,{waitingFor:'佐藤さん',due:todayKey()});
+  add('waiting','給湯器の修理見積もり','home',10,['phone'],300,110,{waitingFor:'管理会社'});
   add('someday','フランス語を始める','learn',30,[],90,60);
   add('calendar','歯医者','health',60,[],60,60,{cdate:addDays(1),ctime:14*60});
-  add('calendar','区役所に書類を提出','home',30,['out'],260,60,{cdate:todayKey()});
+  add('calendar','区役所に書類を提出','home',30,['am'],260,60,{cdate:todayKey()});
   add('calendar','母の誕生日','family',null,[],460,60,{cdate:todayKey(),info:true});
   add('next','年賀状の準備を始める','family',60,['pc'],820,300,{start:addDays(32)});
-  add('next','車検の予約','home',15,['contact'],860,480,{start:addDays(5)});
-  add('someday','本棚を自作する','home',180,['out'],320,90);
-  add('someday','ハーフマラソンに出る','health',60,['out'],180,300);
-  add('done','朝のメールを片付ける','work',20,['pc','contact'],0,0,{doneAt:t0-3*3600e3,prevStatus:'next'});
+  add('next','車検の予約','home',15,['phone'],860,480,{start:addDays(5)});
+  add('someday','本棚を自作する','home',180,['home'],320,90);
+  add('someday','ハーフマラソンに出る','health',60,['morning'],180,300);
+  add('done','朝のメールを片付ける','work',20,['pc','mail'],0,0,{doneAt:t0-3*3600e3,prevStatus:'next'});
   return {v:2,areas,tasks,sample:true,ui:{view:'board',section:'next',zoom:.85,tl:true}};
 }
 function load(){
@@ -1375,6 +1392,9 @@ function load(){
 function normalize(){
   if(!Array.isArray(S.areas))S.areas=[];
   S.ui=Object.assign({view:'board',section:'next',zoom:.85,tl:false,style:'classic',board:'rec',tilt:'mid',font:'def',cmode:'def'},S.ui||{});S.ui.zoom=SIZES.reduce((a,b)=>Math.abs(b.z-S.ui.zoom)<Math.abs(a.z-S.ui.zoom)?b:a).z;
+  if(Array.isArray(S.places)&&!S.v7&&S.places.map(p=>p.id+':'+p.name).join(',')===OLD_PLACES){S.places=DEF_PLACES.map(x=>({...x}));
+    S.tasks.forEach(t=>{if(!Array.isArray(t.tags))return;const c=t.tags.includes('contact');t.tags=t.tags.filter(x=>x!=='contact'&&x!=='out');if(c)t.tags.push(/電話|予約|修理/.test(t.title||'')?'phone':'mail')})}
+  S.v7=true;
   if(!Array.isArray(S.places)){S.places=DEF_PLACES.map(x=>({...x}));S.tasks.forEach(t=>{if(Array.isArray(t.tags)&&t.tags.includes('deep')){t.tags=t.tags.filter(x=>x!=='deep');if(!t.energy)t.energy='deep'}})}
   TAGS=S.places;if(!Array.isArray(S.labels))S.labels=[];
   S.tasks.forEach(t=>{if(!Array.isArray(t.steps))t.steps=[]});S.areas.forEach(a=>{if(LEGACY[a.color])a.color=LEGACY[a.color]});
@@ -1570,7 +1590,7 @@ function renderBar(){
      <button class="${!isList()?'on':''}" data-view="board" title="ボード (B)">${ic('board')}<span class="lb">ボード</span></button></div>
    <div class="filters"><button class="fbtn ${F.due?'on':''}" id="fDue" aria-haspopup="true" title="締切・予定日で絞り込み">${ic('flag')}<span>${F.due?DUEF.find(x=>x.id===F.due).l.replace('（遅れを含む）',''):'締切'}</span></button>
    <button class="fbtn ${F.time?'on':''}" id="fTime" aria-haspopup="true" title="所要時間で絞り込み">${ic('clock')}<span>${F.time?TIMEF.find(x=>x.id===F.time).l:'時間'}</span></button>
-   <button class="fbtn ${F.tags.size?'on':''}" id="fTag" aria-haspopup="true" title="場所で絞り込み">${ic('pin')}<span>${F.tags.size?[...F.tags].map(tagName).join('・'):'場所'}</span></button>
+   <button class="fbtn ${F.tags.size?'on':''}" id="fTag" aria-haspopup="true" title="場所・時間帯・道具で絞り込み">${ic('pin')}<span>${F.tags.size?[...F.tags].map(tagName).join('・'):'場所'}</span></button>
    <button class="fbtn ${F.energy?'on':''}" id="fEnergy" aria-haspopup="true" title="集中度で絞り込み">${ic('bolt')}<span>${F.energy?ENERGY.find(e=>e.id===F.energy).l:'集中度'}</span></button>
    <button class="fbtn ${F.labels.size?'on':''}" id="fLab" aria-haspopup="true" title="タグで絞り込み">${ic('tag')}<span>${F.labels.size?[...F.labels].map(labName).join('・'):'タグ'}</span></button></div>`}
    <span class="spacer"></span>
@@ -2302,8 +2322,8 @@ function openEditor(t,pos,msg,opts={}){
       ${d.rep?`<div class="hint lead">${ic('tickler')}次回は締切の <input id="edLead" type="number" min="0" max="365" step="1" inputmode="numeric" value="${d.rep.lead||0}"> 日前まで Tickler にしまう</div>`:''}
       ${d.rep?`<div class="hint">完了すると、次回（${dueLabel(nextOcc(d.rep,d.due&&d.due>todayKey()?d.due:todayKey(),false)).l}）の付箋が自動で現れます。</div>`:''}</div>`}
      <div class="fld"><label>所要見込み時間${d.status==='inbox'?'（Inboxでは任意）':''}</label><div class="chips" id="edMin">${d.status==='inbox'?`<button class="chip ${d.minutes==null?'on':''}" data-v="">未設定</button>`:''}${MINS.map(m=>`<button class="chip ${d.minutes===m?'on':''}" data-v="${m}">${fmtMin(m)}</button>`).join('')}<span class="chip ${d.minutes!=null&&!MINS.includes(d.minutes)?'on':''}"><input id="edMinC" type="number" min="5" step="5" value="${d.minutes!=null&&!MINS.includes(d.minutes)?d.minutes:''}" placeholder="—">分</span></div></div>
-     <div class="fld"><label>場所・道具<button class="lbl-edit" id="edPlacesEdit" type="button">編集</button></label><div class="chips" id="edTags">${TAGS.map(g=>`<button class="chip ${d.tags.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}${g.name}</button>`).join('')}</div></div>
-     <div class="fld"><label>タグ<button class="lbl-edit" id="edLabEdit" type="button">${labEdit?'完了':'編集'}</button></label><div class="chips" id="edLabels">${S.labels.map(g=>`<button class="chip ${labEdit?'del':''} ${!labEdit&&d.labels.includes(g.id)?'on':''}" data-v="${g.id}" ${labEdit?'title="クリックで削除"':''}>${labEdit?ic('x'):'#'}${esc(g.name)}</button>`).join('')}${labEdit?(S.labels.length?'':'<span class="hint">タグはまだありません</span>'):`<span class="chip lab-add">${ic('plus')}<input id="edLabNew" placeholder="新しいタグ" maxlength="16" autocomplete="off"></span>`}</div>${labEdit&&S.labels.length?'<div class="hint">削除したタグは、すべてのタスクから外れます。</div>':''}</div>
+     <div class="fld"><label>場所・時間帯・道具<button class="lbl-edit" id="edPlacesEdit" type="button">編集</button></label><div class="chips" id="edTags">${sepMap(TAGS,g=>`<button class="chip ${d.tags.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}${esc(g.name)}</button>`,'<i class="chip-sep"></i>')}</div></div>
+     <div class="fld"><label>タグ<button class="lbl-edit" id="edLabEdit" type="button">${labEdit?'完了':'編集'}</button></label><div class="chips" id="edLabels">${labEdit?S.labels.map((g,i)=>g.sep?`<button class="chip del lsep" draggable="true" data-i="${i}" data-v="${g.id}" title="ドラッグで移動・クリックで削除">${ic('x')}<span class="lsep-l">区切り</span></button>`:`<button class="chip del" draggable="true" data-i="${i}" data-v="${g.id}" title="ドラッグで移動・クリックで削除">${ic('x')}${esc(g.name)}</button>`).join('')+`<button class="chip lab-add" id="edLabSep" type="button">${ic('plus')}区切りを追加</button>`:sepMap(S.labels,g=>`<button class="chip ${d.labels.includes(g.id)?'on':''}" data-v="${g.id}">#${esc(g.name)}</button>`,'<i class="chip-sep"></i>')+`<span class="chip lab-add">${ic('plus')}<input id="edLabNew" placeholder="新しいタグ" maxlength="16" autocomplete="off"></span>`}</div>${labEdit?'<div class="hint">ドラッグで並べ替えられます。削除したタグは、すべてのタスクから外れます。</div>':''}</div>
      <div class="fld"><label>集中度</label><div class="seg" id="edEnergy"><button data-v="" class="${!d.energy?'on':''}">なし</button>${ENERGY.map(x=>`<button data-v="${x.id}" class="${d.energy===x.id?'on':''}"><span class="en-dot en-${x.id}"></span>${x.l}</button>`).join('')}</div></div>
      ${isToday(d)?`<div class="hint">今日 ${clock(d.sched.start)} に予定済み</div>`:''}
     </div><div class="sheet-foot">${isNew?'':'<button class="btn danger" id="edDel">削除</button>'}${isNew?'':isProj(d)?'<button class="btn" id="edDoneProj">'+ic('log')+'プロジェクトを完了</button>':isChild(d)?'':'<button class="btn" id="edToProj">'+ic('clip')+'プロジェクトにする</button>'}<span class="spacer"></span><span class="kbd-hint">⌘⏎ で保存</span><button class="btn" id="edCancel">キャンセル</button><button class="btn primary" id="edSave">${isNew?'追加':'保存'}</button></div></div>`;
@@ -2332,7 +2352,12 @@ function openEditor(t,pos,msg,opts={}){
     $('#edAreaPill',scrim).onclick=e=>{e.stopPropagation();keep();openAreaPop($('#edAreaPill',scrim),d,v=>{if(d.area!==v){d.area=v;addAreaPlaces(d)}redraw()})};
     $$('#edEnergy button',scrim).forEach(b=>b.onclick=()=>{d.energy=b.dataset.v||null;redraw()});
     const le=$('#edLabEdit',scrim);if(le)le.onclick=()=>{labEdit=!labEdit;redraw()};
-    $$('#edLabels button.chip',scrim).forEach(b=>b.onclick=()=>{const v=b.dataset.v;
+    const lsp=$('#edLabSep',scrim);if(lsp)lsp.onclick=()=>{S.labels.push({id:uid(),sep:true});save();redraw()};
+    let ldrag=null;$$('#edLabels [draggable]',scrim).forEach(c=>{c.ondragstart=e=>{ldrag=+c.dataset.i;c.classList.add('dragging');try{e.dataTransfer.setData('text/plain','l')}catch(_){}};
+      c.ondragend=()=>c.classList.remove('dragging');c.ondragover=e=>{e.preventDefault()};
+      c.ondrop=e=>{e.preventDefault();const to=+c.dataset.i;if(ldrag==null||ldrag===to)return;const [m]=S.labels.splice(ldrag,1);S.labels.splice(to,0,m);ldrag=null;save();redraw()}});
+    $$('#edLabels button.chip[data-v]',scrim).forEach(b=>b.onclick=()=>{const v=b.dataset.v;
+      if(labEdit&&b.classList.contains('lsep')){S.labels=S.labels.filter(x=>x.id!==v);save();redraw();return}
       if(labEdit){if(!b.classList.contains('armed')){$$('#edLabels .armed',scrim).forEach(x=>x.classList.remove('armed'));b.classList.add('armed');b.lastChild.textContent=labName(v)+'を削除';return}
         S.labels=S.labels.filter(x=>x.id!==v);S.tasks.forEach(x=>{if(x.labels)x.labels=x.labels.filter(y=>y!==v)});d.labels=d.labels.filter(y=>y!==v);F.labels.delete(v);save();redraw();return}
       d.labels=d.labels.includes(v)?d.labels.filter(x=>x!==v):[...d.labels,v];redraw()});
@@ -2376,7 +2401,7 @@ function openAreaEditor(a){
     scrim.innerHTML=`<div class="sheet c-${col}" role="dialog" aria-label="エリアを編集"><div class="sheet-top"></div><div class="sheet-body">
     <input class="t" id="arName" value="${esc(a._n??a.name)}" maxlength="20">
     <div class="fld"><label>親エリア</label><select class="wait-in" id="arParent"><option value="">なし（独立したエリア）</option>${tops().filter(x=>x!==a).map(x=>`<option value="${x.id}" ${parent===x.id?'selected':''} ${ks.length?'disabled':''}>${esc(x.name)}</option>`).join('')}</select>${ks.length?'<div class="hint">サブエリアを持つエリアは、ほかのエリアの下に入れられません。</div>':''}</div>
-    <div class="fld"><label>デフォルトの場所<span class="lbl-note">このエリアの新しいタスクに自動で付きます</span></label><div class="chips" id="arPlaces">${S.places.map(g=>`<button class="chip ${apl.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}${esc(g.name)}</button>`).join('')}</div>${sub&&!apl.length&&(area(parent).places||[]).length?`<div class="hint">未設定のため、親エリア「${esc(area(parent).name)}」の設定（${area(parent).places.filter(x=>S.places.some(p=>p.id===x)).map(tagName).join('・')}）を使います。</div>`:''}</div>
+    <div class="fld"><label>デフォルトの場所・時間帯・道具<span class="lbl-note">このエリアの新しいタスクに自動で付きます</span></label><div class="chips" id="arPlaces">${sepMap(S.places,g=>`<button class="chip ${apl.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}${esc(g.name)}</button>`,'<i class="chip-sep"></i>')}</div>${sub&&!apl.length&&(area(parent).places||[]).length?`<div class="hint">未設定のため、親エリア「${esc(area(parent).name)}」の設定（${area(parent).places.filter(x=>S.places.some(p=>p.id===x)).map(tagName).join('・')}）を使います。</div>`:''}</div>
     ${sub?`<div class="hint">サブエリアの付箋は、親エリア「${esc(area(parent).name)}」の色になります。</div>`:`
     <div class="fld"><label>付箋の色<span class="lbl-note">${esc((PAL.find(c=>c.id===color)||{}).name||'')}</span></label><div class="swatches">${PAL.map(c=>`<button class="c-${c.id} ${c.id===color?'on':''}" data-c="${c.id}" aria-label="${c.name}" title="${c.name}"></button>`).join('')}</div></div>
     <div class="fld"><label>サブエリア</label><div class="chips">${ks.map(k=>`<span class="chip c-${color}">›${esc(k.name)}</span>`).join('')}</div><input class="wait-in" id="arSub" placeholder="サブエリアを追加 ⏎" maxlength="20"></div>`}
@@ -2478,7 +2503,7 @@ function drawTray(){
   tray.innerHTML=`
    <div class="tr"><b>時間</b>${[10,15,30,45,60,90,120].map(m=>`<button class="c ${d.minutes===m?'on':''}" data-m="${m}">${fmtMin(m)}</button>`).join('')}</div>
    <div class="tr"><b>集中</b>${ENERGY.map(x=>`<button class="c ${d.energy===x.id?'on':''}" data-en="${x.id}">${x.s}</button>`).join('')}</div>
-   <div class="tr"><b>場所</b>${TAGS.map(g=>`<button class="c ${d.tags.includes(g.id)?'on':''}" data-g="${g.id}">${ic(g.icon||'pin')}${g.name}</button>`).join('')}</div>
+   <div class="tr"><b>場所</b>${sepMap(TAGS,g=>`<button class="c ${d.tags.includes(g.id)?'on':''}" data-g="${g.id}">${ic(g.icon||'pin')}${esc(g.name)}</button>`,'<i class="tr-sep"></i>')}</div>
    <div class="tr-foot"><span>⏎ で貼る</span><span>Esc で束に戻す</span></div>`;
   $$('[data-m]',tray).forEach(b=>{b.onpointerdown=e=>e.preventDefault();b.onclick=()=>{const m=+b.dataset.m;d.minutes=d.minutes===m&&d.status==='inbox'?null:m;drawTray();syncDraft()}});
   $$('[data-en]',tray).forEach(b=>{b.onpointerdown=e=>e.preventDefault();b.onclick=()=>{d.energy=d.energy===b.dataset.en?null:b.dataset.en;drawTray();syncDraft()}});
@@ -2546,12 +2571,12 @@ function openFilterPop(btn,kind){
     applyFilter();renderBarCount();requestAnimationFrame(place)};
   const draw=()=>{
     if(kind==='tag'){
-      el.innerHTML=`<div class="fp-h">場所・道具<span>複数選べます</span></div>${TAGS.map(g=>`<button class="fp-item ${F.tags.has(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}<span>${g.name}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}<button class="fp-clear" ${F.tags.size?'':'hidden'}>すべて解除</button>`;
-      el.insertAdjacentHTML('beforeend',`<button class="fp-edit" id="fpEditPlaces">${ic('edit')}場所を編集</button>`);
+      el.innerHTML=`<div class="fp-h">場所・時間帯・道具<span>複数選べます</span></div>${sepMap(TAGS,g=>`<button class="fp-item ${F.tags.has(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`,'<div class="fp-sep"></div>')}<button class="fp-clear" ${F.tags.size?'':'hidden'}>すべて解除</button>`;
+      el.insertAdjacentHTML('beforeend',`<button class="fp-edit" id="fpEditPlaces">${ic('edit')}場所・時間帯・道具を編集</button>`);
       $('#fpEditPlaces',el).onclick=()=>{closePop();openPlacesEditor()};
       $$('.fp-item',el).forEach(b=>b.onclick=()=>{const v=b.dataset.v;F.tags.has(v)?F.tags.delete(v):F.tags.add(v);draw();refreshBtn()});
     }else if(kind==='label'){
-      el.innerHTML=`<div class="fp-h">タグ<span>複数選べます</span></div>${S.labels.length?S.labels.map(g=>`<button class="fp-item ${F.labels.has(g.id)?'on':''}" data-v="${g.id}">${ic('tag')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`).join(''):'<div class="fp-none">タグはまだありません。<br>タスクの編集画面で追加できます。</div>'}<button class="fp-clear" ${F.labels.size?'':'hidden'}>すべて解除</button>`;
+      el.innerHTML=`<div class="fp-h">タグ<span>複数選べます</span></div>${S.labels.some(x=>!x.sep)?sepMap(S.labels,g=>`<button class="fp-item ${F.labels.has(g.id)?'on':''}" data-v="${g.id}">${ic('tag')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`,'<div class="fp-sep"></div>'):'<div class="fp-none">タグはまだありません。<br>タスクの編集画面で追加できます。</div>'}<button class="fp-clear" ${F.labels.size?'':'hidden'}>すべて解除</button>`;
       $$('.fp-item',el).forEach(b=>b.onclick=()=>{const v=b.dataset.v;F.labels.has(v)?F.labels.delete(v):F.labels.add(v);draw();refreshBtn()});
     }else if(kind==='energy'){
       el.innerHTML=`<div class="fp-h">集中度</div>${ENERGY.map(x=>`<button class="fp-item ${F.energy===x.id?'on':''}" data-v="${x.id}"><span class="en-dot en-${x.id}"></span><span>${x.l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}<button class="fp-clear" ${F.energy?'':'hidden'}>解除</button>`;
@@ -2758,23 +2783,24 @@ function openGuide(){
 
 
 /* ---------- places editor ---------- */
-const PLACE_ICONS=['pin','home','building','out','pc','contact','cal','book','clock','user'];
+const PLACE_ICONS=['pin','home','building','out','sunrise','today','dusk','moon','pc','mail','phone','contact','cal','book','clock','user'];
 function openPlacesEditor(after){
   const scrim=document.createElement('div');scrim.className='scrim';let drag=null;
   const draw=()=>{
     scrim.innerHTML=`<div class="sheet" role="dialog" aria-label="場所を編集"><div class="sheet-body">
-     <input class="t" value="場所・道具" readonly tabindex="-1" style="pointer-events:none">
-     <p class="hint" style="margin:-6px 0 0">タスクを「どこで・何があればできるか」で分ける項目です。ドラッグで並べ替えられます。</p>
-     <div class="plist">${S.places.map((p,i)=>`<div class="prow" data-i="${i}" draggable="false"><span class="grip" title="ドラッグで並べ替え">${ic('grip2')}</span>
+     <input class="t" value="場所・時間帯・道具" readonly tabindex="-1" style="pointer-events:none">
+     <p class="hint" style="margin:-6px 0 0">タスクを「どこで・いつ・何があればできるか」で分ける項目です。ドラッグで並べ替えられ、区切りでまとまりを分けられます。</p>
+     <div class="plist">${S.places.map((p,i)=>p.sep?`<div class="prow psep" data-i="${i}" draggable="false"><span class="grip" title="ドラッグで並べ替え">${ic('grip2')}</span><span class="psl">区切り</span><button class="xbtn" data-del="${i}" aria-label="区切りを削除">${ic('x')}</button></div>`:`<div class="prow" data-i="${i}" draggable="false"><span class="grip" title="ドラッグで並べ替え">${ic('grip2')}</span>
        <button class="picon" data-icon="${i}" title="アイコンを変える">${ic(p.icon||'pin')}</button>
        <input class="pname" data-n="${i}" value="${esc(p.name)}" maxlength="16" aria-label="場所の名前">
        <span class="pcount">${S.tasks.filter(t=>t.status!=='done'&&t.tags.includes(p.id)).length||''}</span>
        <button class="xbtn" data-del="${i}" aria-label="削除">${ic('x')}</button></div>`).join('')}</div>
-     <div class="sadd">${ic('plus')}<input id="placeAdd" placeholder="場所を追加（例：研究室、車の中）⏎" maxlength="16"></div>
+     <div class="sadd-row"><div class="sadd">${ic('plus')}<input id="placeAdd" placeholder="追加（例：研究室、車の中、週末）⏎" maxlength="16"></div><button class="btn psadd" id="placeSep" type="button">区切りを追加</button></div>
     </div><div class="sheet-foot"><span class="spacer"></span><button class="btn primary" id="plDone">完了</button></div></div>`;
     $$('.pname',scrim).forEach(inp=>inp.oninput=()=>{S.places[+inp.dataset.n].name=inp.value});
     $$('[data-icon]',scrim).forEach(b=>b.onclick=()=>{const p=S.places[+b.dataset.icon];const k=PLACE_ICONS.indexOf(p.icon||'pin');p.icon=PLACE_ICONS[(k+1)%PLACE_ICONS.length];draw()});
-    $$('[data-del]',scrim).forEach(b=>b.onclick=()=>{if(!b.classList.contains('armed')){b.classList.add('armed');b.title='もう一度押すと削除';return}
+    $('#placeSep',scrim).onclick=()=>{S.places.push({id:uid(),sep:true});draw()};
+    $$('[data-del]',scrim).forEach(b=>b.onclick=()=>{if(S.places[+b.dataset.del]?.sep){S.places.splice(+b.dataset.del,1);draw();return}if(!b.classList.contains('armed')){b.classList.add('armed');b.title='もう一度押すと削除';return}
       const p=S.places[+b.dataset.del];S.places.splice(+b.dataset.del,1);S.tasks.forEach(t=>{t.tags=t.tags.filter(x=>x!==p.id)});F.tags.delete(p.id);draw()});
     $$('.prow',scrim).forEach(r=>{
       $('.grip',r).onpointerdown=()=>{r.draggable=true};
@@ -2786,7 +2812,7 @@ function openPlacesEditor(after){
     const ad=$('#placeAdd',scrim);ad.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)&&ad.value.trim()){S.places.push({id:uid(),name:ad.value.trim(),icon:'pin'});draw();$('#placeAdd',scrim).focus()}};
     $('#plDone',scrim).onclick=done;
   };
-  const done=()=>{S.places.forEach(p=>{p.name=p.name.trim()||'場所'});TAGS=S.places;save();scrim.remove();document.removeEventListener('keydown',k,true);render();if(after)after()};
+  const done=()=>{S.places.forEach(p=>{if(!p.sep)p.name=(p.name||'').trim()||'場所'});TAGS=S.places;save();scrim.remove();document.removeEventListener('keydown',k,true);render();if(after)after()};
   const k=e=>{if(e.key==='Escape'){e.stopPropagation();done()}};
   document.addEventListener('keydown',k,true);
   scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)done()});
@@ -2970,7 +2996,7 @@ function openComposer(pre){
   const detail=(k,b)=>{
     if(k==='min')miniPop(b,`<div class="fp-h">所要時間</div>${MINS.map(m=>`<button class="fp-item ${d.minutes===m?'on':''}" data-v="${m}"><span>${fmtMin(m)}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,(p,c)=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{d.minutes=+x.dataset.v;d.minSet=true;c();draw()}));
     else if(k==='due')datePop(b,{title:'締切は？',cur:d.due,none:!!d.due},v=>{d.due=v;draw()});
-    else if(k==='tag')miniPop(b,`<div class="fp-h">場所・道具<span>複数選べます</span></div>${TAGS.map(g=>`<button class="fp-item ${d.tags.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,p=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{const v=x.dataset.v;d.tags=d.tags.includes(v)?d.tags.filter(y=>y!==v):[...d.tags,v];x.classList.toggle('on');draw()}));
+    else if(k==='tag')miniPop(b,`<div class="fp-h">場所・時間帯・道具<span>複数選べます</span></div>${sepMap(TAGS,g=>`<button class="fp-item ${d.tags.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`,'<div class="fp-sep"></div>')}`,p=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{const v=x.dataset.v;d.tags=d.tags.includes(v)?d.tags.filter(y=>y!==v):[...d.tags,v];x.classList.toggle('on');draw()}));
     else if(k==='en')miniPop(b,`<div class="fp-h">集中度</div>${ENERGY.map(x=>`<button class="fp-item ${d.energy===x.id?'on':''}" data-v="${x.id}"><span class="en-dot en-${x.id}"></span><span>${x.l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,(p,c)=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{d.energy=x.dataset.v;c();draw()}));
     else if(k==='proj')openProjPop(b,d,v=>{d.project=v;const Pj=v&&taskById(v);if(Pj&&Pj.area&&d.area!==Pj.area){d.area=Pj.area;addAreaPlaces(d)}draw()});
     else if(k==='rep'){const w=new Date().getDay(),dm=new Date().getDate();const R=[['','なし'],['daily','毎日'],['weekdays','平日'],['weekly','毎週'+DOW[w]+'曜'],['monthly','毎月'+dm+'日']];
@@ -3055,7 +3081,7 @@ function openComposer(pre){
 function openCapture(){
   if($('#capture'))return;if(DR)commitDraft();closePop();closeSettings();closeConfig();
   const scrim=document.createElement('div');scrim.className='scrim cap-scrim';scrim.id='capture';
-  const got=[];const P0=TAGS[0]?.name||'PC',A0=S.areas[0]?.name||'仕事';
+  const got=[];const P0=PL()[0]?.name||'PC',A0=S.areas[0]?.name||'仕事';
   scrim.innerHTML=`<div class="sheet capsheet" role="dialog" aria-label="すばやく書き出す">
     <div class="cap-in">${ic('inbox')}<input class="cap-q" id="capIn" placeholder="気になっていることを、そのまま" maxlength="120" autocomplete="off"></div>
     <div class="cap-help">⏎ で Inbox に入れて、続けて書けます。<code>#${esc(P0)}</code> 場所 · <code>30分</code> 時間 · <code>@${esc(A0)}</code> エリア · Esc で閉じる</div>
