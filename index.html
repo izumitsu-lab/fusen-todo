@@ -983,7 +983,7 @@ button.ladd:hover{background:color-mix(in srgb,var(--ink) 3%,var(--win));color:v
 .tabs,.fab,.mob-only,.tl-x{display:none}
 @media (max-width:760px){
   .bar{flex-wrap:wrap;row-gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px;gap:6px}
-  .bar .seg,.bar .size-seg,#setBtn,#guideBtn,#tlBtn,#inboxBtn,#capBtn,.bar .spacer{display:none!important}
+  .bar .seg,.bar .size-seg,#setBtn,#cfgBtn,#tlBtn,#inboxBtn,#capBtn,.bar .spacer{display:none!important}
   .bar h1{order:1;flex:1 1 0;min-width:0}
   .bar h1 .ttl{font-size:20px}
   #searchBtn{order:2}#arrBtn{order:3}
@@ -1218,6 +1218,9 @@ button.ladd:hover{background:none;color:var(--accent)}
 (()=>{
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let compEndAt=0;document.addEventListener('compositionend',()=>{compEndAt=Date.now()},true);
+/* macのSafari等: 変換確定のEnterは isComposing=false・keyCode=229 で届くため両方を見る */
+const isIME=e=>!!(e&&(e.isComposing||e.keyCode===229||Date.now()-compEndAt<80));
 const uid=()=>Math.random().toString(36).slice(2,10);
 const pad=n=>String(n).padStart(2,'0');
 const dayKey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
@@ -1275,6 +1278,7 @@ const I={
  upload:'<path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 19.5h14"/>',
  more:'<circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/>',
  move:'<path d="M4 12h15M13.5 6.5 19 12l-5.5 5.5"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
  sort:'<path d="M4 7h11M4 12h8M4 17h5M17.5 5v14M14.5 16l3 3 3-3"/>'
 };
 const ic=(n,cls='i')=>`<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[n]||''}</svg>`;
@@ -1459,7 +1463,7 @@ function renderSide(){
    <div class="side-foot">
      <button class="loglink ${sec==='review'?'on':''}" data-sec="review">${ic('review')}週次レビュー<span class="${rvAgo==null||rvAgo>=7?'due':''}">${rvAgo==null?'未実施':agoLabel(S.ui.lastReview)}</span></button>
      <button class="loglink ${sec==='log'&&!F.area?'on':''}" data-sec="log" data-drop="done">${ic('log')}完了ログ${doneToday?`<span>今日 ${doneToday}</span>`:''}</button>
-     <div class="mob-only"><button id="sTl">${ic('cal')}今日のタイムライン</button><button id="sSet">${ic('palette')}表示設定</button><button id="sGuide">${ic('book')}手引き</button></div>
+     <div class="mob-only"><button id="sTl">${ic('cal')}今日のタイムライン</button><button id="sSet">${ic('palette')}デザイン</button><button id="sCfg">${ic('gear')}設定</button><button id="sGuide">${ic('book')}手引き</button></div>
      ${S.sample?'<button id="clearSample">サンプルを消去</button>':''}
    </div>`;
   $$('#side [data-sec]').forEach(b=>b.onclick=()=>{S.ui.section=b.dataset.sec;F.area=null;if(b.dataset.sec==='review'&&(S.ui.rvStep||0)>=RV.length-1)S.ui.rvStep=0;save();render();closeSide()});
@@ -1471,6 +1475,7 @@ function renderSide(){
     F.area=F.area===b.dataset.area?null:b.dataset.area;S.ui.section='next';render();closeSide()});
   $('#addArea').onclick=showAreaAdd;
   $('#sTl').onclick=()=>{closeSide();if(!S.ui.tl)toggleTL()};$('#sGuide').onclick=()=>{closeSide();openGuide()};
+  $('#sCfg').onclick=e=>{e.stopPropagation();openConfig($('#sCfg'));closeSide()};
   $('#sSet').onclick=e=>{e.stopPropagation();const b=$('#sSet');openSettings(b);closeSide()};
   const cs=$('#clearSample');if(cs)cs.onclick=()=>{
     if(!cs.classList.contains('armed')){cs.classList.add('armed');cs.textContent='もう一度押すと消去します';setTimeout(()=>{if(cs.isConnected){cs.classList.remove('armed');cs.textContent='サンプルを消去'}},4000);return}
@@ -1507,7 +1512,7 @@ function showAreaAdd(){
   const inp=$('#areaName');inp.focus();
   let fin=false;
   const done=()=>{if(fin)return;fin=true;const v=inp.value.trim();if(v){S.areas.push({id:uid(),name:v,color});save()}render()};
-  inp.onkeydown=e=>{if(e.isComposing)return;if(e.key==='Enter'){e.preventDefault();done()}if(e.key==='Escape'){fin=true;render()}};inp.onblur=done;
+  inp.onkeydown=e=>{if(isIME(e))return;if(e.key==='Enter'){e.preventDefault();done()}if(e.key==='Escape'){fin=true;render()}};inp.onblur=done;
 }
 function closeSide(){$('#side').classList.remove('open')}
 document.addEventListener('pointerdown',e=>{const sd=$('#side');if(sd&&sd.classList.contains('open')&&!e.target.closest('#side,#menuBtn,[data-tab="more"],.fpop,.setpop'))closeSide()},true);
@@ -1531,18 +1536,19 @@ function renderBar(){
    <button class="fbtn ${F.time?'on':''}" id="fTime" aria-haspopup="true" title="所要時間で絞り込み">${ic('clock')}<span>${F.time?TIMEF.find(x=>x.id===F.time).l:'時間'}</span></button></div>`}
    <span class="spacer"></span>
    <button class="iconbtn" id="searchBtn" title="検索 (/)" aria-label="検索">${ic('search')}</button>
-   <button class="iconbtn" id="capBtn" title="新しい付箋（すばやく書き出すのは ${MODK}K）" aria-label="新しい付箋">${ic('plus')}</button>
+   ${!isList()&&!noBoard?'':`<button class="iconbtn" id="capBtn" title="新しい付箋（すばやく書き出すのは ${MODK}K）" aria-label="新しい付箋">${ic('plus')}</button>`}
    <button class="iconbtn inboxbtn ${sec==='inbox'&&!F.area?'on':''}" id="inboxBtn" data-drop="inbox" title="Inbox (1)" aria-label="Inbox">${ic('inbox')}${(n=>n?`<span class="ibadge">${n}</span>`:'')(S.tasks.filter(t=>t.status==='inbox').length)}</button>
-   ${noBoard?'':isList()?`<button class="iconbtn ${lsortOf()!==natSort()?'on':''}" id="arrBtn" title="並び順" aria-label="並び順">${ic('sort')}</button>`:''}${!isList()&&!noBoard?`<button class="iconbtn" id="arrBtn" title="自動で並べる" aria-label="自動で並べる">${ic('arrange')}</button><div class="seg size-seg" role="group" aria-label="付箋の大きさ">${SIZES.map(x=>`<button data-size="${x.z}" class="${x.z===S.ui.zoom?'on':''}">${x.l}</button>`).join('')}</div>`:''}
-   <button class="iconbtn" id="setBtn" title="表示設定" aria-label="表示設定">${ic('palette')}</button>
-   <button class="iconbtn" id="guideBtn" title="手引き (?)" aria-label="手引き">${ic('book')}</button>
+   ${noBoard?'':isList()?`<button class="iconbtn ${lsortOf()!==natSort()?'on':''}" id="arrBtn" title="並び順" aria-label="並び順">${ic('sort')}</button>`:''}${!isList()&&!noBoard?`<button class="iconbtn" id="arrBtn" title="並べ直す" aria-label="並べ直す">${ic('sort')}</button>`:''}
+   ${!isList()&&!noBoard?`<div class="seg size-seg" role="group" aria-label="付箋の大きさ">${SIZES.map(x=>`<button data-size="${x.z}" class="${x.z===S.ui.zoom?'on':''}">${x.l}</button>`).join('')}</div>`:''}
+   <button class="iconbtn" id="setBtn" title="デザイン（付箋のスタイル）" aria-label="デザイン">${ic('palette')}</button>
+   <button class="iconbtn" id="cfgBtn" title="設定（データ・操作方法・手引き）" aria-label="設定">${ic('gear')}</button>
    <button class="iconbtn ${S.ui.tl?'on':''}" id="tlBtn" title="今日のタイムライン (T)">${ic('cal')}今日</button>`;
   $$('#bar [data-view]').forEach(b=>b.onclick=()=>{S.ui.view=b.dataset.view;save();render()});
   $('#menuBtn').onclick=()=>$('#side').classList.toggle('open');
   $('#tlBtn').onclick=toggleTL;
   $('#inboxBtn').onclick=()=>{const inIb=S.ui.section==='inbox'&&!F.area;if(inIb&&S.ui.prevNav){const p=S.ui.prevNav;S.ui.section=p.section;S.ui.proj=p.proj;F.area=p.area&&area(p.area)?p.area:null;S.ui.prevNav=null}else if(!inIb){S.ui.prevNav={section:S.ui.section,proj:S.ui.proj,area:F.area};S.ui.section='inbox';F.area=null}save();render()};
-  $('#guideBtn').onclick=openGuide;
-  $('#searchBtn').onclick=openSearch;$('#capBtn').onclick=()=>openComposer();
+  $('#cfgBtn').onclick=e=>{e.stopPropagation();openConfig($('#cfgBtn'))};
+  $('#searchBtn').onclick=openSearch;{const cb=$('#capBtn');if(cb)cb.onclick=openPlus}
   const ab=$('#arrBtn');if(ab)ab.onclick=e=>{e.stopPropagation();openArrangePop(ab)};
   $('#setBtn').onclick=e=>{e.stopPropagation();openSettings($('#setBtn'))};
   const ea=$('#editArea');if(ea)ea.onclick=()=>openAreaEditor(area(F.area));
@@ -1715,17 +1721,17 @@ function setZoom(z){
   if(cv&&pl){const w=parseFloat(pl.style.width),h=parseFloat(pl.style.height);cv.style.setProperty('--z',z);cv.style.width=w*z+'px';cv.style.height=h*z+'px';pl.style.transform=`scale(${z})`;
     sc.scrollLeft=Math.round(fx*z);sc.scrollTop=Math.round(fy*z);boardScrollMem[boardKey()]=[sc.scrollLeft,sc.scrollTop]}
   if(DR)positionTray();
-  $$('#bar [data-size]').forEach(b=>b.classList.toggle('on',+b.dataset.size===z));
+  $$('[data-size]').forEach(b=>b.classList.toggle('on',+b.dataset.size===z));
 }
 
 /* ---------- list ---------- */
 const narrow=()=>matchMedia('(max-width:760px)').matches;
 const isList=()=>narrow()||S.ui.view==='list';
 const filterOn=()=>!!(F.tags.size||F.time||F.due||F.energy);
-const LSORT=[{id:'manual',l:'手動（ドラッグで並べ替え）'},{id:'area',l:'エリアごと'},{id:'due',l:'締切が近い順'},{id:'min',l:'所要時間が短い順'},{id:'new',l:'新しい順'}];
+const LSORT=[{id:'manual',l:'手動（ドラッグで並べ替え）'},{id:'area',l:'エリアごと'},{id:'due',l:'締切が近い順'},{id:'min',l:'所要時間が短い順'}];
 const listKey=()=>'L:'+(zoneMode()?viewKey():S.ui.section);
 const natSort=()=>calMode()?'cal':tickMode()?'tk':'manual';
-const lsortOf=()=>((S.ui.lsort||{})[listKey()])||natSort();
+const lsortOf=()=>{const v=(S.ui.lsort||{})[listKey()];return v&&v!=='new'?v:natSort()};
 const ordOf=(t,k)=>t.lo&&t.lo[k]!=null?t.lo[k]:(t.created||0);
 const isTodayDue=t=>t.due===todayKey()&&t.status!=='calendar';
 function sortItems(items){
@@ -1805,7 +1811,7 @@ function renderList(el){
   $$('.lgh',el).forEach(h=>h.onclick=()=>{const gid=h.dataset.fold;S.ui.lfold=S.ui.lfold||{};const f=S.ui.lfold[k]=S.ui.lfold[k]||{};f[gid]=!f[gid];save();renderMain()});
   $$('button.ladd',el).forEach(b=>b.onclick=()=>openAdd(b.dataset.add));
   const inp=$('#laddIn',el);if(inp){const G=LADD==='__end'?LG.find(g=>g.id===(LG.find(x=>x.id==='a:none')?'a:none':endG)):LG.find(g=>g.id===LADD);
-    inp.onkeydown=e=>{if(e.isComposing)return;if(e.key==='Enter'){e.preventDefault();const v=inp.value.trim();if(!v){LADD=null;renderMain();return}const t=addFromRow(G,v);if(t){justAdded=t.id;renderSide();renderMain()}}
+    inp.onkeydown=e=>{if(isIME(e))return;if(e.key==='Enter'){e.preventDefault();const v=inp.value.trim();if(!v){LADD=null;renderMain();return}const t=addFromRow(G,v);if(t){justAdded=t.id;renderSide();renderMain()}}
       else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();LADD=null;renderMain()}};
     inp.onblur=()=>setTimeout(()=>{if(!inp.isConnected||document.activeElement===inp)return;const v=inp.value.trim();if(v)addFromRow(G,v);LADD=null;renderSide();renderMain()},120);
     requestAnimationFrame(()=>{inp.focus({preventScroll:true});const a=inp.closest('.ladd').getBoundingClientRect(),r=sc.getBoundingClientRect(),lim=r.bottom-(narrow()?96:24);if(a.bottom>lim)sc.scrollTop+=a.bottom-lim;else if(a.top<r.top+60)sc.scrollTop-=r.top+60-a.top})}
@@ -2297,7 +2303,7 @@ function openEditor(t,pos,msg,opts={}){
     $('#edCancel',scrim).onclick=close;
     $('#edSave',scrim).onclick=()=>{keep();commit()};
     const del=$('#edDel',scrim);if(del)del.onclick=()=>{if(!del.classList.contains('armed')){del.classList.add('armed');del.textContent='本当に削除';return}S.tasks=S.tasks.filter(x=>x.id!==d.id);save();close();render();toast('削除しました')};
-    $('#edTitle',scrim).onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){keep();commit()}};
+    $('#edTitle',scrim).onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){keep();commit()}};
   };
   const commit=()=>{
     d.title=d.title.trim();if(!d.title){$('#edTitle',scrim).focus();$('#edTitle',scrim).placeholder='タスク名を入力してください';return}
@@ -2331,7 +2337,7 @@ function openAreaEditor(a){
     $$('.swatches button',scrim).forEach(b=>b.onclick=()=>{keepN();color=b.dataset.c;draw()});
     $('#arParent',scrim).onchange=e=>{keepN();parent=e.target.value;draw()};
     $$('#arPlaces button',scrim).forEach(b=>b.onclick=()=>{keepN();const v=b.dataset.v;apl=apl.includes(v)?apl.filter(x=>x!==v):[...apl,v];draw()});
-    const si=$('#arSub',scrim);if(si)si.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing&&si.value.trim()){keepN();const nk={id:uid(),name:si.value.trim(),color:'',parent:a.id};const last=[a,...kids(a.id)].pop();S.areas.splice(S.areas.indexOf(last)+1,0,nk);save();draw();$('#arSub',scrim).focus()}};
+    const si=$('#arSub',scrim);if(si)si.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)&&si.value.trim()){keepN();const nk={id:uid(),name:si.value.trim(),color:'',parent:a.id};const last=[a,...kids(a.id)].pop();S.areas.splice(S.areas.indexOf(last)+1,0,nk);save();draw();$('#arSub',scrim).focus()}};
     $('#arCancel',scrim).onclick=()=>{delete a._n;scrim.remove();render()};
     $('#arSave',scrim).onclick=()=>{const n=$('#arName',scrim).value.trim();if(n)a.name=n;delete a._n;if(apl.length)a.places=apl;else delete a.places;
       if(parent){a.parent=parent;a.color=''}else{if(a.parent){a.color=color}delete a.parent;a.color=color}
@@ -2409,7 +2415,7 @@ function startDraft(p,x,y,fromRect,opts={}){
   const ta=$('#drTitle');
   ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px'});
   ta.addEventListener('keydown',e=>{
-    if(e.isComposing)return;
+    if(isIME(e))return;
     if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();commitDraft()}
     else if(e.key==='Escape'){e.preventDefault();cancelDraft()}
   });
@@ -2576,7 +2582,7 @@ const KBHTML=()=>{const g=(h,rows)=>`<div class="kbg"><b>${h}</b>${rows.map(([k,
 function closeSettings(){if(SETP){SETP.remove();SETP=null;document.removeEventListener('pointerdown',setOutside,true)}}
 function setOutside(e){if(SETP&&!SETP.contains(e.target)&&!e.target.closest('#setBtn'))closeSettings()}
 function openSettings(btn){
-  if(SETP){closeSettings();return}
+  if(SETP){closeSettings();return}closeConfig();
   const el=document.createElement('div');el.className='setpop';document.body.appendChild(el);SETP=el;
   const seg=(key,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button data-k="${key}" data-v="${v}" class="${S.ui[key]===v?'on':''}">${l}</button>`).join('')}</div>`;
   const draw=()=>{
@@ -2586,18 +2592,39 @@ function openSettings(btn){
      <div class="setrow"><span>付箋の傾き</span>${seg('tilt',[['none','なし'],['mid','少し'],['big','大きめ']])}</div>
      <div class="setrow"><span>タイトルの文字</span>${seg('font',[['def','スタイル既定'],['goth','ゴシック'],['maru','丸ゴシック'],['hand','手書き'],['min','明朝']])}</div>
      <div class="setrow"><span>エリア色の出し方</span>${seg('cmode',[['def','スタイル既定'],['full','全面に塗る'],['accent','アクセントのみ']])}</div>
-     <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
-     <div class="setrow"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('book')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>`;
+`;
     $$('[data-style]',el).forEach(b=>b.onclick=()=>{S.ui.style=b.dataset.style;commitLook();draw()});
     $$('[data-k]',el).forEach(b=>b.onclick=()=>{S.ui[b.dataset.k]=b.dataset.v;commitLook();draw()});
-    $('#kbT',el).onclick=()=>{kbOpen=!kbOpen;draw()};
-    $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
     $('#setReset',el).onclick=()=>{Object.assign(S.ui,{style:'classic',board:'rec',tilt:'mid',font:'def',cmode:'def'});commitLook();draw()};
   };
   draw();
   const r=btn.getBoundingClientRect();const w=el.offsetWidth,h=el.offsetHeight;
   el.style.left=Math.max(12,Math.min(r.right-w,innerWidth-w-12))+'px';el.style.top=Math.max(12,Math.min(r.bottom+8,innerHeight-h-12))+'px';
   document.addEventListener('pointerdown',setOutside,true);
+}
+const openPlus=()=>S.ui.plus==='simple'?openCapture():openComposer();
+let CFGP=null;
+function closeConfig(){if(CFGP){CFGP.remove();CFGP=null;document.removeEventListener('pointerdown',cfgOutside,true)}}
+function cfgOutside(e){if(CFGP&&!CFGP.contains(e.target)&&!e.target.closest('#cfgBtn,#sCfg'))closeConfig()}
+function openConfig(btn){
+  if(CFGP){closeConfig();return}closeSettings();closePop();
+  const el=document.createElement('div');el.className='setpop';document.body.appendChild(el);CFGP=el;
+  const place=()=>{const r=btn.getBoundingClientRect();const w=el.offsetWidth,h=el.offsetHeight;
+    el.style.left=Math.max(12,Math.min(r.right-w,innerWidth-w-12))+'px';el.style.top=Math.max(12,Math.min(r.bottom+8,innerHeight-h-12))+'px'};
+  const draw=()=>{
+    el.innerHTML=`<h3>設定</h3>
+     <div class="setrow"><span>＋ボタンで開く画面</span><div class="seg">${[['rich','リッチ（置き場所まで決める）'],['simple','シンプル（Inboxに書き出すだけ）']].map(([v,l])=>`<button data-plus="${v}" class="${(S.ui.plus||'rich')===v?'on':''}">${l}</button>`).join('')}</div><div class="hint">${MODK}K はいつでもシンプルな書き出しです。</div></div>
+     <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
+     <div class="setrow"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
+     <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く（?）</button></div>`;
+    $('#kbT',el).onclick=()=>{kbOpen=!kbOpen;draw()};
+    $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
+    $$('[data-plus]',el).forEach(b=>b.onclick=()=>{S.ui.plus=b.dataset.plus;save();draw()});
+    $('#cfgGuide',el).onclick=()=>{closeConfig();openGuide()};
+    place();
+  };
+  draw();
+  document.addEventListener('pointerdown',cfgOutside,true);
 }
 function commitLook(){save();applyLook();padSig='';renderMain();if(S.ui.tl)renderTL()}
 /* ---------- guide (手引き) ---------- */
@@ -2703,7 +2730,7 @@ function openPlacesEditor(after){
       r.ondragover=e=>{e.preventDefault();$$('.prow',scrim).forEach(x=>x.classList.toggle('over',x===r))};
       r.ondrop=e=>{e.preventDefault();const to=+r.dataset.i;if(drag==null||drag===to)return;const [m]=S.places.splice(drag,1);S.places.splice(to,0,m);drag=null;draw()};
     });
-    const ad=$('#placeAdd',scrim);ad.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing&&ad.value.trim()){S.places.push({id:uid(),name:ad.value.trim(),icon:'pin'});draw();$('#placeAdd',scrim).focus()}};
+    const ad=$('#placeAdd',scrim);ad.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)&&ad.value.trim()){S.places.push({id:uid(),name:ad.value.trim(),icon:'pin'});draw();$('#placeAdd',scrim).focus()}};
     $('#plDone',scrim).onclick=done;
   };
   const done=()=>{S.places.forEach(p=>{p.name=p.name.trim()||'場所'});TAGS=S.places;save();scrim.remove();document.removeEventListener('keydown',k,true);render();if(after)after()};
@@ -2826,7 +2853,7 @@ function datePop(anchor,{title,cur,today=true,none=false,min},onPick){
 }
 let CMP=null;
 function openComposer(pre){
-  if($('#cmp'))return;if(DR)commitDraft();closePop();closeSettings();closeSide();
+  if($('#cmp'))return;if(DR)commitDraft();closePop();closeSettings();closeConfig();closeSide();
   const P=projMode()?taskById(S.ui.proj):null;
   const d=pre||{title:'',note:'',area:F.area||(P?P.area:null),minutes:30,minSet:false,tags:[],energy:'normal',due:null,project:P?P.id:null,rep:null};
   if(!pre)addAreaPlaces(d);
@@ -2848,7 +2875,7 @@ function openComposer(pre){
   CMP={el,d,q:null,busy:false};
   const grow=x=>{x.style.height='auto';x.style.height=x.scrollHeight+'px'};
   ti.oninput=()=>{d.title=ti.value;grow(ti)};me.oninput=()=>{d.note=me.value;grow(me)};
-  ti.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();me.focus()}};
+  ti.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();me.focus()}};
   const shake=x=>x.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-3px)'},{transform:'none'}],{duration:300});
   const draw=()=>{
     const a=area(d.area),R=rootOf(a);
@@ -2911,7 +2938,7 @@ function openComposer(pre){
         $$('[data-k]',p).forEach(x=>x.onclick=()=>{info=!!x.dataset.k;re()});
         $('.cp-go .btn',p).onclick=()=>{c();place('calendar',{date:cd,time:ct,info})}};
       miniPop(tb,body(),bind);return}
-    if(k==='waiting'){miniPop(tb,`<div class="fp-h">誰を待っていますか？</div><input class="wait-in cp-who" placeholder="佐藤さん" maxlength="30"><div class="cp-go"><button class="btn primary">Waiting に置く</button></div>`,(p,c)=>{const w=$('.cp-who',p);setTimeout(()=>w.focus(),30);const go=()=>{c();place('waiting',{who:w.value.trim()})};w.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();go()}};$('.btn',p).onclick=go});return}
+    if(k==='waiting'){miniPop(tb,`<div class="fp-h">誰を待っていますか？</div><input class="wait-in cp-who" placeholder="佐藤さん" maxlength="30"><div class="cp-go"><button class="btn primary">Waiting に置く</button></div>`,(p,c)=>{const w=$('.cp-who',p);setTimeout(()=>w.focus(),30);const go=()=>{c();place('waiting',{who:w.value.trim()})};w.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();go()}};$('.btn',p).onclick=go});return}
     if(k==='tickler'){datePop(tb,{title:'いつ Next Action に戻す？',today:false},v=>{if(v)place('tickler',{date:v})});return}
     place(k,o)};
   const place=(k,x={})=>{if(!ok(k))return;CMP.busy=true;
@@ -2949,7 +2976,7 @@ function openComposer(pre){
   const teardown=()=>{document.removeEventListener('keydown',key,true);closePop();el.remove();CMP=null};
   const close=drop=>{if(CMP&&CMP.busy)return;const had=ti.value.trim();const snap={...d,title:ti.value,note:me.value};teardown();
     if(had)toast(drop?'書かずに閉じました':'書きかけの付箋を閉じました',{label:'元に戻す',fn:()=>openComposer(snap)})};
-  const key=e=>{if(POP||e.isComposing)return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
+  const key=e=>{if(POP||isIME(e))return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
   document.addEventListener('keydown',key,true);
   $('.cmp-x',el).onclick=()=>close();
   $('.cmp-qb',el).onclick=()=>{CMP.q=0;draw()};
@@ -2973,7 +3000,7 @@ function openComposer(pre){
 
 /* ---------- capture (⌘K) ---------- */
 function openCapture(){
-  if($('#capture'))return;if(DR)commitDraft();closePop();closeSettings();
+  if($('#capture'))return;if(DR)commitDraft();closePop();closeSettings();closeConfig();
   const scrim=document.createElement('div');scrim.className='scrim cap-scrim';scrim.id='capture';
   const got=[];const P0=TAGS[0]?.name||'PC',A0=S.areas[0]?.name||'仕事';
   scrim.innerHTML=`<div class="sheet capsheet" role="dialog" aria-label="すばやく書き出す">
@@ -2989,8 +3016,8 @@ function openCapture(){
     const t={id:uid(),status:'inbox',title:p.title,note:'',area:p.area,minutes:p.mins,tags:p.tags,energy:'normal',x:sp.x,y:sp.y,waitingFor:'',sched:null,created:Date.now(),doneAt:null};if(t.area)addAreaPlaces(t);
     S.tasks.push(t);if(S.sample===undefined)S.sample=false;if(vis)justAdded=t.id;save();render();got.unshift(t);inp.value='';drawGot()};
   const close=()=>{document.removeEventListener('keydown',key,true);scrim.remove();if(got.length)toast(`${got.length}件を Inbox に入れました`)};
-  const key=e=>{if(e.isComposing)return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
-  inp.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();add()}};
+  const key=e=>{if(isIME(e))return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
+  inp.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();add()}};
   document.addEventListener('keydown',key,true);
   scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)close()});
   setTimeout(()=>inp.focus(),30);
@@ -2998,7 +3025,7 @@ function openCapture(){
 
 /* ---------- search ---------- */
 function openSearch(){
-  if($('#search'))return;if(DR)commitDraft();closePop();closeSettings();
+  if($('#search'))return;if(DR)commitDraft();closePop();closeSettings();closeConfig();
   const scrim=document.createElement('div');scrim.className='scrim cap-scrim';scrim.id='search';
   scrim.innerHTML=`<div class="sheet capsheet" role="dialog" aria-label="検索">
    <div class="cap-in">${ic('search')}<input class="cap-q" id="srIn" placeholder="タイトル・メモ・相手・プロジェクト" autocomplete="off"><label class="sr-done"><input type="checkbox" id="srDone">完了も</label></div>
@@ -3029,7 +3056,7 @@ function openSearch(){
   const close=()=>{document.removeEventListener('keydown',key,true);scrim.remove()};
   const go=t=>{if(!t)return;close();if(isProj(t)){if(t.status==='done'){S.ui.section='log';F.area=null;save();render();return}openProject(t.id);return}
     if(t.status==='done'){S.ui.section='log';F.area=null;save();render();toast('完了ログを開きました');return}openEditor(t)};
-  const key=e=>{if(e.isComposing)return;
+  const key=e=>{if(isIME(e))return;
     if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}
     else if(e.key==='ArrowDown'&&res.length){e.preventDefault();cur=(cur+1)%res.length;hi()}
     else if(e.key==='ArrowUp'&&res.length){e.preventDefault();cur=(cur-1+res.length)%res.length;hi()}
@@ -3041,7 +3068,7 @@ function openSearch(){
 }
 
 /* ---------- auto arrange ---------- */
-const ARR=[{id:'due',l:'締切が近い順'},{id:'area',l:'エリアごと'},{id:'min',l:'所要時間が短い順'},{id:'new',l:'新しい順'},{id:'old',l:'古い順'}];
+const ARR=[{id:'due',l:'締切が近い順'},{id:'area',l:'エリアごと'},{id:'min',l:'所要時間が短い順'}];
 function openArrangePop(btn){
   if(POP&&POP.kind==='arr'){closePop();return}closePop();
   if(isList())return openSortPop(btn);
@@ -3105,7 +3132,7 @@ function importData(){
 }
 function resetView(){F.tags.clear();F.area=null;F.time=null;F.due=null;F.energy=null;padSig='';Object.keys(boardScrollMem).forEach(k=>delete boardScrollMem[k])}
 function confirmImport(d,name){
-  closeSettings();
+  closeSettings();closeConfig();
   const n=d.tasks.filter(t=>t&&t.status!=='done').length,dn=d.tasks.length-n;
   const scrim=document.createElement('div');scrim.className='scrim';
   scrim.innerHTML=`<div class="sheet" role="dialog" aria-label="バックアップを読み込む"><div class="sheet-body">
@@ -3162,7 +3189,7 @@ document.addEventListener('keydown',e=>{
 let wasNarrow=narrow();
 window.addEventListener('resize',()=>{if(narrow()!==wasNarrow){wasNarrow=narrow();render();return}if(S.ui.tl)renderTL()});
 
-load();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=()=>openComposer();render();
+load();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
 })();
 </script>
 
