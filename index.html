@@ -1509,11 +1509,12 @@ function zonesFor(){
   const calZone=(m)=>({id:'zcal',label:'Calendar',icon:'calendar',soft:true,tk:true,minH:170,match:t=>m(t)&&t.status==='calendar'&&!(t.info&&t.cdate<todayKey()),drop:t=>{if(t.status!=='calendar'){t.status='calendar';t.cdate=todayKey();t.start=null}},empty:'ここへ入れると今日のカレンダー予定になります'});
   const tkZone=(m)=>({id:'ztk',label:'Tickler',icon:'tickler',soft:true,tk:true,minH:170,match:t=>m(t)&&tickled(t),drop:t=>{if(!tickled(t))t.start=keyAdd(todayKey(),1);if(t.status==='inbox'||t.status==='someday')t.status='next'},empty:'ここへ入れると明日 Next Action に戻ります'});
   if(projMode()){const pid=S.ui.proj,m=t=>t.project===pid&&!isProj(t);
-    return [{id:'pnext',label:'Next Action',icon:'next',match:t=>m(t)&&(t.status==='next'||t.status==='inbox'),drop:t=>{t.status='next';t.start=null},empty:'左の束から、このプロジェクトの次の一手を貼りましょう'},
+    const PZ=[{id:'pnext',label:'Next Action',icon:'next',match:t=>m(t)&&(t.status==='next'||t.status==='inbox'),drop:t=>{t.status='next';t.start=null},empty:'左の束から、このプロジェクトの次の一手を貼りましょう'},
       {id:'pwait',label:'Waiting',icon:'waiting',soft:true,match:t=>m(t)&&t.status==='waiting',drop:t=>{t.status='waiting';t.start=null},empty:'ここへ入れると Waiting になります'},
       {id:'psome',label:'Someday',icon:'someday',soft:true,match:t=>m(t)&&t.status==='someday',drop:t=>{t.status='someday';t.start=null},empty:'ここへ入れると Someday になります'},
-      tkZone(m),calZone(m)]}
-  return [...ZS.map(k=>({id:k,label:SECT[k].en,icon:k,soft:k!=='next',match:t=>inArea(t,F.area)&&t.status===k&&!isProj(t),drop:t=>{t.status=k;t.start=null},empty:`ここへドラッグすると ${SECT[k].en} に移動します`})),tkZone(t=>inArea(t,F.area)),calZone(t=>inArea(t,F.area))];
+      tkZone(m),calZone(m)];return [PZ[0],PZ[4],PZ[1],PZ[2],PZ[3]]}
+  const AZ=[...ZS.map(k=>({id:k,label:SECT[k].en,icon:k,soft:k!=='next',match:t=>inArea(t,F.area)&&t.status===k&&!isProj(t),drop:t=>{t.status=k;t.start=null},empty:`ここへドラッグすると ${SECT[k].en} に移動します`})),tkZone(t=>inArea(t,F.area)),calZone(t=>inArea(t,F.area))];
+  return [AZ[0],AZ[4],AZ[1],AZ[2],AZ[3]];
 }
 const zoneOf=t=>{const z=zonesFor().find(z=>z.match(t));return z?z.id:null};
 const onBoardZ=(t,zn)=>zn&&(zn.tk?(!isProj(t)&&!isToday(t)):onBoard(t));
@@ -1672,7 +1673,7 @@ function rowHTML(t){
   return `<div class="row ${colorOf(t)} ${LSEL===t.id?'sel':''} ${justAdded===t.id?'ladded':''}" data-id="${t.id}">
    <div class="sw-bg sw-l">${ic('log')}完了</div><div class="sw-bg sw-r"><button data-sw="move">${ic('move')}移動</button></div>
    <div class="row-in"><button class="chk" aria-label="完了">${ic('log')}</button>
-    <div class="rt"><b>${esc(t.title)}</b>${meta?`<div class="rm">${meta}</div>`:''}${t.note?`<div class="rnote">${esc(t.note.split('\n').find(x=>x.trim())||'')}</div>`:''}</div>
+    <div class="rt"><b>${esc(t.title)}</b>${t.note?`<div class="rnote">${esc(t.note.split('\n').find(x=>x.trim())||'')}</div>`:''}${meta?`<div class="rm">${meta}</div>`:''}</div>
     ${rowWhere(t)}<span class="rmin">${m}</span>
     <div class="ra"><button data-ra="more" title="移動・編集 (M)">${ic('more')}</button></div>
    </div></div>`;
