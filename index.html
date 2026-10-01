@@ -697,6 +697,28 @@ body.sty-index .pad{background:#FFFEFA repeating-linear-gradient(transparent 0 7
 .bar.pj .fbtn:not(.on) span,.bar.pj h1 .edit-area .lb{display:none}.bar.pj .fbtn:not(.on){padding:0 9px}
 @media (max-width:1360px){.bar .fbtn:not(.on) span{display:none}.bar .fbtn:not(.on){padding:0 9px}.bar h1 .edit-area .lb{display:none}}
 @media (max-width:1180px){.bar .seg[aria-label="表示"] .lb{display:none}.bar .fbtn span{display:none}.bar .fbtn{padding:0 9px}.bar .seqbtn span{display:none}}
+/* ---- inbox card (sidebar) ---- */
+.ibx-card{position:relative;display:flex;align-items:center;gap:11px;width:100%;box-sizing:border-box;margin:0 0 11px;padding:11px 12px;border-radius:12px;text-align:left;
+ background:color-mix(in srgb,#FFE48C 34%,var(--pop));box-shadow:0 0 0 1px rgba(200,150,20,.32),0 6px 14px -10px rgba(120,80,0,.45);transition:box-shadow .15s,transform .15s,background .15s}
+.ibx-card:hover{box-shadow:0 0 0 1px rgba(200,150,20,.5),0 8px 18px -10px rgba(120,80,0,.5)}
+.ibx-card .sq{width:30px;height:30px;border-radius:8px;background:#2E2C28;display:flex;align-items:center;justify-content:center;flex:none}
+.ibx-card .sq svg.i{width:16px;height:16px;stroke:#fff;stroke-width:1.9}
+.ibx-card .tt{flex:1;min-width:0}
+.ibx-card .tt b{display:block;font-size:14.5px;font-weight:700;color:#3D2F00}
+.ibx-card .tt small{display:block;font-size:11.5px;color:#7A5A00;margin-top:1px}
+.ibx-card .pile{position:relative;width:34px;height:30px;flex:none}
+.ibx-card .pile i{position:absolute;width:22px;height:20px;border-radius:2px 2px 2px 6px;box-shadow:0 2px 3px -1px rgba(0,0,0,.25)}
+.ibx-card .pile i:nth-child(1){left:2px;top:6px;background:#BFEBD3;transform:rotate(-9deg)}
+.ibx-card .pile i:nth-child(2){left:9px;top:3px;background:#FBD0DC;transform:rotate(6deg)}
+.ibx-card .pile i:nth-child(3){left:6px;top:8px;background:#FFF6D6;transform:rotate(-2deg);display:flex;align-items:center;justify-content:center;font:700 11px var(--f-ui);font-style:normal;color:#4F3D00;font-variant-numeric:tabular-nums}
+.ibx-card.empty{background:var(--pop);box-shadow:0 0 0 1px var(--line)}
+.ibx-card.empty .tt b{color:var(--ink2);font-weight:600}.ibx-card.empty .tt small{color:var(--ink3)}
+.ibx-card.empty .sq{background:var(--sel)}.ibx-card.empty .sq svg.i{stroke:var(--ink3)}
+.ibx-card.on{box-shadow:0 0 0 2px var(--accent),0 6px 14px -10px rgba(120,80,0,.45)}
+.ibx-card.drop-hot{background:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);transform:scale(1.02)}
+.ibx-card.drop-hot .tt b,.ibx-card.drop-hot .tt small{color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ibx-card:not(.empty):not(.drop-hot){background:color-mix(in srgb,#FFE48C 16%,var(--pop))}:root:not([data-theme="light"]) .ibx-card:not(.empty) .tt b{color:#FFE9A6}:root:not([data-theme="light"]) .ibx-card:not(.empty) .tt small{color:#D9BF6E}:root:not([data-theme="light"]) .ibx-card .sq{background:#4A463E}}
+:root[data-theme="dark"] .ibx-card:not(.empty):not(.drop-hot){background:color-mix(in srgb,#FFE48C 16%,var(--pop))}:root[data-theme="dark"] .ibx-card:not(.empty) .tt b{color:#FFE9A6}:root[data-theme="dark"] .ibx-card:not(.empty) .tt small{color:#D9BF6E}
 /* ---- settings panel ---- */
 .setbtn{display:flex;align-items:center;gap:6px;color:var(--ink3)!important;font-size:11.5px;padding:4px 0}
 .setbtn svg.i{width:13px;height:13px}
@@ -983,7 +1005,7 @@ button.ladd:hover{background:color-mix(in srgb,var(--ink) 3%,var(--win));color:v
 .tabs,.fab,.mob-only,.tl-x{display:none}
 @media (max-width:760px){
   .bar{flex-wrap:wrap;row-gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px;gap:6px}
-  .bar .seg,.bar .size-seg,#setBtn,#cfgBtn,#tlBtn,#inboxBtn,#capBtn,.bar .spacer{display:none!important}
+  .bar .seg,.bar .size-seg,#setBtn,#cfgBtn,#tlBtn,#capBtn,.bar .spacer{display:none!important}
   .bar h1{order:1;flex:1 1 0;min-width:0}
   .bar h1 .ttl{font-size:20px}
   #searchBtn{order:2}#arrBtn{order:3}
@@ -1455,6 +1477,7 @@ function renderSide(){
    <div class="sgrp">${['today','next','calendar'].map(nav).join('')}</div>
    <div class="sgrp">${['waiting','someday','tickler'].map(nav).join('')}
    <button class="nav gtd g-projects ${sec==='projects'&&!F.area?'on':''}" data-sec="projects"><span class="sq">${ic('clip')}</span><span class="lbl">プロジェクト</span><span class="n">${projects().length||''}</span></button></div>
+   ${(n=>`<button class="ibx-card ${n?'':'empty'} ${sec==='inbox'&&!F.area?'on':''}" data-sec="inbox" data-drop="inbox" title="Inbox (1)"><span class="sq">${ic('inbox')}</span><span class="tt"><b>Inbox</b><small>${n?n+'件が仕分け待ち':'空っぽです。頭もすっきり'}</small></span>${n?`<span class="pile" aria-hidden="true"><i></i><i></i><i>${n>99?'99+':n}</i></span>`:''}</button>`)(S.tasks.filter(t=>t.status==='inbox').length)}
    <div class="cap">エリア<button id="addArea" aria-label="エリアを追加">${ic('plus')}</button></div>
    <div id="areaAddSlot"></div>
    <div class="sgrp sareas">${orderedAreas().map(a=>{const sub=rootOf(a)!==a;const n=S.tasks.filter(t=>inArea(t,a.id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length;const ps=projects().filter(p=>p.area===a.id);const R=rootOf(a);const fold=!!(S.ui.fold||{})[R.id];if(sub&&fold)return '';const hid=sub?0:kids(a.id).length+projects().filter(p=>p.area===a.id||kids(a.id).some(k=>k.id===p.area)).length;const open=!fold;
@@ -1537,7 +1560,6 @@ function renderBar(){
    <span class="spacer"></span>
    <button class="iconbtn" id="searchBtn" title="検索 (/)" aria-label="検索">${ic('search')}</button>
    ${!isList()&&!noBoard?'':`<button class="iconbtn" id="capBtn" title="新しい付箋（すばやく書き出すのは ${MODK}K）" aria-label="新しい付箋">${ic('plus')}</button>`}
-   <button class="iconbtn inboxbtn ${sec==='inbox'&&!F.area?'on':''}" id="inboxBtn" data-drop="inbox" title="Inbox (1)" aria-label="Inbox">${ic('inbox')}${(n=>n?`<span class="ibadge">${n}</span>`:'')(S.tasks.filter(t=>t.status==='inbox').length)}</button>
    ${noBoard?'':isList()?`<button class="iconbtn ${lsortOf()!==natSort()?'on':''}" id="arrBtn" title="並び順" aria-label="並び順">${ic('sort')}</button>`:''}${!isList()&&!noBoard?`<button class="iconbtn" id="arrBtn" title="並べ直す" aria-label="並べ直す">${ic('sort')}</button>`:''}
    ${!isList()&&!noBoard?`<div class="seg size-seg" role="group" aria-label="付箋の大きさ">${SIZES.map(x=>`<button data-size="${x.z}" class="${x.z===S.ui.zoom?'on':''}">${x.l}</button>`).join('')}</div>`:''}
    <button class="iconbtn" id="setBtn" title="デザイン（付箋のスタイル）" aria-label="デザイン">${ic('palette')}</button>
@@ -1546,7 +1568,6 @@ function renderBar(){
   $$('#bar [data-view]').forEach(b=>b.onclick=()=>{S.ui.view=b.dataset.view;save();render()});
   $('#menuBtn').onclick=()=>$('#side').classList.toggle('open');
   $('#tlBtn').onclick=toggleTL;
-  $('#inboxBtn').onclick=()=>{const inIb=S.ui.section==='inbox'&&!F.area;if(inIb&&S.ui.prevNav){const p=S.ui.prevNav;S.ui.section=p.section;S.ui.proj=p.proj;F.area=p.area&&area(p.area)?p.area:null;S.ui.prevNav=null}else if(!inIb){S.ui.prevNav={section:S.ui.section,proj:S.ui.proj,area:F.area};S.ui.section='inbox';F.area=null}save();render()};
   $('#cfgBtn').onclick=e=>{e.stopPropagation();openConfig($('#cfgBtn'))};
   $('#searchBtn').onclick=openSearch;{const cb=$('#capBtn');if(cb)cb.onclick=openPlus}
   const ab=$('#arrBtn');if(ab)ab.onclick=e=>{e.stopPropagation();openArrangePop(ab)};
@@ -2958,7 +2979,7 @@ function openComposer(pre){
     const tb=trayEl(k);if(tb)tb.classList.add('on');
     setTimeout(()=>fly(t,k,em),720)};
   const fly=(t,k,em)=>{
-    const tgtSel=k==='inbox'?['#inboxBtn','[data-tab="inbox"]']:k==='two'?['#side [data-sec="log"]','[data-tab="today"]']:[`#side [data-sec="${k}"]`,`[data-tab="${k}"]`,'[data-tab="more"]'];
+    const tgtSel=k==='inbox'?['#side [data-sec="inbox"]','[data-tab="inbox"]']:k==='two'?['#side [data-sec="log"]','[data-tab="today"]']:[`#side [data-sec="${k}"]`,`[data-tab="${k}"]`,'[data-tab="more"]'];
     const tg=tgtSel.map(s=>$(s)).find(e=>e&&e.getBoundingClientRect().width>0&&getComputedStyle(e).visibility!=='hidden');
     const r=note.getBoundingClientRect();let tx=innerWidth/2,ty=innerHeight+80;if(tg){const q=tg.getBoundingClientRect();tx=q.left+q.width/2;ty=q.top+q.height/2}
     const gh=note.cloneNode(true);gh.classList.add('cmp-fly');gh.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:1200`;
