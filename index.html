@@ -268,7 +268,7 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important}
 /* toast */
 .toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--win);padding:9px 10px 9px 16px;border-radius:10px;font-size:12.5px;display:flex;align-items:center;gap:12px;opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.2,.9,.3,1.2);z-index:1100;box-shadow:var(--shadow-pop);max-width:calc(100% - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
-.toast button{color:var(--win);font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(127,127,127,.25)}
+.toast button{white-space:nowrap;flex:none;color:var(--win);font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(127,127,127,.25)}
 .kbd-hint{font-size:10.5px;color:var(--ink3)}
 
 
@@ -1082,6 +1082,109 @@ button.ladd:hover{background:none;color:var(--accent)}
   .ladd.on{height:62px;padding:0 18px}
   .lempty{padding:40px 18px 18px}
 }
+/* ---------- composer ---------- */
+.cmp>*{flex-shrink:0}
+.cmp{position:fixed;inset:0;z-index:940;overflow-y:auto;background:linear-gradient(180deg,color-mix(in srgb,var(--board) 45%,var(--win)) 0%,var(--board) 100%);animation:cmpIn .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;align-items:center;padding:34px 40px 26px;box-sizing:border-box;transition:opacity .25s}
+@keyframes cmpIn{from{opacity:0;transform:scale(.985)}}
+.cmp.out{opacity:0;pointer-events:none}
+.cmp-x{position:fixed;right:22px;top:calc(18px + env(safe-area-inset-top,0px));width:36px;height:36px;border-radius:50%;background:color-mix(in srgb,var(--pop) 80%,transparent);display:flex;align-items:center;justify-content:center;color:var(--ink2);z-index:2;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.cmp-h{text-align:center;margin-bottom:38px}
+.cmp-h h2{font-family:var(--f-min);font-size:24px;margin:0;font-weight:700;letter-spacing:.02em}
+.cmp-h p{font-size:12.5px;color:var(--ink3);margin:6px 0 0}
+.cmp-stage{display:grid;grid-template-columns:1fr auto 1fr;gap:22px;width:100%;max-width:1000px;align-items:start}
+.cmp-note{grid-column:2;position:relative;width:340px;min-height:256px;padding:26px 26px 16px;box-sizing:border-box;border-radius:3px 3px 4px 26px/3px 3px 4px 15px;background-color:var(--s);color:var(--si);background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,0) 40px),linear-gradient(135deg,rgba(255,255,255,.45),rgba(255,255,255,0) 45%);box-shadow:0 2px 3px rgba(0,0,0,.12),0 36px 50px -26px rgba(80,40,0,.5);transform:rotate(-1.4deg);display:flex;flex-direction:column;font-family:var(--f-note);transition:background-color .3s,color .3s,transform .3s,box-shadow .2s;touch-action:none;cursor:grab;user-select:none}
+.cmp-note::after{content:"";position:absolute;right:0;bottom:0;width:40px;height:40px;background:linear-gradient(315deg,transparent 45%,rgba(0,0,0,.08) 50%,rgba(255,255,255,.5) 57%,transparent 72%);pointer-events:none}
+.cmp-note.dragging{transition:none;cursor:grabbing;box-shadow:0 2px 3px rgba(0,0,0,.12),0 46px 60px -24px rgba(80,40,0,.55);z-index:5}
+.cmp-tabs{position:absolute;top:-21px;left:16px;display:flex;gap:5px}
+.cmp-tab{min-width:46px;max-width:76px;height:24px;padding:4px 9px 0;box-sizing:border-box;border-radius:6px 6px 0 0;background:var(--s);color:var(--si);font-family:var(--f-ui);font-size:10px;font-weight:700;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-shadow:inset 0 -6px 6px -4px rgba(0,0,0,.14);transition:height .15s,margin .15s,opacity .15s;filter:var(--stk-filter);align-self:flex-end}
+.cmp-tab:hover{height:28px;opacity:1}
+.cmp-tab.on{height:32px;opacity:1;color:var(--si)}
+.cmp-nl{display:flex;justify-content:space-between;font-family:var(--f-ui);font-size:11px;font-weight:700;opacity:.62;letter-spacing:.06em;min-height:15px}
+.cmp-title,.cmp-memo{border:0;background:none;outline:none;resize:none;color:inherit;padding:0;width:100%;overflow:hidden;cursor:text;user-select:text}
+.cmp-title{font-family:inherit;font-size:23px;font-weight:800;line-height:1.45;margin-top:8px;min-height:34px}
+.cmp-memo{font-family:var(--f-ui);font-size:13px;line-height:1.6;opacity:.7;margin-top:6px}
+.cmp-title::placeholder,.cmp-memo::placeholder{color:currentColor;opacity:.36}
+.cmp-seals{margin-top:auto;padding-top:10px;display:flex;gap:5px;flex-wrap:wrap;padding-right:30px}
+.cmp-seals span{font-family:var(--f-ui);font-size:11px;font-weight:700;background:rgba(0,0,0,.08);padding:3px 9px;border-radius:99px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmp-subs{grid-column:3;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding-top:30px}
+.cmp-subs button{font-size:12px;padding:4px 11px;border-radius:99px;background:color-mix(in srgb,var(--pop) 80%,transparent);color:var(--ink2);border:1px solid var(--line)}
+.cmp-subs button.on{background:var(--ink);color:var(--win);border-color:var(--ink)}
+.cmp-mid{min-height:72px;margin-top:28px;display:flex;justify-content:center;width:100%;max-width:1000px}
+.cmp-det{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.dc{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px;border-radius:12px;background:color-mix(in srgb,var(--pop) 80%,transparent);border:1px solid var(--line2);font-size:12.5px;color:var(--ink2);white-space:nowrap;max-width:220px;box-shadow:0 4px 10px -8px rgba(0,0,0,.3);transition:all .12s}
+.dc span{overflow:hidden;text-overflow:ellipsis}
+.dc svg.i{width:15px;height:15px;color:var(--ink3)}
+.dc:hover,.dc.open{color:var(--ink);border-color:var(--ink3)}
+.dc.set{background:var(--pop);color:var(--ink);font-weight:600}
+.dc.set svg.i{color:var(--accent)}
+.cmp-q{width:min(600px,100%);background:var(--pop);border-radius:22px;padding:18px 20px 16px;box-shadow:0 26px 50px -26px rgba(60,40,10,.5);border:1px solid color-mix(in srgb,#B4561A 18%,transparent);position:relative;animation:rise .25s cubic-bezier(.2,.9,.3,1.1)}
+.cmp-q::after{content:"";position:absolute;left:50%;bottom:-9px;width:16px;height:16px;margin-left:-8px;background:var(--pop);transform:rotate(45deg);border-right:1px solid color-mix(in srgb,#B4561A 18%,transparent);border-bottom:1px solid color-mix(in srgb,#B4561A 18%,transparent)}
+.cmp-q .kick{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;font-weight:700;letter-spacing:.2em;color:#B4561A}
+.cmp-qx{font-size:11.5px;letter-spacing:0;color:var(--accent);font-weight:600}
+.cmp-q .qt{font-family:var(--f-min);font-size:21px;font-weight:700;margin:4px 0 12px}
+.qopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.qopt{display:flex;gap:10px;align-items:center;padding:11px 13px;border-radius:14px;background:var(--sel);border:1.5px solid transparent;text-align:left;transition:all .12s}
+.qopt:hover{background:var(--pop);border-color:var(--accent);box-shadow:0 8px 18px -12px color-mix(in srgb,var(--accent) 70%,transparent)}
+.qopt b{display:block;font-size:13.5px}.qopt small{display:block;font-size:11px;color:var(--ink3);margin-top:1px}
+.qsteps{display:flex;gap:5px;margin-top:12px}.qsteps i{flex:1;height:3px;border-radius:3px;background:var(--sel)}.qsteps i.on{background:#B4561A}
+.tsq{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--gc,var(--c));color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)}
+.tsq svg.i{width:15px;height:15px;stroke-width:2.1;color:#fff}
+.cmp-th{width:100%;max-width:1000px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--ink3);margin:18px 0 12px;padding:0 8px;box-sizing:border-box;min-height:32px}
+.cmp-qb{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:99px;background:var(--pop);color:#B4561A;font-weight:700;font-size:12.5px;box-shadow:0 4px 12px -6px rgba(180,86,26,.5);border:1px solid rgba(180,86,26,.25)}
+.cmp-qb:hover{background:#B4561A;color:#fff}
+.cmp-trays{width:100%;max-width:1000px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.ctray{position:relative;height:178px;text-align:left;transition:transform .22s cubic-bezier(.2,.9,.3,1.3),opacity .2s,filter .2s}
+.ctray .tback{position:absolute;left:8px;right:8px;top:0;height:104px;border-radius:14px 14px 0 0;background:linear-gradient(180deg,color-mix(in srgb,var(--pop) 75%,transparent),color-mix(in srgb,var(--pop) 25%,transparent));box-shadow:inset 0 2px 0 color-mix(in srgb,var(--pop) 90%,transparent)}
+.ctray .tfront{position:absolute;left:0;right:0;top:50px;bottom:0;border-radius:16px;background:var(--pop);box-shadow:0 18px 26px -18px rgba(60,40,10,.55),inset 0 -3px 0 rgba(0,0,0,.05);padding:14px 14px 12px;display:flex;flex-direction:column;gap:4px;border-top:5px solid var(--c);box-sizing:border-box;transition:box-shadow .2s}
+.ctray .tfront b{font-size:14.5px;padding-right:32px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctray .ts{font-size:11px;color:var(--ink3);line-height:1.5;padding-right:4px}
+.ctray .tc{margin-top:auto;font-size:10.5px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.ctray .tsq{position:absolute;right:12px;top:12px}
+.ctray.two .tfront{background:#3BAE77;color:#fff;border-top-color:#2F8A5F}.ctray.two .ts{color:rgba(255,255,255,.88)}
+.ctray.two .tsq{background:rgba(255,255,255,.25)}
+.ctray:hover,.ctray.on{transform:translateY(-10px)}
+.ctray:hover .tfront,.ctray.on .tfront,.ctray.open .tfront{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 45%,transparent),0 26px 34px -18px rgba(60,40,10,.6)}
+.ctray.dim{opacity:.32;filter:saturate(.4)}
+.ctray.hint .tfront{box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 40%,transparent),0 18px 26px -18px rgba(60,40,10,.55)}
+.cmp-foot{margin-top:22px;font-size:12px;color:var(--ink3)}
+.cmp-foot button{color:var(--accent);font-weight:600}
+.cmp-pop{min-width:200px;z-index:980}
+.cmp-pop .cp-row{display:flex;gap:6px;flex-wrap:wrap;padding:2px 8px 8px}
+.cmp-pop .chip input[type=time]{border:0;background:none;outline:none;font-size:12px;color:inherit;width:78px}
+.cmp-pop .cp-go{display:flex;justify-content:flex-end;padding:6px 8px 4px}
+.cmp-pop .cp-who{margin:4px 8px 4px;width:calc(100% - 16px);box-sizing:border-box}
+.hanko{position:absolute;right:26px;bottom:26px;width:96px;height:96px;box-sizing:border-box;border-radius:50%;border:3px solid var(--sc);color:var(--sc);display:flex;flex-direction:column;align-items:center;justify-content:center;font-style:normal;font-family:var(--f-ui);font-weight:800;font-size:15px;letter-spacing:.06em;line-height:1.2;box-shadow:inset 0 0 0 5px transparent,inset 0 0 0 6.5px color-mix(in srgb,var(--sc) 45%,transparent);opacity:.88;transform:rotate(-14deg);pointer-events:none;mix-blend-mode:multiply;z-index:3}
+.hanko small{font-size:8.5px;letter-spacing:.22em;font-weight:700;opacity:.85}
+.hanko em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:0;margin-top:2px;max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmp-hanko{animation:hankoIn .38s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes hankoIn{0%{transform:scale(2.2) rotate(-34deg);opacity:0}60%{opacity:.95}100%{transform:scale(1) rotate(-14deg);opacity:.88}}
+.cmp-note.stamped{animation:thud .38s ease-out}
+@keyframes thud{40%{transform:rotate(-1.4deg) scale(.975)}}
+.cmp-fly{pointer-events:none}
+.stk .stk-hanko{right:12px;bottom:34px;width:60px;height:60px;border-width:2px;font-size:10px;animation:hankoFade 3.4s ease-in forwards}
+.stk .stk-hanko small{font-size:6.5px}.stk .stk-hanko em{font-size:8px;max-width:50px}
+@keyframes hankoFade{0%,70%{opacity:.88}100%{opacity:0}}
+.cmp-land{animation:land .9s ease-out}
+@keyframes land{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);transform:scale(1.04)}100%{box-shadow:0 0 0 14px transparent;transform:none}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hanko{mix-blend-mode:normal}}
+:root[data-theme="dark"] .hanko{mix-blend-mode:normal}
+@media (max-width:760px){
+  .cmp{padding:calc(22px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px))}
+  .cmp-h{margin-bottom:30px}.cmp-h h2{font-size:19px}.cmp-h p{display:none}
+  .cmp-stage{grid-template-columns:1fr;gap:10px;justify-items:center}
+  .cmp-note{grid-column:1;width:min(310px,84vw);min-height:200px;padding:22px 20px 14px}
+  .cmp-title{font-size:20px}
+  .cmp-subs{grid-column:1;flex-direction:row;flex-wrap:wrap;justify-content:center;padding-top:2px}
+  .cmp-mid{margin-top:16px;min-height:0}
+  .cmp-det{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;width:100%;padding:2px 2px 6px;scrollbar-width:none}
+  .cmp-det::-webkit-scrollbar{display:none}
+  .cmp-th{margin:14px 0 8px}
+  .cmp-trays{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  .ctray{height:92px}.ctray .tback{display:none}.ctray .tfront{top:0;padding:11px 10px 9px}.ctray .ts,.ctray .tc{display:none}
+  .ctray .tfront b{font-size:12.5px;padding-right:0;margin-top:auto}.ctray .tsq{position:static;width:26px;height:26px}
+  .ctray:hover,.ctray.on{transform:translateY(-4px)}
+  .hanko{width:80px;height:80px;font-size:13px;right:18px;bottom:18px}
+}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 @media (max-width:760px){
   .app{grid-template-columns:1fr}
@@ -1428,7 +1531,7 @@ function renderBar(){
    <button class="fbtn ${F.time?'on':''}" id="fTime" aria-haspopup="true" title="所要時間で絞り込み">${ic('clock')}<span>${F.time?TIMEF.find(x=>x.id===F.time).l:'時間'}</span></button></div>`}
    <span class="spacer"></span>
    <button class="iconbtn" id="searchBtn" title="検索 (/)" aria-label="検索">${ic('search')}</button>
-   <button class="iconbtn" id="capBtn" title="すばやく書き出す (${MODK}K)" aria-label="すばやく書き出す">${ic('plus')}</button>
+   <button class="iconbtn" id="capBtn" title="新しい付箋（すばやく書き出すのは ${MODK}K）" aria-label="新しい付箋">${ic('plus')}</button>
    <button class="iconbtn inboxbtn ${sec==='inbox'&&!F.area?'on':''}" id="inboxBtn" data-drop="inbox" title="Inbox (1)" aria-label="Inbox">${ic('inbox')}${(n=>n?`<span class="ibadge">${n}</span>`:'')(S.tasks.filter(t=>t.status==='inbox').length)}</button>
    ${noBoard?'':isList()?`<button class="iconbtn ${lsortOf()!==natSort()?'on':''}" id="arrBtn" title="並び順" aria-label="並び順">${ic('sort')}</button>`:''}${!isList()&&!noBoard?`<button class="iconbtn" id="arrBtn" title="自動で並べる" aria-label="自動で並べる">${ic('arrange')}</button><div class="seg size-seg" role="group" aria-label="付箋の大きさ">${SIZES.map(x=>`<button data-size="${x.z}" class="${x.z===S.ui.zoom?'on':''}">${x.l}</button>`).join('')}</div>`:''}
    <button class="iconbtn" id="setBtn" title="表示設定" aria-label="表示設定">${ic('palette')}</button>
@@ -1439,7 +1542,7 @@ function renderBar(){
   $('#tlBtn').onclick=toggleTL;
   $('#inboxBtn').onclick=()=>{const inIb=S.ui.section==='inbox'&&!F.area;if(inIb&&S.ui.prevNav){const p=S.ui.prevNav;S.ui.section=p.section;S.ui.proj=p.proj;F.area=p.area&&area(p.area)?p.area:null;S.ui.prevNav=null}else if(!inIb){S.ui.prevNav={section:S.ui.section,proj:S.ui.proj,area:F.area};S.ui.section='inbox';F.area=null}save();render()};
   $('#guideBtn').onclick=openGuide;
-  $('#searchBtn').onclick=openSearch;$('#capBtn').onclick=openCapture;
+  $('#searchBtn').onclick=openSearch;$('#capBtn').onclick=()=>openComposer();
   const ab=$('#arrBtn');if(ab)ab.onclick=e=>{e.stopPropagation();openArrangePop(ab)};
   $('#setBtn').onclick=e=>{e.stopPropagation();openSettings($('#setBtn'))};
   const ea=$('#editArea');if(ea)ea.onclick=()=>openAreaEditor(area(F.area));
@@ -1478,7 +1581,7 @@ function stickyInner(t){
 let justAdded=null;
 function stickyHTML(t){
   const info=t.status==='calendar'&&t.info;
-  return `<div class="stk ${info?'infonote ':''}${colorOf(t)} ${justAdded===t.id?'new':''}" data-id="${t.id}" style="left:${t.x}px;top:${t.y}px;min-height:${stkH(t)}px;--r:${rot(t.id)}deg">${stickyInner(t)}</div>`;
+  return `<div class="stk ${info?'infonote ':''}${colorOf(t)} ${justAdded===t.id?'new':''}" data-id="${t.id}" style="left:${t.x}px;top:${t.y}px;min-height:${stkH(t)}px;--r:${rot(t.id)}deg">${stickyInner(t)}${justStamped&&justStamped.id===t.id?hankoHTML(justStamped.k,justStamped.em,'stk-hanko'):''}</div>`;
 }
 
 /* ---------- zone boards (area / today), stacked vertically ---------- */
@@ -2698,6 +2801,176 @@ function renderReview(el){
   const bk=$('#rvBackup',el);if(bk)bk.onclick=()=>{exportData();render()};
 }
 
+/* ---------- composer (＋ button) ---------- */
+const HANKO={next:['NEXT','次にやる','#3A6BD6'],calendar:['CALENDAR','予定','#E5534B'],waiting:['WAITING','待ち','#8C7AE6'],someday:['SOMEDAY','いつか','#2FA38A'],tickler:['TICKLER','保留','#C98A1B'],two:['DONE','完了','#2F9A68'],inbox:['INBOX','あとで','#8A877F']};
+const hankoHTML=(k,em,cls='')=>{const h=HANKO[k];return `<i class="hanko ${cls}" style="--sc:${h[2]}"><small>${h[0]}</small>${h[1]}${em?`<em>${esc(em)}</em>`:''}</i>`};
+let justStamped=null;
+const TRAYS=[['two','2分でやる','いまやって完了に','log','#3BAE77'],['next','Next Action','次にやる行動','next','#4A86E8'],['calendar','Calendar','その日・その時間だけ','calendar','#E5534B'],['waiting','Waiting','誰かを待っている','waiting','#8C7AE6'],['someday','Someday','いつかやりたい','someday','#2FA38A'],['tickler','Tickler','その日まで隠す','tickler','#C98A1B']];
+const trayCount=k=>k==='two'?0:k==='tickler'?S.tasks.filter(tickled).length:S.tasks.filter(t=>t.status===k&&!isProj(t)&&(k==='calendar'||!tickled(t))).length;
+function miniPop(anchor,html,bind){
+  closePop();const el=document.createElement('div');el.className='fpop cmp-pop';el.innerHTML=html;document.body.appendChild(el);POP={el,btn:anchor,kind:'mini'};anchor.classList.add('open');
+  const r=anchor.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight;
+  let x=r.left+r.width/2-w/2,y=r.bottom+8;if(y+h>innerHeight-12)y=r.top-8-h;
+  el.style.left=Math.max(12,Math.min(x,innerWidth-w-12))+'px';el.style.top=Math.max(12,y)+'px';
+  bind(el,closePop);
+  document.addEventListener('pointerdown',popOutside,true);document.addEventListener('keydown',popKey,true);
+}
+function datePop(anchor,{title,cur,today=true,none=false,min},onPick){
+  const nm=()=>{const d=new Date();return dayKey(new Date(d.getFullYear(),d.getMonth()+1,1))};
+  const opts=[...(today?[['今日',todayKey()]]:[]),['明日',addDays(1)],['来週の月曜',nextDow(1)],['来月1日',nm()]];
+  miniPop(anchor,`<div class="fp-h">${title}</div>${opts.map(([l,v])=>`<button class="fp-item ${cur===v?'on':''}" data-v="${v}"><span>${l}</span><em class="fp-sub">${dueLabel(v).l}</em></button>`).join('')}
+   <label class="fp-item fp-date">${ic('cal')}<span>日付を選ぶ</span><input type="date" min="${min||(today?todayKey():addDays(1))}" value="${cur||''}"></label>${none?`<div class="fp-sep"></div><button class="fp-item" data-v=""><span>なし</span></button>`:''}`,(el,close)=>{
+    $$('button.fp-item',el).forEach(b=>b.onclick=()=>{close();onPick(b.dataset.v||null)});
+    const di=$('input',el);di.onchange=()=>{if(di.value){close();onPick(di.value)}};
+    $('.fp-date',el).onclick=e=>{if(e.target===di)return;try{di.showPicker()}catch(_){di.classList.add('show');di.focus()}}});
+}
+let CMP=null;
+function openComposer(pre){
+  if($('#cmp'))return;if(DR)commitDraft();closePop();closeSettings();closeSide();
+  const P=projMode()?taskById(S.ui.proj):null;
+  const d=pre||{title:'',note:'',area:F.area||(P?P.area:null),minutes:30,minSet:false,tags:[],energy:'normal',due:null,project:P?P.id:null,rep:null};
+  if(!pre)addAreaPlaces(d);
+  const el=document.createElement('div');el.className='cmp';el.id='cmp';el.setAttribute('role','dialog');el.setAttribute('aria-label','新しい付箋');
+  el.innerHTML=`<button class="cmp-x" aria-label="閉じる">${ic('x')}</button>
+   <div class="cmp-h"><h2>何が気になっていますか？</h2><p>書いたら、下のトレイへ置きます</p></div>
+   <div class="cmp-stage"><div></div>
+    <div class="cmp-note"><div class="cmp-tabs"></div><div class="cmp-nl"><span class="cmp-al"></span><span class="cmp-mn"></span></div>
+     <textarea class="cmp-title" rows="1" maxlength="120" placeholder="何をする？"></textarea>
+     <textarea class="cmp-memo" rows="1" placeholder="メモ"></textarea>
+     <div class="cmp-seals"></div></div>
+    <div class="cmp-subs"></div></div>
+   <div class="cmp-mid"></div>
+   <div class="cmp-th"><span class="cmp-thl">置き場所</span><button class="cmp-qb">✦ 迷ったら、問いに答えて決める</button></div>
+   <div class="cmp-trays">${TRAYS.map(([k,l,s,i,c])=>`<button class="ctray ${k==='two'?'two':''}" data-tray="${k}" style="--c:${c}"><span class="tback"></span><span class="tfront"><span class="tsq">${ic(i)}</span><b>${l}</b><span class="ts">${s}</span><span class="tc"></span></span></button>`).join('')}</div>
+   <div class="cmp-foot">迷ったら <button class="cmp-ib">Inbox に入れておく</button>（あとで仕分け）</div>`;
+  document.body.appendChild(el);
+  const note=$('.cmp-note',el),ti=$('.cmp-title',el),me=$('.cmp-memo',el);ti.value=d.title||'';me.value=d.note||'';
+  CMP={el,d,q:null,busy:false};
+  const grow=x=>{x.style.height='auto';x.style.height=x.scrollHeight+'px'};
+  ti.oninput=()=>{d.title=ti.value;grow(ti)};me.oninput=()=>{d.note=me.value;grow(me)};
+  ti.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();me.focus()}};
+  const shake=x=>x.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-3px)'},{transform:'none'}],{duration:300});
+  const draw=()=>{
+    const a=area(d.area),R=rootOf(a);
+    note.className='cmp-note c-'+(a?areaColor(a):'paper');
+    $('.cmp-tabs',el).innerHTML=tops().map(t=>`<button class="cmp-tab c-${t.color} ${R===t?'on':''}" data-a="${t.id}" title="${esc(t.name)}">${esc(t.name)}</button>`).join('');
+    $$('.cmp-tab',el).forEach(b=>b.onclick=()=>{const v=b.dataset.a;const was=d.area;d.area=R&&R.id===v&&d.area===v?null:v;if(d.area!==was&&d.area)addAreaPlaces(d);draw()});
+    $('.cmp-al',el).textContent=a?areaLabel(a):'エリアなし';$('.cmp-mn',el).textContent=d.minSet||d.minutes!==30?fmtShort(d.minutes):'';
+    const ks=R?kids(R.id):[];
+    $('.cmp-subs',el).innerHTML=ks.length?[...ks.map(k=>`<button data-s="${k.id}" class="${d.area===k.id?'on':''}">${esc(k.name)}</button>`),`<button data-s="${R.id}" class="${d.area===R.id?'on':''}">サブエリアなし</button>`].join(''):'';
+    $$('.cmp-subs button',el).forEach(b=>b.onclick=()=>{d.area=b.dataset.s;addAreaPlaces(d);draw()});
+    const Pj=d.project&&taskById(d.project);
+    const seals=[d.due?`⚑ ${dlLabel(d.due).l}`:'',d.rep?'↻ '+repLabel(d.rep):'',...d.tags.map(tagName),d.energy&&d.energy!=='normal'?ENERGY.find(x=>x.id===d.energy).l:'',Pj?'📎 '+Pj.title:''].filter(Boolean);
+    $('.cmp-seals',el).innerHTML=seals.map(s=>`<span>${esc(s)}</span>`).join('');
+    drawMid();drawTrays();
+  };
+  const dc=(k,icon,lab,set)=>`<button class="dc ${set?'set':''}" data-dc="${k}">${ic(icon)}<span>${esc(lab)}</span></button>`;
+  const drawMid=()=>{
+    const mid=$('.cmp-mid',el),Pj=d.project&&taskById(d.project);
+    $('.cmp-qb',el).hidden=CMP.q!=null;$('.cmp-thl',el).textContent=CMP.q!=null?'答えに合うトレイが浮かび上がります':'置き場所';
+    if(CMP.q==null){
+      mid.innerHTML=`<div class="cmp-det">${dc('min','clock',d.minSet||d.minutes!==30?fmtMin(d.minutes):'時間',d.minSet||d.minutes!==30)}${dc('due','flag',d.due?dlLabel(d.due).l:'締切',!!d.due)}${dc('tag','pin',d.tags.length?d.tags.map(tagName).join('・'):'場所',d.tags.length)}${dc('en','bolt',d.energy&&d.energy!=='normal'?ENERGY.find(x=>x.id===d.energy).l:'集中度',d.energy&&d.energy!=='normal')}${dc('proj','clip',Pj?Pj.title:'プロジェクト',!!Pj)}${dc('rep','repeat',d.rep?repLabel(d.rep):'繰り返し',!!d.rep)}</div>`;
+      $$('[data-dc]',mid).forEach(b=>b.onclick=e=>{e.stopPropagation();detail(b.dataset.dc,b)});return}
+    const Q={0:{t:'行動が必要ですか？',o:[['yes','はい','やることがある','next'],['no','いいえ','情報・いつか','someday']]},
+      1:{t:'2分で終わりますか？',o:[['two','はい、いまやる','済ませて完了ログへ','log'],['later','いいえ、あとで','置き場所を選ぶ','next']]},
+      2:{t:'いつ・誰が？',o:[['next','次にやる','Next Action','next'],['calendar','日時が決まっている','Calendar','calendar'],['waiting','人の返事を待つ','Waiting','waiting'],['tickler','その日まで見なくていい','Tickler','tickler']]},
+      no:{t:'行動がいらないなら',o:[['someday','いつかやりたい','Someday','someday'],['calinfo','その日に知っておきたい','Calendar（情報）','calendar'],['drop','もう要らない','書かずに閉じる','x']]}}[CMP.q];
+    const n=CMP.q==='no'?2:CMP.q+1;
+    mid.innerHTML=`<div class="cmp-q"><div class="kick">問い ${n} / 3<button class="cmp-qx">問いをやめる</button></div><div class="qt">${Q.t}</div>
+      <div class="qopts">${Q.o.map(([v,l,s,i])=>`<button class="qopt" data-q="${v}"><span class="tsq" style="--gc:${{log:'#3BAE77',next:'#4A86E8',someday:'#2FA38A',calendar:'#E5534B',waiting:'#8C7AE6',tickler:'#C98A1B',x:'#8A877F'}[i]}">${ic(i)}</span><span><b>${l}</b><small>${s}</small></span></button>`).join('')}</div>
+      <div class="qsteps">${[0,1,2].map(i=>`<i class="${i<n?'on':''}"></i>`).join('')}</div></div>`;
+    $('.cmp-qx',mid).onclick=()=>{CMP.q=null;draw()};
+    $$('[data-q]',mid).forEach(b=>b.onclick=()=>{const v=b.dataset.q;
+      if(v==='yes'){CMP.q=1;draw()}else if(v==='no'){CMP.q='no';draw()}else if(v==='later'){CMP.q=2;draw()}
+      else if(v==='drop'){close(true)}else if(v==='calinfo')trayPick('calendar',{info:true});else trayPick(v)});
+  };
+  const HINT={0:null,1:['two','next','calendar','waiting','tickler'],2:['next','calendar','waiting','tickler'],no:['someday','calendar']};
+  const drawTrays=()=>{const h=CMP.q!=null?HINT[CMP.q]:null;
+    $$('.ctray',el).forEach(b=>{const k=b.dataset.tray;b.classList.toggle('dim',!!h&&!h.includes(k));b.classList.toggle('hint',!!h&&h.includes(k));const c=trayCount(k);$('.tc',b).textContent=c?c+'枚':''})};
+  const detail=(k,b)=>{
+    if(k==='min')miniPop(b,`<div class="fp-h">所要時間</div>${MINS.map(m=>`<button class="fp-item ${d.minutes===m?'on':''}" data-v="${m}"><span>${fmtMin(m)}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,(p,c)=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{d.minutes=+x.dataset.v;d.minSet=true;c();draw()}));
+    else if(k==='due')datePop(b,{title:'締切は？',cur:d.due,none:!!d.due},v=>{d.due=v;draw()});
+    else if(k==='tag')miniPop(b,`<div class="fp-h">場所・道具<span>複数選べます</span></div>${TAGS.map(g=>`<button class="fp-item ${d.tags.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,p=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{const v=x.dataset.v;d.tags=d.tags.includes(v)?d.tags.filter(y=>y!==v):[...d.tags,v];x.classList.toggle('on');draw()}));
+    else if(k==='en')miniPop(b,`<div class="fp-h">集中度</div>${ENERGY.map(x=>`<button class="fp-item ${d.energy===x.id?'on':''}" data-v="${x.id}"><span class="en-dot en-${x.id}"></span><span>${x.l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,(p,c)=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{d.energy=x.dataset.v;c();draw()}));
+    else if(k==='proj')openProjPop(b,d,v=>{d.project=v;const Pj=v&&taskById(v);if(Pj&&Pj.area&&d.area!==Pj.area){d.area=Pj.area;addAreaPlaces(d)}draw()});
+    else if(k==='rep'){const w=new Date().getDay(),dm=new Date().getDate();const R=[['','なし'],['daily','毎日'],['weekdays','平日'],['weekly','毎週'+DOW[w]+'曜'],['monthly','毎月'+dm+'日']];
+      miniPop(b,`<div class="fp-h">繰り返し</div>${R.map(([v,l])=>`<button class="fp-item ${(d.rep?d.rep.type:'')===v?'on':''}" data-v="${v}"><span>${l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,(p,c)=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{const v=x.dataset.v;d.rep=v?{type:v,dows:[w],dom:dm,anchor:weekIdx(todayKey()),lead:0}:null;c();draw()}))}
+  };
+  const trayEl=k=>$(`.ctray[data-tray="${k}"]`,el);
+  const ok=k=>{d.title=ti.value.trim();if(!d.title){shake(note);ti.focus();toast('まず、何をするかを書いてください');return false}
+    if(k!=='inbox'&&!area(d.area)&&S.areas.length){shake($('.cmp-tabs',el));toast('付箋の上のインデックスで、エリアを選んでください');return false}return true};
+  const trayPick=(k,o={})=>{if(CMP.busy||!ok(k))return;const tb=trayEl(k);
+    if(k==='calendar'){let cd=todayKey(),ct=null,info=!!o.info;
+      const body=()=>`<div class="fp-h">いつの予定ですか？</div><div class="cp-row">${[['今日',todayKey()],['明日',addDays(1)]].map(([l,v])=>`<button class="chip ${cd===v?'on':''}" data-d="${v}">${l}</button>`).join('')}<label class="chip datechip ${cd!==todayKey()&&cd!==addDays(1)?'on':''}">${ic('cal')}<b>${cd!==todayKey()&&cd!==addDays(1)?dueLabel(cd).l:'日付'}</b><input type="date" min="${todayKey()}" value="${cd}"></label></div>
+        <div class="fp-h">時刻</div><div class="cp-row"><button class="chip ${ct==null?'on':''}" data-t="">なし</button><label class="chip ${ct!=null?'on':''}">${ic('clock')}<input type="time" step="600" value="${ct!=null?clock(ct):''}" class="cp-time"></label></div>
+        <div class="fp-h">種類</div><div class="cp-row"><button class="chip ${!info?'on':''}" data-k="">行動</button><button class="chip ${info?'on':''}" data-k="1">情報</button></div>
+        <div class="cp-go"><button class="btn primary">この日に置く</button></div>`;
+      const bind=(p,c)=>{const re=()=>{p.innerHTML=body();bind(p,c)};
+        $$('[data-d]',p).forEach(x=>x.onclick=()=>{cd=x.dataset.d;re()});const di=$('input[type=date]',p);di.onchange=()=>{if(di.value){cd=di.value;re()}};$('.datechip',p).onclick=e=>{if(e.target===di)return;e.preventDefault();try{di.showPicker()}catch(_){}};
+        $$('[data-t]',p).forEach(x=>x.onclick=()=>{ct=null;re()});const tm=$('.cp-time',p);tm.onchange=()=>{if(tm.value){const [h,m]=tm.value.split(':').map(Number);ct=h*60+m}else ct=null;re()};
+        $$('[data-k]',p).forEach(x=>x.onclick=()=>{info=!!x.dataset.k;re()});
+        $('.cp-go .btn',p).onclick=()=>{c();place('calendar',{date:cd,time:ct,info})}};
+      miniPop(tb,body(),bind);return}
+    if(k==='waiting'){miniPop(tb,`<div class="fp-h">誰を待っていますか？</div><input class="wait-in cp-who" placeholder="佐藤さん" maxlength="30"><div class="cp-go"><button class="btn primary">Waiting に置く</button></div>`,(p,c)=>{const w=$('.cp-who',p);setTimeout(()=>w.focus(),30);const go=()=>{c();place('waiting',{who:w.value.trim()})};w.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();go()}};$('.btn',p).onclick=go});return}
+    if(k==='tickler'){datePop(tb,{title:'いつ Next Action に戻す？',today:false},v=>{if(v)place('tickler',{date:v})});return}
+    place(k,o)};
+  const place=(k,x={})=>{if(!ok(k))return;CMP.busy=true;
+    const t={id:uid(),status:'next',title:d.title,note:me.value.trim(),area:area(d.area)?d.area:null,minutes:d.minutes,tags:[...d.tags],energy:d.energy,due:d.due||null,x:0,y:0,waitingFor:'',sched:null,created:Date.now(),doneAt:null};
+    if(d.project&&taskById(d.project))t.project=d.project;if(d.rep)t.rep=JSON.parse(JSON.stringify(d.rep));
+    let em='';
+    if(k==='inbox'){t.status='inbox';if(!d.minSet&&d.minutes===30)t.minutes=null}
+    else if(k==='next'||k==='someday')t.status=k;
+    else if(k==='waiting'){t.status='waiting';t.waitingFor=x.who||'';em=x.who||''}
+    else if(k==='tickler'){t.start=x.date;em=(d=>(d.getMonth()+1)+'/'+d.getDate())(new Date(x.date+'T00:00'))}
+    else if(k==='calendar'){t.status='calendar';t.cdate=x.date;t.ctime=x.time;if(x.info)t.info=true;t.due=null;delete t.rep;em=(d=>(d.getMonth()+1)+'/'+d.getDate())(new Date(x.date+'T00:00'))+(x.time!=null?' '+clock(x.time):'')}
+    else if(k==='two'){t.status='done';t.prevStatus='next';t.doneAt=Date.now();if(!d.minSet)t.minutes=2}
+    if(t.rep&&!t.due)t.due=nextOcc(t.rep,todayKey(),true);
+    if(t.status!=='inbox'&&t.minutes==null)t.minutes=30;
+    const sp=findSpot(t.status==='done'?'next':t.status,true);t.x=sp.x;t.y=sp.y;
+    note.insertAdjacentHTML('beforeend',hankoHTML(k,em,'cmp-hanko'));note.classList.add('stamped');
+    const tb=trayEl(k);if(tb)tb.classList.add('on');
+    setTimeout(()=>fly(t,k,em),720)};
+  const fly=(t,k,em)=>{
+    const tgtSel=k==='inbox'?['#inboxBtn','[data-tab="inbox"]']:k==='two'?['#side [data-sec="log"]','[data-tab="today"]']:[`#side [data-sec="${k}"]`,`[data-tab="${k}"]`,'[data-tab="more"]'];
+    const tg=tgtSel.map(s=>$(s)).find(e=>e&&e.getBoundingClientRect().width>0&&getComputedStyle(e).visibility!=='hidden');
+    const r=note.getBoundingClientRect();let tx=innerWidth/2,ty=innerHeight+80;if(tg){const q=tg.getBoundingClientRect();tx=q.left+q.width/2;ty=q.top+q.height/2}
+    const gh=note.cloneNode(true);gh.classList.add('cmp-fly');gh.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:1200`;
+    $$('textarea',gh).forEach((x,i)=>x.value=[ti.value,me.value][i]||'');document.body.appendChild(gh);
+    el.classList.add('out');
+    requestAnimationFrame(()=>{gh.style.transition='transform .6s cubic-bezier(.55,.05,.4,1),opacity .6s ease-in';gh.style.transform=`translate(${tx-r.left-r.width/2}px,${ty-r.top-r.height/2}px) scale(.12) rotate(-18deg)`;gh.style.opacity='.2'});
+    setTimeout(()=>{gh.remove();commit(t,k,em,tg)},600)};
+  const commit=(t,k,em,tg)=>{
+    S.tasks.push(t);if(S.sample===undefined)S.sample=false;justAdded=t.id;justStamped={id:t.id,k,em};setTimeout(()=>{if(justStamped&&justStamped.id===t.id)justStamped=null},3500);
+    save();teardown();render();
+    const sel=tg&&(tg.id?'#'+tg.id:tg.dataset.sec?`#side [data-sec="${tg.dataset.sec}"]`:tg.dataset.tab?`[data-tab="${tg.dataset.tab}"]`:null);const t2=sel&&$(sel);
+    if(t2){t2.classList.add('cmp-land');setTimeout(()=>t2.classList.remove('cmp-land'),900)}
+    const msg=k==='two'?'2分で完了 · 完了ログに記録しました':k==='tickler'?`${dueLabel(t.start).l} まで Tickler にしまいました`:k==='calendar'?`${calLabel(t)} の予定にしました`:`「${t.title}」を ${SECT[k].en} に貼りました`;
+    toast(msg,{label:'元に戻す',fn:()=>{S.tasks=S.tasks.filter(x=>x!==t);save();render()}})};
+  const teardown=()=>{document.removeEventListener('keydown',key,true);closePop();el.remove();CMP=null};
+  const close=drop=>{if(CMP&&CMP.busy)return;const had=ti.value.trim();const snap={...d,title:ti.value,note:me.value};teardown();
+    if(had)toast(drop?'書かずに閉じました':'書きかけの付箋を閉じました',{label:'元に戻す',fn:()=>openComposer(snap)})};
+  const key=e=>{if(POP||e.isComposing)return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
+  document.addEventListener('keydown',key,true);
+  $('.cmp-x',el).onclick=()=>close();
+  $('.cmp-qb',el).onclick=()=>{CMP.q=0;draw()};
+  $('.cmp-ib',el).onclick=()=>{if(ok('inbox'))place('inbox')};
+  $$('.ctray',el).forEach(b=>b.onclick=()=>trayPick(b.dataset.tray));
+  // drag the sticky into a tray
+  note.addEventListener('pointerdown',e=>{
+    if(e.button!==0||e.target.closest('textarea,button')||CMP.busy)return;
+    const sx=e.clientX,sy=e.clientY;let on=false,hot=null;
+    const mv=ev=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(!on&&Math.hypot(dx,dy)<6)return;
+      if(!on){on=true;note.classList.add('dragging');note.style.pointerEvents='none'}
+      note.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/40-1.4}deg) scale(.92)`;
+      const tr=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.ctray');
+      if(tr!==hot){hot&&hot.classList.remove('on');hot=tr;hot&&hot.classList.add('on')}};
+    const up=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);
+      if(!on)return;note.style.pointerEvents='';note.classList.remove('dragging');note.style.transform='';
+      if(hot){hot.classList.remove('on');trayPick(hot.dataset.tray)}};
+    window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up)});
+  draw();requestAnimationFrame(()=>{grow(ti);grow(me)});setTimeout(()=>ti.focus(),60);
+}
+
 /* ---------- capture (⌘K) ---------- */
 function openCapture(){
   if($('#capture'))return;if(DR)commitDraft();closePop();closeSettings();
@@ -2872,8 +3145,8 @@ function renderMain(){
 function render(){closePop();renderSide();renderBar();renderMain();renderTabs();if(S.ui.tl)renderTL();$('#tl').classList.toggle('open',S.ui.tl)}
 
 document.addEventListener('keydown',e=>{
-  if((MAC?e.metaKey:e.ctrlKey)&&!e.altKey&&!e.shiftKey&&e.key.toLowerCase()==='k'){e.preventDefault();if($('.scrim:not(#capture)')||$('#guide'))return;if($('#capture'))$('#capIn').focus();else openCapture();return}
-  if(e.target.closest('input,textarea,select')||$('.scrim')||$('#guide'))return;
+  if((MAC?e.metaKey:e.ctrlKey)&&!e.altKey&&!e.shiftKey&&e.key.toLowerCase()==='k'){e.preventDefault();if($('.scrim:not(#capture)')||$('#guide')||$('#cmp'))return;if($('#capture'))$('#capIn').focus();else openCapture();return}
+  if(e.target.closest('input,textarea,select')||$('.scrim')||$('#guide')||$('#cmp'))return;
   if(e.metaKey||e.ctrlKey||e.altKey)return;
   const k=e.key.toLowerCase();
   if(listKeys(e,k))return;
@@ -2889,7 +3162,7 @@ document.addEventListener('keydown',e=>{
 let wasNarrow=narrow();
 window.addEventListener('resize',()=>{if(narrow()!==wasNarrow){wasNarrow=narrow();render();return}if(S.ui.tl)renderTL()});
 
-load();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=()=>{if($('#listEl'))openAdd('__end');else openCapture()};render();
+load();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=()=>openComposer();render();
 })();
 </script>
 
