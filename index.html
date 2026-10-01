@@ -360,6 +360,12 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;-webkit-user-selec
 .apop .fp-item.sub{padding-left:28px;font-size:12.5px;color:var(--ink2)}
 .apop .fp-item.kb{background:var(--sel)}
 .apop .fp-item.on{color:var(--accent)}
+.chip.del{border-style:dashed;color:var(--ink2)}.chip.del svg.i{width:12px;height:12px}.chip.del:hover{color:var(--now);border-color:var(--now)}
+.chip.del.armed{background:var(--now);color:#fff;border-color:var(--now);border-style:solid}
+.chip.lab-add{border-style:dashed;color:var(--ink3);padding:2px 10px}.chip.lab-add svg.i{width:12px;height:12px}
+.chip.lab-add input{width:96px;text-align:left}
+.fp-none{font-size:12px;color:var(--ink3);line-height:1.7;padding:6px 9px 8px;max-width:230px}
+.row .rm .mlab{color:var(--ink2)}
 .fp-sep{border-top:1px solid var(--line);margin:4px 2px}
 .stk.is-na{box-shadow:var(--layers,0 0 0 0 transparent),0 0 0 2px color-mix(in srgb,var(--sd) 60%,transparent),0 10px 16px -10px rgba(50,35,0,.35)}
 .rep-chip{display:inline-flex!important;align-items:center;gap:3px}
@@ -1306,6 +1312,7 @@ const I={
  gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
  foldall:'<path d="M8 4.5l4 4 4-4M8 19.5l4-4 4 4"/>',
  unfoldall:'<path d="M8 8.5l4-4 4 4M8 15.5l4 4 4-4"/>',
+ tag:'<path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1 1 0 0 1 0 1.4l-7.3 7.3a1 1 0 0 1-1.4 0z"/><circle cx="8" cy="8" r="1.4"/>',
  sort:'<path d="M4 7h11M4 12h8M4 17h5M17.5 5v14M14.5 16l3 3 3-3"/>'
 };
 const ic=(n,cls='i')=>`<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[n]||''}</svg>`;
@@ -1314,6 +1321,7 @@ let TAGS=[];
 const DEF_PLACES=[{id:'home',name:'自宅',icon:'home'},{id:'office',name:'職場',icon:'building'},{id:'out',name:'外出先',icon:'out'},{id:'pc',name:'PC',icon:'pc'},{id:'contact',name:'電話・メール',icon:'contact'}];
 const ENERGY=[{id:'deep',l:'深い集中',s:'集中'},{id:'normal',l:'普通',s:'普通'},{id:'light',l:'軽い',s:'軽い'}];
 const enChip=t=>t.energy&&t.energy!=='normal'?`<span class="en en-${t.energy}">${ic('bolt')}${ENERGY.find(e=>e.id===t.energy)?.s||''}</span>`:'';
+const labName=g=>((S&&S.labels)||[]).find(x=>x.id===g)?.name||'';
 const tagName=g=>TAGS.find(x=>x.id===g)?.name||'';
 const HUES=[[8,'コーラル'],[24,'ピーチ'],[38,'アプリコット'],[50,'レモン'],[80,'ライム'],[118,'グリーン'],[150,'ミント'],[172,'ティール'],[198,'アクア'],[214,'スカイ'],[232,'ペリウィンクル'],[262,'ラベンダー'],[292,'ライラック'],[330,'ローズ']];
 const PAL=[];HUES.forEach(([h,n],i)=>{PAL.push({id:'p'+i,name:n,h,l:86,s:82});PAL.push({id:'q'+i,name:n+'（濃）',h,l:76,s:70})});
@@ -1368,7 +1376,7 @@ function normalize(){
   if(!Array.isArray(S.areas))S.areas=[];
   S.ui=Object.assign({view:'board',section:'next',zoom:.85,tl:false,style:'classic',board:'rec',tilt:'mid',font:'def',cmode:'def'},S.ui||{});S.ui.zoom=SIZES.reduce((a,b)=>Math.abs(b.z-S.ui.zoom)<Math.abs(a.z-S.ui.zoom)?b:a).z;
   if(!Array.isArray(S.places)){S.places=DEF_PLACES.map(x=>({...x}));S.tasks.forEach(t=>{if(Array.isArray(t.tags)&&t.tags.includes('deep')){t.tags=t.tags.filter(x=>x!=='deep');if(!t.energy)t.energy='deep'}})}
-  TAGS=S.places;
+  TAGS=S.places;if(!Array.isArray(S.labels))S.labels=[];
   S.tasks.forEach(t=>{if(!Array.isArray(t.steps))t.steps=[]});S.areas.forEach(a=>{if(LEGACY[a.color])a.color=LEGACY[a.color]});
   if(S.v<4&&S.v>=3&&S.sample){S.v=4;const f=(re,v)=>{const k=S.tasks.find(t=>re.test(t.title)&&t.status!=='done');if(k&&!k.due)k.due=v};f(/経費精算/,addDays(-2));f(/見積もりの返信/,todayKey());f(/筋トレ/,todayKey());f(/論文/,addDays(3));f(/契約書/,todayKey())}
   if(S.v<3){S.v=3;if(S.sample&&!S.areas.some(a=>a.parent)&&area('work')){S.areas.splice(S.areas.indexOf(area('work'))+1,0,{id:'work-plan',name:'企画',color:'',parent:'work'},{id:'work-sales',name:'営業',color:'',parent:'work'});
@@ -1378,7 +1386,7 @@ function normalize(){
     t.kind='project';const st=t.steps;t.steps=[];t.minutes=null;t.tags=[];t.sched=null;
     st.forEach((x,i)=>S.tasks.push({id:x.id||uid(),status:x.done||t.status==='done'?'done':'next',title:x.title,note:'',area:t.area,minutes:x.minutes,tags:x.tags||[],x:0,y:0,px:30+(i%3)*196,py:30+Math.floor(i/3)*186,waitingFor:'',sched:x.sched||null,created:Date.now(),doneAt:x.doneAt||null,project:t.id,prevStatus:'next',sample:t.sample}));
   });
-  S.tasks.forEach(t=>{delete t.steps;if(!Array.isArray(t.tags))t.tags=[];if(t.tags.includes('deep')&&!S.places.some(p=>p.id==='deep')&&!t.energy)t.energy='deep';t.tags=t.tags.filter(g=>S.places.some(p=>p.id===g))});
+  S.tasks.forEach(t=>{delete t.steps;if(!Array.isArray(t.tags))t.tags=[];if(t.tags.includes('deep')&&!S.places.some(p=>p.id==='deep')&&!t.energy)t.energy='deep';t.tags=t.tags.filter(g=>S.places.some(p=>p.id===g));t.labels=(Array.isArray(t.labels)?t.labels:[]).filter(g=>S.labels.some(l=>l.id===g))});
   if(S.sample&&!S.v6){const st=new Set([...seed().tasks.map(t=>t.title),...sampleSteps().map(x=>x.title),'企画書のドラフトを書く']);S.tasks.forEach(t=>{if(st.has(t.title))t.sample=true})}S.v6=true;
   if(!S.v5){S.v5=true;S.tasks.filter(t=>t.project&&!isProj(t)&&t.status!=='done'&&!t.x&&!t.y).forEach(t=>{const sp=findSpot(t.status);t.x=sp.x;t.y=sp.y});
     S.tasks.filter(isProj).forEach(P=>{S.tasks.filter(t=>t.project===P.id&&t.px!=null).forEach(t=>{t.apos=t.apos||{};t.apos['proj:'+P.id]={x:t.px,y:t.py+46}})});
@@ -1387,7 +1395,7 @@ function normalize(){
 }
 function rollover(){const t=todayKey();let n=0;S.tasks.forEach(k=>{if(k.sched&&k.sched.date!==t&&k.status!=='done'){k.sched=null;n++}});return n}
 let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},150)}
-const F={tags:new Set(),area:null,time:null,due:null,energy:null};
+const F={tags:new Set(),labels:new Set(),area:null,time:null,due:null,energy:null};
 const DUEF=[{id:'d0',l:'今日まで（遅れを含む）',f:n=>n<=0},{id:'d3',l:'3日以内',f:n=>n<=3},{id:'d7',l:'1週間以内',f:n=>n<=7},{id:'d14',l:'2週間以内',f:n=>n<=14},{id:'dany',l:'締切があるもの',f:n=>true}];
 const TIMEF=[{id:'le15',l:'15分以内',f:m=>m<=15},{id:'le30',l:'30分以内',f:m=>m<=30},{id:'le60',l:'60分以内',f:m=>m<=60},{id:'gt60',l:'60分以上',f:m=>m>=60}];
 const area=id=>S.areas.find(a=>a.id===id);
@@ -1453,8 +1461,8 @@ const tMin=t=>isProj(t)?pKids(t).reduce((a,x)=>a+(x.minutes||0),0):t.minutes;
 const calNow=t=>t.status==='calendar'&&!!t.cdate&&(t.cdate===todayKey()||(t.cdate<todayKey()&&!t.info));
 const tickled=t=>!!(t&&!isProj(t)&&t.start&&t.start>todayKey()&&t.status!=='done');
 const onBoard=t=>!isProj(t)&&!tickled(t)&&(projMode()||!queued(t))&&!isToday(t);
-const passes=t=>isProj(t)?(pKids(t).length?pKids(t).some(passTask):!(F.tags.size||F.time||F.due||F.energy))&&inArea(t,F.area):passTask(t);
-const passTask=t=>(!F.energy||t.energy===F.energy)&&(!F.due||(t.due&&t.status!=='calendar'&&DUEF.find(x=>x.id===F.due).f(dayDiff(t.due))))&&(!F.time||(t.minutes!=null&&TIMEF.find(x=>x.id===F.time).f(t.minutes)))&&(!F.tags.size||(t.tags||[]).some(g=>F.tags.has(g)))&&inArea(t,F.area);
+const passes=t=>isProj(t)?(pKids(t).length?pKids(t).some(passTask):!(F.tags.size||F.labels.size||F.time||F.due||F.energy))&&inArea(t,F.area):passTask(t);
+const passTask=t=>(!F.energy||t.energy===F.energy)&&(!F.due||(dd=>!!dd&&DUEF.find(x=>x.id===F.due).f(dayDiff(dd)))(t.status==='calendar'?t.cdate:t.due))&&(!F.labels.size||(t.labels||[]).some(g=>F.labels.has(g)))&&(!F.time||(t.minutes!=null&&TIMEF.find(x=>x.id===F.time).f(t.minutes)))&&(!F.tags.size||(t.tags||[]).some(g=>F.tags.has(g)))&&inArea(t,F.area);
 const uMin=u=>u.t.minutes||30;
 const entStart=u=>u.cal?u.t.ctime:u.t.sched.start;
 const uActive=u=>active(u.t);
@@ -1462,12 +1470,12 @@ const addSec=()=>{const s=S.ui.section;return s==='log'||s==='review'?'inbox':['
 
 /* ---------- parse ---------- */
 function parse(raw){
-  let s=raw,tags=[],mins=null,ar=null;
-  s=s.replace(/#(\S+)/g,(m,n)=>{const g=TAGS.find(x=>x.name===n||x.id===n);if(g){tags.push(g.id);return ''}return m});
+  let s=raw,tags=[],labels=[],mins=null,ar=null;
+  s=s.replace(/#(\S+)/g,(m,n)=>{const g=TAGS.find(x=>x.name===n||x.id===n);if(g){tags.push(g.id);return ''}const lb=(S.labels||[]).find(x=>x.name===n);if(lb){labels.push(lb.id);return ''}return m});
   s=s.replace(/(\d+(?:\.\d+)?)\s*(時間|h)(?![a-z])/i,(m,n)=>{mins=Math.round(+n*60);return ''});
   s=s.replace(/(\d+)\s*(min|分|m)(?![a-z])/i,(m,n)=>{mins=+n;return ''});
   s=s.replace(/@(\S+)/,(m,n)=>{const a=S.areas.find(x=>x.name===n);if(a){ar=a.id;return ''}return m});
-  return {title:s.trim(),tags,mins,area:ar};
+  return {title:s.trim(),tags,labels,mins,area:ar};
 }
 
 /* ---------- sidebar ---------- */
@@ -1560,10 +1568,11 @@ function renderBar(){
    ${noBoard?'':`<div class="seg" role="group" aria-label="表示">
      <button class="${isList()?'on':''}" data-view="list" title="リスト (L)">${ic('list')}<span class="lb">リスト</span></button>
      <button class="${!isList()?'on':''}" data-view="board" title="ボード (B)">${ic('board')}<span class="lb">ボード</span></button></div>
-   <div class="filters"><button class="fbtn ${F.tags.size?'on':''}" id="fTag" aria-haspopup="true" title="場所で絞り込み">${ic('pin')}<span>${F.tags.size?[...F.tags].map(tagName).join('・'):'場所'}</span></button>
+   <div class="filters"><button class="fbtn ${F.due?'on':''}" id="fDue" aria-haspopup="true" title="締切・予定日で絞り込み">${ic('flag')}<span>${F.due?DUEF.find(x=>x.id===F.due).l.replace('（遅れを含む）',''):'締切'}</span></button>
+   <button class="fbtn ${F.time?'on':''}" id="fTime" aria-haspopup="true" title="所要時間で絞り込み">${ic('clock')}<span>${F.time?TIMEF.find(x=>x.id===F.time).l:'時間'}</span></button>
+   <button class="fbtn ${F.tags.size?'on':''}" id="fTag" aria-haspopup="true" title="場所で絞り込み">${ic('pin')}<span>${F.tags.size?[...F.tags].map(tagName).join('・'):'場所'}</span></button>
    <button class="fbtn ${F.energy?'on':''}" id="fEnergy" aria-haspopup="true" title="集中度で絞り込み">${ic('bolt')}<span>${F.energy?ENERGY.find(e=>e.id===F.energy).l:'集中度'}</span></button>
-   <button class="fbtn ${F.due?'on':''}" id="fDue" aria-haspopup="true" title="締切で絞り込み">${ic('flag')}<span>${F.due?DUEF.find(x=>x.id===F.due).l.replace('（遅れを含む）',''):'締切'}</span></button>
-   <button class="fbtn ${F.time?'on':''}" id="fTime" aria-haspopup="true" title="所要時間で絞り込み">${ic('clock')}<span>${F.time?TIMEF.find(x=>x.id===F.time).l:'時間'}</span></button></div>`}
+   <button class="fbtn ${F.labels.size?'on':''}" id="fLab" aria-haspopup="true" title="タグで絞り込み">${ic('tag')}<span>${F.labels.size?[...F.labels].map(labName).join('・'):'タグ'}</span></button></div>`}
    <span class="spacer"></span>
    <button class="iconbtn" id="searchBtn" title="検索 (/)" aria-label="検索">${ic('search')}</button>
    ${!isList()&&!noBoard?'':`<button class="iconbtn" id="capBtn" title="新しい付箋（すばやく書き出すのは ${MODK}K）" aria-label="新しい付箋">${ic('plus')}</button>`}
@@ -1587,6 +1596,7 @@ function renderBar(){
   const ft=$('#fTag');if(ft)ft.onclick=e=>{e.stopPropagation();openFilterPop(ft,'tag')};
   const fe=$('#fEnergy');if(fe)fe.onclick=e=>{e.stopPropagation();openFilterPop(fe,'energy')};
   const fm=$('#fTime');if(fm)fm.onclick=e=>{e.stopPropagation();openFilterPop(fm,'time')};
+  const fl=$('#fLab');if(fl)fl.onclick=e=>{e.stopPropagation();openFilterPop(fl,'label')};
   const fd=$('#fDue');if(fd)fd.onclick=e=>{e.stopPropagation();openFilterPop(fd,'due')};
 }
 function renderBarCount(){const sp=$('#bar h1 .cnt');if(!sp||['log','projects','review'].includes(S.ui.section))return;const L=$('#listEl');const n=L?$$('.row[data-id]',L).filter(r=>!r.hidden).length:S.tasks.filter(t=>visibleOnBoard(t)&&passes(t)).length;sp.textContent=n+(L?'件':'枚')}
@@ -1609,7 +1619,7 @@ function stickyInner(t){
    <div class="stk-title"><span>${esc(t.title)}</span></div>
    ${t.note?`<div class="stk-note">${esc(t.note)}</div>`:''}
    ${t.status==='waiting'&&t.waitingFor?`<div class="stk-wait">${ic('user')}${esc(t.waitingFor)}</div>`:''}
-   <div class="stk-foot"><div class="stk-tags">${repChip(t)}</div><button class="chk" aria-label="完了">${ic('log')}</button></div>
+   <div class="stk-foot"><div class="stk-tags">${repChip(t)}${(t.labels||[]).map(l=>labName(l)?`<span>#${esc(labName(l))}</span>`:'').join('')}</div><button class="chk" aria-label="完了">${ic('log')}</button></div>
    <div class="g-time"></div>`;
 }
 let justAdded=null;
@@ -1755,7 +1765,7 @@ function setZoom(z){
 /* ---------- list ---------- */
 const narrow=()=>matchMedia('(max-width:760px)').matches;
 const isList=()=>narrow()||S.ui.view==='list';
-const filterOn=()=>!!(F.tags.size||F.time||F.due||F.energy);
+const filterOn=()=>!!(F.tags.size||F.labels.size||F.time||F.due||F.energy);
 const LSORT=[{id:'manual',l:'手動（ドラッグで並べ替え）'},{id:'area',l:'エリアごと'},{id:'due',l:'締切が近い順'},{id:'min',l:'所要時間が短い順'}];
 const listKey=()=>'L:'+(zoneMode()?viewKey():S.ui.section);
 const natSort=()=>calMode()?'cal':tickMode()?'tk':'manual';
@@ -1795,6 +1805,7 @@ function rowMeta(t){
   if(t.due&&t.status!=='calendar'){const x=dlLabel(t.due);out.push(`<span class="md ${x.c.replace('dl-','md-')}">${ic('flag')}${x.l}</span>`)}
   if(t.status==='waiting'){const n=-dayDiff(dayKey(new Date(t.created||Date.now())));out.push(`<span class="mw">${ic('user')}${esc(t.waitingFor||'相手は未設定')}${n>0?` · ${n}日`:''}</span>`)}
   if(t.rep)out.push(`<span class="mr">${ic('repeat')}${repLabel(t.rep)}</span>`);
+  (t.labels||[]).forEach(l=>{const n=labName(l);if(n)out.push(`<span class="mlab">#${esc(n)}</span>`)});
   return out.join('');
 }
 const areaGrouped=()=>!zoneMode()&&S.ui.section!=='inbox'&&lsortOf()==='area';
@@ -1849,7 +1860,7 @@ function renderList(el){
 function openAdd(gid){if(gid!=='__end'&&!LG.find(g=>g.id===gid))return;LADD=gid;LSEL=null;renderMain()}
 function addFromRow(G,raw){
   const p=parse(raw);if(!p.title||!G)return null;const b=G.base();
-  const t={id:uid(),status:b.status,title:p.title,note:'',area:p.area||b.area||null,minutes:p.mins??(b.status==='inbox'?null:30),tags:p.tags,energy:'normal',x:0,y:0,waitingFor:'',sched:null,created:Date.now(),doneAt:null};
+  const t={id:uid(),status:b.status,title:p.title,note:'',area:p.area||b.area||null,minutes:p.mins??(b.status==='inbox'?null:30),tags:p.tags,labels:p.labels,energy:'normal',x:0,y:0,waitingFor:'',sched:null,created:Date.now(),doneAt:null};
   if(b.project)t.project=b.project;
   if(G.zone)G.drop(t);
   if(t.status!=='inbox'&&t.minutes==null)t.minutes=30;
@@ -2269,6 +2280,7 @@ function openEditor(t,pos,msg,opts={}){
   const isNew=!t;
   const sec=addSec();
   const d=t?JSON.parse(JSON.stringify(t)):{id:uid(),...(opts.kind==='project'?{kind:'project'}:{}),status:opts.kind==='project'?'next':sec,title:'',note:'',area:F.area||(sec==='inbox'?null:S.areas[0]?.id||null),minutes:sec==='inbox'?null:30,tags:[],energy:'normal',x:pos?.x||80,y:pos?.y||80,waitingFor:'',sched:null,created:Date.now(),doneAt:null};if(!t)addAreaPlaces(d);
+  if(!Array.isArray(d.labels))d.labels=[];let labEdit=false;
   if(!t&&opts.project){const P=taskById(opts.project);d.project=opts.project;d.status='next';if(P&&P.area){d.area=P.area;addAreaPlaces(d)}if(d.minutes==null)d.minutes=30}
   const scrim=document.createElement('div');scrim.className='scrim';
   const draw=()=>{
@@ -2291,6 +2303,7 @@ function openEditor(t,pos,msg,opts={}){
       ${d.rep?`<div class="hint">完了すると、次回（${dueLabel(nextOcc(d.rep,d.due&&d.due>todayKey()?d.due:todayKey(),false)).l}）の付箋が自動で現れます。</div>`:''}</div>`}
      <div class="fld"><label>所要見込み時間${d.status==='inbox'?'（Inboxでは任意）':''}</label><div class="chips" id="edMin">${d.status==='inbox'?`<button class="chip ${d.minutes==null?'on':''}" data-v="">未設定</button>`:''}${MINS.map(m=>`<button class="chip ${d.minutes===m?'on':''}" data-v="${m}">${fmtMin(m)}</button>`).join('')}<span class="chip ${d.minutes!=null&&!MINS.includes(d.minutes)?'on':''}"><input id="edMinC" type="number" min="5" step="5" value="${d.minutes!=null&&!MINS.includes(d.minutes)?d.minutes:''}" placeholder="—">分</span></div></div>
      <div class="fld"><label>場所・道具<button class="lbl-edit" id="edPlacesEdit" type="button">編集</button></label><div class="chips" id="edTags">${TAGS.map(g=>`<button class="chip ${d.tags.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}${g.name}</button>`).join('')}</div></div>
+     <div class="fld"><label>タグ<button class="lbl-edit" id="edLabEdit" type="button">${labEdit?'完了':'編集'}</button></label><div class="chips" id="edLabels">${S.labels.map(g=>`<button class="chip ${labEdit?'del':''} ${!labEdit&&d.labels.includes(g.id)?'on':''}" data-v="${g.id}" ${labEdit?'title="クリックで削除"':''}>${labEdit?ic('x'):'#'}${esc(g.name)}</button>`).join('')}${labEdit?(S.labels.length?'':'<span class="hint">タグはまだありません</span>'):`<span class="chip lab-add">${ic('plus')}<input id="edLabNew" placeholder="新しいタグ" maxlength="16" autocomplete="off"></span>`}</div>${labEdit&&S.labels.length?'<div class="hint">削除したタグは、すべてのタスクから外れます。</div>':''}</div>
      <div class="fld"><label>集中度</label><div class="seg" id="edEnergy"><button data-v="" class="${!d.energy?'on':''}">なし</button>${ENERGY.map(x=>`<button data-v="${x.id}" class="${d.energy===x.id?'on':''}"><span class="en-dot en-${x.id}"></span>${x.l}</button>`).join('')}</div></div>
      ${isToday(d)?`<div class="hint">今日 ${clock(d.sched.start)} に予定済み</div>`:''}
     </div><div class="sheet-foot">${isNew?'':'<button class="btn danger" id="edDel">削除</button>'}${isNew?'':isProj(d)?'<button class="btn" id="edDoneProj">'+ic('log')+'プロジェクトを完了</button>':isChild(d)?'':'<button class="btn" id="edToProj">'+ic('clip')+'プロジェクトにする</button>'}<span class="spacer"></span><span class="kbd-hint">⌘⏎ で保存</span><button class="btn" id="edCancel">キャンセル</button><button class="btn primary" id="edSave">${isNew?'追加':'保存'}</button></div></div>`;
@@ -2318,9 +2331,16 @@ function openEditor(t,pos,msg,opts={}){
     $('#edDueBtn',scrim).onclick=e=>{if(e.target===dc)return;try{dc.showPicker();}catch(_){dc.classList.add('show');dc.focus()}};
     $('#edAreaPill',scrim).onclick=e=>{e.stopPropagation();keep();openAreaPop($('#edAreaPill',scrim),d,v=>{if(d.area!==v){d.area=v;addAreaPlaces(d)}redraw()})};
     $$('#edEnergy button',scrim).forEach(b=>b.onclick=()=>{d.energy=b.dataset.v||null;redraw()});
+    const le=$('#edLabEdit',scrim);if(le)le.onclick=()=>{labEdit=!labEdit;redraw()};
+    $$('#edLabels button.chip',scrim).forEach(b=>b.onclick=()=>{const v=b.dataset.v;
+      if(labEdit){if(!b.classList.contains('armed')){$$('#edLabels .armed',scrim).forEach(x=>x.classList.remove('armed'));b.classList.add('armed');b.lastChild.textContent=labName(v)+'を削除';return}
+        S.labels=S.labels.filter(x=>x.id!==v);S.tasks.forEach(x=>{if(x.labels)x.labels=x.labels.filter(y=>y!==v)});d.labels=d.labels.filter(y=>y!==v);F.labels.delete(v);save();redraw();return}
+      d.labels=d.labels.includes(v)?d.labels.filter(x=>x!==v):[...d.labels,v];redraw()});
+    const ln=$('#edLabNew',scrim);if(ln)ln.onkeydown=e=>{if(e.key!=='Enter'||isIME(e))return;e.preventDefault();e.stopPropagation();const n=ln.value.trim().replace(/^#/,'');if(!n)return;
+      let g=S.labels.find(x=>x.name===n);if(!g){g={id:uid(),name:n};S.labels.push(g);save()}if(!d.labels.includes(g.id))d.labels.push(g.id);redraw();const n2=$('#edLabNew',scrim);n2&&n2.focus()};
     const ep=$('#edPlacesEdit',scrim);if(ep)ep.onclick=()=>{keep();openPlacesEditor(()=>redraw())};
     $$('#edTags button',scrim).forEach(b=>b.onclick=()=>{const v=b.dataset.v;d.tags=d.tags.includes(v)?d.tags.filter(x=>x!==v):[...d.tags,v];redraw()});
-    if(isProj(d)){$$('.fld',scrim).forEach(f=>{const l=$('label',f)?.textContent||'';if(/^(所要見込み時間|場所|集中度)/.test(l))f.remove()})}
+    if(isProj(d)){$$('.fld',scrim).forEach(f=>{const l=$('label',f)?.textContent||'';if(/^(所要見込み時間|場所|集中度|タグ)/.test(l))f.remove()})}
     if(d.status==='calendar'){$$('.fld',scrim).forEach(f=>{const l=$('label',f)?.textContent||'';if(/^(締切|Ticklerから出す日|繰り返し)/.test(l)||(d.info&&/^(所要見込み時間|場所|集中度)/.test(l)))f.remove()})}
     if(isProj(d)){$$('.fld',scrim).forEach(f=>{const l=$('label',f)?.textContent||'';if(/^(リスト|Ticklerから出す日|繰り返し)/.test(l))f.remove()});
       $('#edTitle',scrim).placeholder='プロジェクトのゴール（例：企画書を提出する）';
@@ -2521,6 +2541,7 @@ function openFilterPop(btn,kind){
     if(ft){ft.classList.toggle('on',F.tags.size>0);$('span',ft).textContent=F.tags.size?[...F.tags].map(tagName).join('・'):'場所'}
     const fee=$('#fEnergy');if(fee){fee.classList.toggle('on',!!F.energy);$('span',fee).textContent=F.energy?ENERGY.find(e=>e.id===F.energy).l:'集中度'}
     if(fm){fm.classList.toggle('on',!!F.time);$('span',fm).textContent=F.time?TIMEF.find(x=>x.id===F.time).l:'時間'}
+    const flb=$('#fLab');if(flb){flb.classList.toggle('on',F.labels.size>0);$('span',flb).textContent=F.labels.size?[...F.labels].map(labName).join('・'):'タグ'}
     const fdd=$('#fDue');if(fdd){fdd.classList.toggle('on',!!F.due);$('span',fdd).textContent=F.due?DUEF.find(x=>x.id===F.due).l.replace('（遅れを含む）',''):'締切'}
     applyFilter();renderBarCount();requestAnimationFrame(place)};
   const draw=()=>{
@@ -2529,15 +2550,18 @@ function openFilterPop(btn,kind){
       el.insertAdjacentHTML('beforeend',`<button class="fp-edit" id="fpEditPlaces">${ic('edit')}場所を編集</button>`);
       $('#fpEditPlaces',el).onclick=()=>{closePop();openPlacesEditor()};
       $$('.fp-item',el).forEach(b=>b.onclick=()=>{const v=b.dataset.v;F.tags.has(v)?F.tags.delete(v):F.tags.add(v);draw();refreshBtn()});
+    }else if(kind==='label'){
+      el.innerHTML=`<div class="fp-h">タグ<span>複数選べます</span></div>${S.labels.length?S.labels.map(g=>`<button class="fp-item ${F.labels.has(g.id)?'on':''}" data-v="${g.id}">${ic('tag')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`).join(''):'<div class="fp-none">タグはまだありません。<br>タスクの編集画面で追加できます。</div>'}<button class="fp-clear" ${F.labels.size?'':'hidden'}>すべて解除</button>`;
+      $$('.fp-item',el).forEach(b=>b.onclick=()=>{const v=b.dataset.v;F.labels.has(v)?F.labels.delete(v):F.labels.add(v);draw();refreshBtn()});
     }else if(kind==='energy'){
       el.innerHTML=`<div class="fp-h">集中度</div>${ENERGY.map(x=>`<button class="fp-item ${F.energy===x.id?'on':''}" data-v="${x.id}"><span class="en-dot en-${x.id}"></span><span>${x.l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}<button class="fp-clear" ${F.energy?'':'hidden'}>解除</button>`;
       $$('.fp-item',el).forEach(b=>b.onclick=()=>{F.energy=F.energy===b.dataset.v?null:b.dataset.v;refreshBtn();closePop()});
     }else{
       const L=kind==='due'?DUEF:TIMEF,K=kind==='due'?'due':'time';
-      el.innerHTML=`<div class="fp-h">${kind==='due'?'締切':'所要時間'}</div>${L.map(x=>`<button class="fp-item ${F[K]===x.id?'on':''}" data-v="${x.id}"><span>${x.l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}<button class="fp-clear" ${F[K]?'':'hidden'}>解除</button>`;
+      el.innerHTML=`<div class="fp-h">${kind==='due'?'締切・予定日':'所要時間'}${kind==='due'?'<span>Calendarの予定日も含みます</span>':''}</div>${L.map(x=>`<button class="fp-item ${F[K]===x.id?'on':''}" data-v="${x.id}"><span>${x.l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}<button class="fp-clear" ${F[K]?'':'hidden'}>解除</button>`;
       $$('.fp-item',el).forEach(b=>b.onclick=()=>{F[K]=F[K]===b.dataset.v?null:b.dataset.v;refreshBtn();closePop()});
     }
-    const c=$('.fp-clear',el);c.onclick=()=>{if(kind==='tag')F.tags.clear();else if(kind==='energy')F.energy=null;else if(kind==='due')F.due=null;else F.time=null;draw();refreshBtn();if(kind!=='tag')closePop()};
+    const c=$('.fp-clear',el);c.onclick=()=>{if(kind==='tag')F.tags.clear();else if(kind==='label')F.labels.clear();else if(kind==='energy')F.energy=null;else if(kind==='due')F.due=null;else F.time=null;draw();refreshBtn();if(kind!=='tag'&&kind!=='label')closePop()};
   };
   const place=()=>{if(!POP)return;const b=POP.btn.getBoundingClientRect();let l=b.left;const w=el.offsetWidth;if(l+w>innerWidth-12)l=innerWidth-12-w;el.style.left=Math.max(12,l)+'px';el.style.top=(b.bottom+6)+'px'};
   draw();place();
@@ -3042,7 +3066,7 @@ function openCapture(){
     $$('[data-undo]',ul).forEach(b=>b.onclick=()=>{const t=got.find(x=>x.id===b.dataset.undo);if(!t)return;S.tasks=S.tasks.filter(x=>x!==t);got.splice(got.indexOf(t),1);save();render();drawGot();inp.focus()})};
   const add=()=>{const p=parse(inp.value);if(!p.title)return;
     const vis=S.ui.section==='inbox'&&!F.area&&!isList();const sp=findSpot('inbox',!vis);
-    const t={id:uid(),status:'inbox',title:p.title,note:'',area:p.area,minutes:p.mins,tags:p.tags,energy:'normal',x:sp.x,y:sp.y,waitingFor:'',sched:null,created:Date.now(),doneAt:null};if(t.area)addAreaPlaces(t);
+    const t={id:uid(),status:'inbox',title:p.title,note:'',area:p.area,minutes:p.mins,tags:p.tags,labels:p.labels,energy:'normal',x:sp.x,y:sp.y,waitingFor:'',sched:null,created:Date.now(),doneAt:null};if(t.area)addAreaPlaces(t);
     S.tasks.push(t);if(S.sample===undefined)S.sample=false;if(vis)justAdded=t.id;save();render();got.unshift(t);inp.value='';drawGot()};
   const close=()=>{document.removeEventListener('keydown',key,true);scrim.remove();if(got.length)toast(`${got.length}件を Inbox に入れました`)};
   const key=e=>{if(isIME(e))return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
@@ -3078,7 +3102,7 @@ function openSearch(){
     $$('.sr-item',list).forEach(b=>{b.onclick=()=>go(res[+b.dataset.i]);b.onmousemove=()=>{if(cur!==+b.dataset.i){cur=+b.dataset.i;hi()}}})};
   const run=()=>{terms=nz(inp.value).split(/\s+/).filter(Boolean);cur=0;
     res=terms.length?S.tasks.filter(t=>dn.checked||t.status!=='done').map(t=>{const P=isChild(t)?projOf(t):null,a=area(t.area),ti=nz(t.title);
-      const hay=[ti,nz(t.note),nz(t.waitingFor),nz(P&&P.title),nz(a&&areaLabel(a)),nz((t.tags||[]).map(tagName).join(' '))].join('\n');
+      const hay=[ti,nz(t.note),nz(t.waitingFor),nz(P&&P.title),nz(a&&areaLabel(a)),nz((t.tags||[]).map(tagName).join(' ')),nz((t.labels||[]).map(labName).join(' '))].join('\n');
       return {t,ok:terms.every(w=>hay.includes(w)),sc:terms.every(w=>ti.includes(w))?0:1}}).filter(x=>x.ok)
       .sort((a,b)=>a.sc-b.sc||(a.t.status==='done')-(b.t.status==='done')||(b.t.created||0)-(a.t.created||0)).slice(0,60).map(x=>x.t):[];
     drawList()};
@@ -3097,12 +3121,12 @@ function openSearch(){
 }
 
 /* ---------- auto arrange ---------- */
-const ARR=[{id:'tidy',l:'整頓（いまの並びのまま左上から詰める）'},{id:'due',l:'締切が近い順'},{id:'area',l:'エリアごと'},{id:'min',l:'所要時間が短い順'}];
+const ARR=[{id:'tidy',l:'整頓'},{id:'area',l:'エリアごと'},{id:'due',l:'締切が近い順'},{id:'min',l:'所要時間が短い順'}];
 function openArrangePop(btn){
   if(POP&&POP.kind==='arr'){closePop();return}closePop();
   if(isList())return openSortPop(btn);
   const el=document.createElement('div');el.className='fpop';document.body.appendChild(el);POP={el,btn,kind:'arr'};btn.classList.add('open');
-  el.innerHTML=`<div class="fp-h">付箋を並べ直す<span>元に戻せます</span></div>${ARR.map(x=>`<button class="fp-item" data-v="${x.id}"><span>${x.l}</span></button>`).join('')}`;
+  el.innerHTML=`<div class="fp-h">付箋を並べ直す<span>元に戻せます</span></div>${ARR.map((x,i)=>`<button class="fp-item" data-v="${x.id}"><span>${x.l}</span></button>${i===0?'<div class="fp-sep"></div>':''}`).join('')}`;
   $$('.fp-item',el).forEach(b=>b.onclick=()=>{closePop();arrangeBoard(b.dataset.v)});
   const r=btn.getBoundingClientRect();const w=el.offsetWidth;el.style.left=Math.max(12,Math.min(r.left,innerWidth-12-w))+'px';el.style.top=(r.bottom+6)+'px';
   document.addEventListener('pointerdown',popOutside,true);document.addEventListener('keydown',popKey,true);
@@ -3163,7 +3187,7 @@ function importData(){
     r.readAsText(f)};
   inp.click();
 }
-function resetView(){F.tags.clear();F.area=null;F.time=null;F.due=null;F.energy=null;padSig='';Object.keys(boardScrollMem).forEach(k=>delete boardScrollMem[k])}
+function resetView(){F.tags.clear();F.labels.clear();F.area=null;F.time=null;F.due=null;F.energy=null;padSig='';Object.keys(boardScrollMem).forEach(k=>delete boardScrollMem[k])}
 function confirmImport(d,name){
   closeSettings();closeConfig();
   const n=d.tasks.filter(t=>t&&t.status!=='done').length,dn=d.tasks.length-n;
