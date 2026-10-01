@@ -952,12 +952,9 @@ button.ladd:hover{background:color-mix(in srgb,var(--ink) 3%,var(--win));color:v
 .ladd .ck0{width:20px;height:20px;border-radius:50%;border:1.8px dashed var(--ink3);flex:none;box-sizing:border-box}
 .ladd-in{flex:1;min-width:0;border:0;outline:none;background:none;font-size:14px;font-weight:500;padding:0;color:var(--ink)}
 .ladd-in::placeholder{color:var(--ink3);font-weight:400}
-.ladd kbd,.lhelp kbd{font-family:var(--f-num);font-size:10px;color:var(--ink3);border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--pop)}
 .lempty{padding:18px 12px 6px;color:var(--ink3);font-size:13px}
 .lins{position:absolute;left:30px;right:30px;height:2px;border-radius:2px;background:var(--accent);display:none;z-index:6;pointer-events:none}
 .lins::before{content:"";position:absolute;left:-5px;top:-4px;width:6px;height:6px;border-radius:50%;border:2px solid var(--accent);background:var(--win)}
-.lhelp{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;margin-top:30px;font-size:11px;color:var(--ink3)}
-.lhelp span{display:inline-flex;align-items:center;gap:4px}
 .ghost.lg{font-family:var(--f-ui)}
 .ghost.lg:not(.as-block){background:var(--pop)!important;background-image:none!important;color:var(--ink)!important;border:0!important;border-radius:10px!important;padding:0 18px!important;display:flex;flex-direction:row;align-items:center;filter:none!important;transform:rotate(-.8deg)!important;box-shadow:inset 4px 0 0 var(--sd),0 18px 34px -14px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.1)!important}
 .ghost.lg:not(.as-block)>*:not(.stk-title){display:none!important}
@@ -1007,10 +1004,8 @@ button.ladd:hover{background:color-mix(in srgb,var(--ink) 3%,var(--win));color:v
   .ladd{opacity:1;height:48px;padding:0 18px;border-radius:0;font-size:14px}
   .ladd.on{height:60px}
   .ladd-in{font-size:16px}
-  .ladd kbd{display:none}
   .lempty{padding:18px 18px 6px}
   .lins{left:0;right:0}
-  .lhelp{display:none}
   .tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:700;height:calc(58px + env(safe-area-inset-bottom,0px));padding:6px 4px env(safe-area-inset-bottom,0px);background:color-mix(in srgb,var(--win) 92%,transparent);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-top:1px solid var(--line)}
   .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;color:var(--ink3);position:relative}
   .tab .sq{width:30px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:background .15s}
@@ -1037,6 +1032,46 @@ button.ladd:hover{background:color-mix(in srgb,var(--ink) 3%,var(--win));color:v
   #edToProj,#edDoneProj{font-size:0;gap:0;padding:6px 10px}
   #edToProj svg.i,#edDoneProj svg.i{width:17px;height:17px}
   .sheet-foot{padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px))}
+}
+.row{height:auto!important;min-height:54px}
+.row.collapse{height:0!important;min-height:0!important}
+.row-in{position:relative;inset:auto;align-items:flex-start;padding:11px 12px 11px;min-height:54px;box-sizing:border-box}
+.row .chk{margin-top:1px}
+.row .rt b{font-size:15.5px;line-height:22px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.row .rm{margin-top:3px;font-size:11.5px}
+.row .rnote{margin-top:3px;font-size:12.5px;line-height:1.5;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rmin{margin-top:3px}
+.ladd .pl{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--accent);flex:none;transition:background .15s,color .15s}
+.ladd .pl svg.i{width:16px;height:16px;margin:0;stroke-width:2}
+.ladd:hover .pl,.ladd.on .pl{background:var(--accent);color:#fff}
+.ladd:hover .pl svg.i,.ladd.on .pl svg.i{width:13px;height:13px;stroke-width:2.4}
+.ladd{opacity:1;color:var(--ink3)}
+button.ladd:hover{background:none;color:var(--accent)}
+.ladd.gadd{height:34px;opacity:0;transition:opacity .15s}
+.lgroup:hover .ladd.gadd,.ladd.gadd:focus-visible{opacity:1}
+.ladd.lall{height:44px;margin-top:2px}
+.lv .lgroup{margin-bottom:10px}
+.lempty{padding:40px 12px 18px;color:var(--ink3);font-size:13px;line-height:1.7}
+.lempty b{display:block;font-family:var(--f-note);font-size:17px;color:var(--ink2);margin-bottom:2px}
+.kbt{display:inline-flex;align-items:center;gap:6px;align-self:flex-start}.kbt svg.i{width:14px;height:14px}
+.kbl{display:flex;flex-direction:column;gap:12px;margin-top:8px;padding:12px;border-radius:10px;background:var(--sel)}
+.kbg{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--ink2)}
+.kbg>b{font-size:11px;color:var(--ink3);font-weight:600}
+.kbg>div{display:flex;align-items:center;gap:10px}
+.kbg>div>span{min-width:104px;display:inline-flex;gap:3px;color:var(--ink3);font-size:11.5px}
+.kbg kbd{font-family:var(--f-num);font-size:10.5px;color:var(--ink);border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--pop);min-width:12px;text-align:center}
+@media (hover:none){.ladd.gadd{display:none}}
+@media (max-width:760px){
+  .row,.row-in{min-height:62px}
+  .row-in{padding:13px 16px 13px 18px}
+  .row .chk{margin-top:1px}
+  .row .rt b{font-size:17px;line-height:24px}
+  .row .rm{font-size:12.5px}
+  .row .rnote{font-size:13.5px}
+  .ladd.lall{display:none}
+  .ladd.on{scroll-margin-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+  .ladd.on{height:62px;padding:0 18px}
+  .lempty{padding:40px 18px 18px}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 @media (max-width:760px){
@@ -1614,15 +1649,14 @@ function rowMeta(t){
   if(t.rep)out.push(`<span class="mr">${ic('repeat')}${repLabel(t.rep)}</span>`);
   if(isChild(t)&&!projMode())out.push(`<span class="mp">${ic('clip')}${esc(projOf(t).title)}</span>`);
   if(showArea&&area(t.area))out.push(`<span class="ma"><i class="dot c-${areaColor(area(t.area))}"></i>${esc(areaLabel(area(t.area)))}</span>`);
-  if(t.note)out.push(`<span class="mn">${esc(t.note.split('\n')[0].slice(0,80))}</span>`);
   return out.join('');
 }
 function rowHTML(t){
   const meta=rowMeta(t),td=isTodayDue(t),m=t.minutes!=null&&!(t.status==='calendar'&&t.info)?fmtShort(t.minutes):'';
-  return `<div class="row ${colorOf(t)} ${meta?'':'one'} ${LSEL===t.id?'sel':''} ${justAdded===t.id?'ladded':''}" data-id="${t.id}">
+  return `<div class="row ${colorOf(t)} ${LSEL===t.id?'sel':''} ${justAdded===t.id?'ladded':''}" data-id="${t.id}">
    <div class="sw-bg sw-l">${ic('log')}完了</div><div class="sw-bg sw-r"><button data-sw="today">${ic('today')}${td?'今日から外す':'今日'}</button><button data-sw="move">${ic('move')}移動</button></div>
    <div class="row-in"><button class="chk" aria-label="完了">${ic('log')}</button>
-    <div class="rt"><b>${esc(t.title)}</b>${meta?`<div class="rm">${meta}</div>`:''}</div>
+    <div class="rt"><b>${esc(t.title)}</b>${meta?`<div class="rm">${meta}</div>`:''}${t.note?`<div class="rnote">${esc(t.note.split('\n').find(x=>x.trim())||'')}</div>`:''}</div>
     <span class="rmin">${m}</span>
     <div class="ra"><button data-ra="today" class="${td?'on':''}" title="${td?'締切を外す':'今日やる（締切を今日に）'} (D)">${ic('today')}</button><button data-ra="more" title="移動・編集 (M)">${ic('more')}</button></div>
    </div></div>`;
@@ -1631,14 +1665,16 @@ let LG=[],LADD=null,LSEL=null;const listScrollMem={};
 function renderList(el){
   const k=listKey(),prev=$('#listScroll',el);if(prev&&prev.dataset.k)listScrollMem[prev.dataset.k]=prev.scrollTop;
   LG=listGroups();const fold=((S.ui.lfold||{})[k])||{};
-  const shown=LG.filter(g=>g.items.length||!g.opt||LADD===g.id);
-  const single=shown.length===1;
+  const shown=LG.filter(g=>g.items.length||LADD===g.id);
+  const addIn=gid=>`<div class="ladd on" data-add="${gid}"><span class="pl">${ic('plus')}</span><input class="ladd-in" id="laddIn" placeholder="新しいタスク　#場所　30分　@エリア" maxlength="120" autocomplete="off"></div>`;
+  const addBtn=(gid,cls)=>`<button class="ladd ${cls}" data-add="${gid}"><span class="pl">${ic('plus')}</span><span>タスクを追加</span></button>`;
   const html=shown.map(g=>{const items=sortItems(g.items);g.sorted=items;const m=items.reduce((s,t)=>s+(t.minutes||0),0);const shut=!!fold[g.id]&&LADD!==g.id;
     return `<section class="lgroup ${shut?'shut':''}" data-g="${g.id}"><h3 class="lgh" data-fold="${g.id}">${g.color?`<span class="dot c-${g.color}"></span>`:`<span class="lgi g-${g.cls}">${ic(g.icon||'list')}</span>`}<b>${esc(g.name)}</b><span class="lgc">${items.length?items.length+'件'+(m?' · '+fmtMin(m):''):''}</span><span class="lgf" aria-hidden="true">${ic('chev')}</span></h3>
-     <div class="lrows">${items.map(rowHTML).join('')}${single&&!items.length&&LADD!==g.id?`<div class="lempty">${S.ui.section==='inbox'?'Inbox は空です。気になることが浮かんだら、ここへ。':'ここにはまだ何もありません。'}</div>`:''}
-     ${LADD===g.id?`<div class="ladd on" data-add="${g.id}"><span class="ck0"></span><input class="ladd-in" id="laddIn" placeholder="新しいタスク　#場所　30分　@エリア" maxlength="120" autocomplete="off"><kbd>⏎</kbd></div>`:`<button class="ladd" data-add="${g.id}">${ic('plus')}<span>追加</span></button>`}</div></section>`}).join('');
-  el.innerHTML=`<div class="list-scroll" id="listScroll" data-k="${k}"><div class="list lv" id="listEl">${html}<div class="lins" id="lins"></div>
-   <div class="lhelp"><span><kbd>↑</kbd><kbd>↓</kbd> 選ぶ</span><span><kbd>⏎</kbd> 編集</span><span><kbd>Space</kbd> 完了</span><span><kbd>D</kbd> 今日</span><span><kbd>M</kbd> 移動</span><span><kbd>N</kbd> 追加</span><span>ドラッグで並べ替え・移動</span></div></div></div>`;
+     <div class="lrows">${items.map(rowHTML).join('')}${LADD===g.id?addIn(g.id):addBtn(g.id,'gadd')}</div></section>`}).join('');
+  const endG=LG[0]&&LG[0].id;
+  el.innerHTML=`<div class="list-scroll" id="listScroll" data-k="${k}"><div class="list lv" id="listEl">${html}
+   ${shown.length?'':`<div class="lempty"><b>${S.ui.section==='inbox'&&!zoneMode()?'Inbox は空です':'ここにはまだ何もありません'}</b>${S.ui.section==='inbox'&&!zoneMode()?'気になることが浮かんだら、すぐ書き出しましょう。':''}</div>`}
+   ${LADD==='__end'?addIn('__end'):addBtn('__end','lall')}<div class="lins" id="lins"></div></div></div>`;
   const sc=$('#listScroll',el);if(listScrollMem[k])sc.scrollTop=listScrollMem[k];
   sc.onscroll=()=>{listScrollMem[k]=sc.scrollTop};
   $$('.row',el).forEach(r=>{const t=taskById(r.dataset.id);if(!t)return;bindItem(r,{t},'list');
@@ -1647,15 +1683,15 @@ function renderList(el){
     $$('[data-sw]',r).forEach(b=>b.onclick=e=>{e.stopPropagation();closeSwipe(true);if(b.dataset.sw==='today')moveTask(t,isTodayDue(t)?'untoday':'today');else openMoveMenu(t,r)})});
   $$('.lgh',el).forEach(h=>h.onclick=()=>{const gid=h.dataset.fold;S.ui.lfold=S.ui.lfold||{};const f=S.ui.lfold[k]=S.ui.lfold[k]||{};f[gid]=!f[gid];save();renderMain()});
   $$('button.ladd',el).forEach(b=>b.onclick=()=>openAdd(b.dataset.add));
-  const inp=$('#laddIn',el);if(inp){const G=LG.find(g=>g.id===LADD);
+  const inp=$('#laddIn',el);if(inp){const G=LADD==='__end'?LG.find(g=>g.id===(LG.find(x=>x.id==='a:none')?'a:none':endG)):LG.find(g=>g.id===LADD);
     inp.onkeydown=e=>{if(e.isComposing)return;if(e.key==='Enter'){e.preventDefault();const v=inp.value.trim();if(!v){LADD=null;renderMain();return}const t=addFromRow(G,v);if(t){justAdded=t.id;renderSide();renderMain()}}
       else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();LADD=null;renderMain()}};
     inp.onblur=()=>setTimeout(()=>{if(!inp.isConnected||document.activeElement===inp)return;const v=inp.value.trim();if(v)addFromRow(G,v);LADD=null;renderSide();renderMain()},120);
-    requestAnimationFrame(()=>{inp.focus();inp.scrollIntoView({block:'nearest'})})}
+    requestAnimationFrame(()=>{inp.focus({preventScroll:true});const a=inp.closest('.ladd').getBoundingClientRect(),r=sc.getBoundingClientRect(),lim=r.bottom-(narrow()?96:24);if(a.bottom>lim)sc.scrollTop+=a.bottom-lim;else if(a.top<r.top+60)sc.scrollTop-=r.top+60-a.top})}
   justAdded=null;
   applyFilter();renderBarCount();
 }
-function openAdd(gid){if(!LG.find(g=>g.id===gid))return;LADD=gid;LSEL=null;renderMain()}
+function openAdd(gid){if(gid!=='__end'&&!LG.find(g=>g.id===gid))return;LADD=gid;LSEL=null;renderMain()}
 function addFromRow(G,raw){
   const p=parse(raw);if(!p.title||!G)return null;const b=G.base();
   const t={id:uid(),status:b.status,title:p.title,note:'',area:p.area||b.area||null,minutes:p.mins??(b.status==='inbox'?null:30),tags:p.tags,energy:'normal',x:0,y:0,waitingFor:'',sched:null,created:Date.now(),doneAt:null};
@@ -1673,7 +1709,7 @@ function listKeys(e,k){
   const cur=rows.findIndex(r=>r.dataset.id===LSEL);
   if(k==='arrowdown'||k==='j'){e.preventDefault();selRow(rows[cur<0?0:Math.min(rows.length-1,cur+1)]);return true}
   if(k==='arrowup'||k==='k'){e.preventDefault();selRow(rows[cur<0?0:Math.max(0,cur-1)]);return true}
-  if(k==='n'){e.preventDefault();const g=(rows[cur]&&rows[cur].closest('.lgroup'))||$('.lgroup',L);if(g)openAdd(g.dataset.g);return true}
+  if(k==='n'){e.preventDefault();const g=rows[cur]&&rows[cur].closest('.lgroup');openAdd(g?g.dataset.g:'__end');return true}
   if(k==='escape'&&LSEL){selRow(null);return true}
   const r=rows[cur];if(!r)return false;const t=taskById(r.dataset.id);if(!t)return false;
   if(k==='enter'){e.preventDefault();openEditor(t);return true}
@@ -2410,7 +2446,11 @@ function applyLook(){
   b.classList.add('sty-'+u.style,'bd-'+bd,'tilt-'+(u.tilt==='none'?0:u.tilt==='big'?2:1),'fn-'+u.font,'cm-'+u.cmode);
   if(!['dots','grid','plain'].includes(bd))b.classList.add('bd-custom');
 }
-let SETP=null;
+let SETP=null,kbOpen=false;
+const KBHTML=()=>{const g=(h,rows)=>`<div class="kbg"><b>${h}</b>${rows.map(([k,l])=>`<div><span>${k.split(' ').map(x=>`<kbd>${x}</kbd>`).join('')}</span>${l}</div>`).join('')}</div>`;
+  return `<div class="kbl">${g('どこでも',[[MODK+'K','すばやく書き出す'],['/','検索'],['1 2 3 4 5 6 7','リストを切り替え'],['L B','リスト / ボード'],['T','今日のタイムライン'],['?','手引き']])}
+   ${g('リスト',[['↑ ↓','タスクを選ぶ'],['⏎','編集'],['Space','完了'],['D','今日やる'],['M','移動メニュー'],['N','タスクを追加'],['Esc','選択を解除']])}
+   <div class="kbg"><b>マウス・指</b><div><span>右クリック</span>移動メニュー</div><div><span>ドラッグ</span>並べ替え・別のグループへ移動</div><div><span>右スワイプ</span>完了（スマホ）</div><div><span>左スワイプ</span>今日 / 移動（スマホ）</div></div></div>`};
 function closeSettings(){if(SETP){SETP.remove();SETP=null;document.removeEventListener('pointerdown',setOutside,true)}}
 function setOutside(e){if(SETP&&!SETP.contains(e.target)&&!e.target.closest('#setBtn'))closeSettings()}
 function openSettings(btn){
@@ -2424,9 +2464,11 @@ function openSettings(btn){
      <div class="setrow"><span>付箋の傾き</span>${seg('tilt',[['none','なし'],['mid','少し'],['big','大きめ']])}</div>
      <div class="setrow"><span>タイトルの文字</span>${seg('font',[['def','スタイル既定'],['goth','ゴシック'],['maru','丸ゴシック'],['hand','手書き'],['min','明朝']])}</div>
      <div class="setrow"><span>エリア色の出し方</span>${seg('cmode',[['def','スタイル既定'],['full','全面に塗る'],['accent','アクセントのみ']])}</div>
-     <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>`;
+     <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
+     <div class="setrow"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('book')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>`;
     $$('[data-style]',el).forEach(b=>b.onclick=()=>{S.ui.style=b.dataset.style;commitLook();draw()});
     $$('[data-k]',el).forEach(b=>b.onclick=()=>{S.ui[b.dataset.k]=b.dataset.v;commitLook();draw()});
+    $('#kbT',el).onclick=()=>{kbOpen=!kbOpen;draw()};
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
     $('#setReset',el).onclick=()=>{Object.assign(S.ui,{style:'classic',board:'rec',tilt:'mid',font:'def',cmode:'def'});commitLook();draw()};
   };
@@ -2828,7 +2870,7 @@ document.addEventListener('keydown',e=>{
 let wasNarrow=narrow();
 window.addEventListener('resize',()=>{if(narrow()!==wasNarrow){wasNarrow=narrow();render();return}if(S.ui.tl)renderTL()});
 
-load();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openCapture;render();
+load();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=()=>{if($('#listEl'))openAdd('__end');else openCapture()};render();
 })();
 </script>
 
