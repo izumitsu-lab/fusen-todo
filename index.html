@@ -1323,7 +1323,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .ed-page{display:none}
 @media (max-width:760px){
   .scrim.edscrim{align-items:flex-end;padding:0}
-  .scrim.edscrim .sheet.ed{width:100%;height:calc(100dvh - 10px - env(safe-area-inset-top,0px));max-height:none;border-radius:14px 14px 0 0;padding-bottom:0}
+  .scrim.edscrim .sheet.ed{width:100%;height:calc(100% - 10px - env(safe-area-inset-top,0px));max-height:none;border-radius:14px 14px 0 0;padding-bottom:0}
   .ed-nav{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 8px;flex:none;border-bottom:1px solid var(--line);background:var(--win)}
   .ed-nav b{font-size:16px;font-weight:700}
   .ed-nb{display:flex;align-items:center;gap:2px;min-width:72px;height:40px;padding:0 8px;font-size:16px;color:var(--accent)}
@@ -2908,11 +2908,11 @@ function openConfig(btn){
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
      <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く（?）</button></div>
-     ${VHINFO.st?`<div class="setrow"><span>画面下端の位置（ホーム画面アプリ）</span><div class="vhadj"><button class="btn" data-vh="-5">上へ</button><b>${(VHINFO.adj||0)>0?'+':''}${VHINFO.adj||0}</b><button class="btn" data-vh="5">下へ</button><button class="btn" data-vh="0">自動</button></div><div class="hint">タブバーが浮く・めり込むときに調整します。診断：画面 ${VHINFO.sh} ／ 表示領域 ${VHINFO.ih} ／ 補正 ${VHINFO.gap}${VHINFO.adj?(VHINFO.adj>0?'+':'')+VHINFO.adj:''}px</div></div>`:''}`;
+     ${VHINFO.st?`<div class="setrow"><span>画面下端の位置（ホーム画面アプリ）</span><div class="vhadj"><button class="btn" data-vh="-5">上へ</button><b>${(VHINFO.adj||0)>0?'+':''}${VHINFO.adj||0}${VHINFO.auto?'（自動）':''}</b><button class="btn" data-vh="5">下へ</button><button class="btn" data-vh="0">自動</button></div><div class="hint">タブバーが浮く・めり込むときに調整します。診断：画面 ${VHINFO.sh} ／ 表示領域 ${VHINFO.ih} ／ 補正 ${VHINFO.gap}${VHINFO.adj?(VHINFO.adj>0?'+':'')+VHINFO.adj:''}px</div></div>`:''}`;
     $('#kbT',el).onclick=()=>{kbOpen=!kbOpen;draw()};
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
     $$('[data-plus]',el).forEach(b=>b.onclick=()=>{S.ui.plus=b.dataset.plus;save();draw()});
-    $$('[data-vh]',el).forEach(b=>b.onclick=()=>{const v=+b.dataset.vh;S.ui.vhAdj=v?Math.max(-120,Math.min(120,(+S.ui.vhAdj||0)+v)):0;save();fixVH();draw()});
+    $$('[data-vh]',el).forEach(b=>b.onclick=()=>{const v=+b.dataset.vh;S.ui.vhAdj=v?Math.max(-120,Math.min(120,(VHINFO.adj||0)+v)):null;save();fixVH();draw()});
     $('#cfgGuide',el).onclick=()=>{closeConfig();openGuide()};
     place();
   };
@@ -3491,8 +3491,10 @@ let VHINFO={};
 const fixVH=()=>{const de=document.documentElement;const st=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
   const sh=innerHeight>innerWidth?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height);
   const gap=st?Math.round(sh-innerHeight):0;VHINFO={st,sh,ih:innerHeight,gap};
-  const adj=(typeof S!=='undefined'&&S&&S.ui&&+S.ui.vhAdj)||0;VHINFO.adj=adj;
-  if(st&&((gap>4&&gap<220)||adj)){de.classList.add('vh-fix');de.style.setProperty('--gap',(Math.max(0,gap)+adj)+'px')}else{de.classList.remove('vh-fix');de.style.removeProperty('--gap')}};
+  /* 実機（画面852・表示領域793）で「補正 = ずれ − 45」がぴったりだったので、それを自動の既定値にする */
+  const auto=gap>=40&&gap<=80?-45:0;const set=typeof S!=='undefined'&&S&&S.ui&&S.ui.vhAdj!=null&&S.ui.vhAdj!=='';
+  const adj=set?+S.ui.vhAdj:auto;VHINFO.adj=adj;VHINFO.auto=!set;
+  const g=Math.max(0,gap)+adj;if(st&&g>0&&g<220){de.classList.add('vh-fix');de.style.setProperty('--gap',g+'px')}else{de.classList.remove('vh-fix');de.style.removeProperty('--gap')}};
 addEventListener('resize',fixVH);addEventListener('orientationchange',()=>setTimeout(fixVH,350));addEventListener('pageshow',fixVH);
 load();fixVH();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
 })();
