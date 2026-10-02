@@ -878,6 +878,11 @@ body.sty-index .pad{background:#FFFEFA repeating-linear-gradient(transparent 0 7
 .rv-btns .btn,.databtns .btn{display:inline-flex;align-items:center;gap:6px}
 .rv-btns .btn svg.i,.databtns .btn svg.i{width:14px;height:14px}
 .loglink span.due{color:var(--now)}
+.due-b.back{animation:backFade 6s forwards}
+@keyframes backFade{0%,80%{opacity:1}100%{opacity:0}}
+.loglink .sy{font-style:normal}.loglink.sy-err{color:var(--now)!important}.loglink.sy-out{color:var(--accent)!important}
+.sync-me{display:flex;align-items:center;gap:10px}.sync-me img{width:32px;height:32px;border-radius:50%;flex:none}
+.sync-me b{display:block;font-size:13px}.sync-me small{display:block;font-size:11.5px;color:var(--ink3)}
 .side-foot button.armed{color:var(--now)!important;font-weight:600}
 @media (max-width:760px){.rv-row{flex-wrap:wrap}.rv-acts{max-width:none;width:100%;justify-content:flex-start;padding-left:21px}}
 /* ---------- capture & search ---------- */
@@ -1696,7 +1701,7 @@ const fmtMin=m=>m==null?'—':m<60?m+'分':(m%60?Math.floor(m/60)+'時間'+(m%60
 const fmtShort=m=>m==null?'':m<60?m+'m':(m%60?Math.floor(m/60)+'h'+(m%60):(m/60)+'h');
 const clock=m=>pad(Math.floor(m/60)%24)+':'+pad(m%60);
 const nowMin=()=>{const d=new Date();return d.getHours()*60+d.getMinutes()};
-const W=3000,H=2000;
+const W=3000,H=2000;const BOOT=Date.now();
 const MAC=/Mac|iPhone|iPad/.test(navigator.platform||navigator.userAgent||''),MODK=MAC?'⌘':'Ctrl+';
 const SIZES=[{z:.75,l:'小'},{z:.85,l:'標準'},{z:.95,l:'大'}];
 const sizeIdx=()=>Math.max(0,SIZES.findIndex(x=>x.z===S.ui.zoom));
@@ -1753,6 +1758,7 @@ const I={
  mail:'<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7l8 6 8-6"/>',
  phone:'<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/>',
  filter:'<path d="M4 6.5h16M7 12h10M10 17.5h4"/>',
+ sync:'<path d="M7 18.5h10a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.7 1.3A3.4 3.4 0 0 0 7 18.5z"/><path d="M10 14.5l2-2 2 2M12 12.5v4"/>',
  sort:'<path d="M4 7h11M4 12h8M4 17h5M17.5 5v14M14.5 16l3 3 3-3"/>'
 };
 const ic=(n,cls='i')=>`<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[n]||''}</svg>`;
@@ -1842,7 +1848,9 @@ function normalize(){
   rollover();
 }
 function rollover(){const t=todayKey();let n=0;S.tasks.forEach(k=>{if(k.sched&&k.sched.date!==t&&k.status!=='done'){k.sched=null;n++}});return n}
-let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},150)}
+let saveT;const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};function save(){clearTimeout(saveT);saveT=setTimeout(()=>{saveT=0;saveLocal();pushNow()},150)}
+const flushSave=()=>{if(!saveT)return;clearTimeout(saveT);saveT=0;saveLocal();pushNow()};
+addEventListener('pagehide',flushSave);document.addEventListener('visibilitychange',()=>{if(document.hidden)flushSave()});
 const F={tags:new Set(),labels:new Set(),area:null,time:null,due:null,energy:null};
 const DUEF=[{id:'d0',l:'今日まで（遅れを含む）',f:n=>n<=0},{id:'d3',l:'3日以内',f:n=>n<=3},{id:'d7',l:'1週間以内',f:n=>n<=7},{id:'d14',l:'2週間以内',f:n=>n<=14},{id:'dany',l:'締切があるもの',f:n=>true}];
 const TIMEF=[{id:'le15',l:'15分以内',f:m=>m<=15},{id:'le30',l:'30分以内',f:m=>m<=30},{id:'le60',l:'60分以内',f:m=>m<=60},{id:'gt60',l:'60分以上',f:m=>m>=60}];
@@ -1876,7 +1884,7 @@ function repLabel(r){if(!r)return '';if(r.type==='daily')return '毎日';if(r.ty
   if(r.type==='weekly')return '毎週'+ds;if(r.type==='biweekly')return '隔週'+ds;if(r.type==='monthly')return '毎月'+(r.dom||1)+'日';return ''}
 const dueB=t=>{const h=calB(t)+startB(t)+dueB0(t);return h?`<span class="badges">${h}</span>`:''};
 const repChip=t=>t.rep?`<span class="rep-chip">${ic('repeat')}${repLabel(t.rep)}</span>`:'';
-const startB=t=>{if(!t.start||t.status==='done')return '';if(tickled(t)){const n=dayDiff(t.start),d=new Date(t.start+'T00:00');return `<i class="due-b tk">${ic('tickler')}${n===1?'明日':(d.getMonth()+1)+'/'+d.getDate()}に戻る</i>`}if(t.start===todayKey())return `<i class="due-b back">↩ 戻ってきた</i>`;return ''};
+const startB=t=>{if(!t.start||t.status==='done')return '';if(tickled(t)){const n=dayDiff(t.start),d=new Date(t.start+'T00:00');return `<i class="due-b tk">${ic('tickler')}${n===1?'明日':(d.getMonth()+1)+'/'+d.getDate()}に戻る</i>`}if(t.start===todayKey()&&Date.now()-BOOT<6000)return `<i class="due-b back">↩ 戻ってきた</i>`;return ''};
 function dlLabel(k){const n=dayDiff(k),d=new Date(k+'T00:00');
   if(n<0)return{c:'dl-late',l:(-n)+'日遅れ'};if(n===0)return{c:'dl-today',l:'今日まで'};if(n===1)return{c:'dl-soon',l:'明日まで'};
   if(n<=6)return{c:'dl-near',l:'あと'+n+'日'};return{c:'dl-far',l:(d.getMonth()+1)+'/'+d.getDate()+'（'+'日月火水木金土'[d.getDay()]+'）まで'}}
@@ -1946,6 +1954,7 @@ function renderSide(){
      ${open?ps.map(p=>{const na=nextAction(p);return `<button class="nav projn ${sub?'deep':''} ${projMode()&&S.ui.proj===p.id?'on':''}" data-proj="${p.id}" data-drop="proj:${p.id}">${ic('clip')}<span class="lbl">${esc(p.title)}</span>${(st=>st.k==='ok'?'':`<i class="warn-dot ${st.k}" title="${esc(st.l)}"></i>`)(projState(p))}<span class="n">${pKids(p).length||''}</span></button>`}).join(''):''}`}).join('')}</div>
    <div class="side-foot">
      <button class="loglink ${sec==='review'?'on':''}" data-sec="review">${ic('review')}週次レビュー<span class="${rvAgo==null||rvAgo>=7?'due':''}">${rvAgo==null?'未実施':agoLabel(S.ui.lastReview)}</span></button>
+     ${SYNC.on?`<button class="loglink sy-${syncState()}" id="syncLink">${ic('sync')}<em class="sy">${syncShort()}</em></button>`:''}
      <button class="loglink ${sec==='log'&&!F.area?'on':''}" data-sec="log" data-drop="done">${ic('log')}完了ログ${doneToday?`<span>今日 ${doneToday}</span>`:''}</button>
      <div class="mob-only"><button id="sTl">${ic('cal')}今日のタイムライン</button><button id="sSet">${ic('palette')}デザイン</button><button id="sCfg">${ic('gear')}設定</button><button id="sGuide">${ic('book')}手引き</button></div>
      ${S.sample?'<button id="clearSample">サンプルを消去</button>':''}
@@ -1962,6 +1971,7 @@ function renderSide(){
   $('#sTl').onclick=()=>{closeSide();if(!S.ui.tl)toggleTL()};$('#sGuide').onclick=()=>{closeSide();openGuide()};
   $('#sCfg').onclick=e=>{e.stopPropagation();openConfig($('#sCfg'));closeSide()};
   $('#sSet').onclick=e=>{e.stopPropagation();const b=$('#sSet');openSettings(b);closeSide()};
+  const sl=$('#syncLink');if(sl)sl.onclick=e=>{e.stopPropagation();openConfig(sl)};
   const cs=$('#clearSample');if(cs)cs.onclick=()=>{
     if(!cs.classList.contains('armed')){cs.classList.add('armed');cs.textContent='もう一度押すと消去します';setTimeout(()=>{if(cs.isConnected){cs.classList.remove('armed');cs.textContent='サンプルを消去'}},4000);return}
     const gone=S.tasks.filter(t=>t.sample),kept=S.tasks.filter(t=>!t.sample);const ids=new Set(gone.map(t=>t.id));
@@ -3221,7 +3231,7 @@ function openSettings(btn){
 const openPlus=()=>S.ui.plus==='simple'?openCapture():openComposer();
 let CFGP=null;
 function closeConfig(){if(CFGP){CFGP.remove();CFGP=null;document.removeEventListener('pointerdown',cfgOutside,true)}}
-function cfgOutside(e){if(CFGP&&!CFGP.contains(e.target)&&!e.target.closest('#cfgBtn,#sCfg'))closeConfig()}
+function cfgOutside(e){if(CFGP&&!CFGP.contains(e.target)&&!e.target.closest('#cfgBtn,#sCfg,#syncLink'))closeConfig()}
 function openConfig(btn){
   if(CFGP){closeConfig();return}closeSettings();closePop();
   const el=document.createElement('div');el.className='setpop';document.body.appendChild(el);CFGP=el;
@@ -3229,19 +3239,21 @@ function openConfig(btn){
     el.style.left=Math.max(12,Math.min(r.right-w,innerWidth-w-12))+'px';el.style.top=Math.max(12,Math.min(r.bottom+8,innerHeight-h-12))+'px'};
   const draw=()=>{
     el.innerHTML=`<h3>設定<button class="ph-close" data-phx>完了</button></h3>
+     ${syncRow()}
      <div class="setrow"><span>＋ボタンで開く画面</span><div class="seg">${[['rich','リッチ（置き場所まで決める）'],['simple','シンプル（Inboxに書き出すだけ）']].map(([v,l])=>`<button data-plus="${v}" class="${(S.ui.plus||'rich')===v?'on':''}">${l}</button>`).join('')}</div><div class="hint desk-only">${MODK}K はいつでもシンプルな書き出しです。</div></div>
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow desk-only"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
      <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く<span class="desk-only">（?）</span></button></div>
      ${VHINFO.st?`<div class="setrow"><span>画面下端の位置（ホーム画面アプリ）</span><div class="vhadj"><button class="btn" data-vh="-5">上へ</button><b>${(VHINFO.adj||0)>0?'+':''}${VHINFO.adj||0}${VHINFO.auto?'（自動）':''}</b><button class="btn" data-vh="5">下へ</button><button class="btn" data-vh="0">自動</button></div><div class="hint">タブバーが浮く・めり込むときに調整します。診断：画面 ${VHINFO.sh} ／ 表示領域 ${VHINFO.ih} ／ 補正 ${VHINFO.gap}${VHINFO.adj?(VHINFO.adj>0?'+':'')+VHINFO.adj:''}px</div></div>`:''}`;
-    $('#kbT',el).onclick=()=>{kbOpen=!kbOpen;draw()};$$('[data-phx]',el).forEach(b=>b.onclick=closeConfig);
+    {const a=$('#sgIn',el);if(a)a.onclick=signIn;const b=$('#sgOut',el);if(b)b.onclick=async()=>{await signOutSync();toast('ログアウトしました（この端末のデータはそのまま残ります）')}}
+    const kb=$('#kbT',el);if(kb)kb.onclick=()=>{kbOpen=!kbOpen;draw()};$$('[data-phx]',el).forEach(b=>b.onclick=closeConfig);
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
     $$('[data-plus]',el).forEach(b=>b.onclick=()=>{S.ui.plus=b.dataset.plus;save();draw()});
     $$('[data-vh]',el).forEach(b=>b.onclick=()=>{const v=+b.dataset.vh;S.ui.vhAdj=v?Math.max(-120,Math.min(120,(VHINFO.adj||0)+v)):null;save();fixVH();draw()});
     $('#cfgGuide',el).onclick=()=>{closeConfig();openGuide()};
     place();
   };
-  draw();
+  el._draw=draw;draw();
   document.addEventListener('pointerdown',cfgOutside,true);
 }
 function commitLook(){save();applyLook();padSig='';renderMain();if(S.ui.tl)renderTL()}
@@ -3775,6 +3787,140 @@ function confirmImport(d,name){
   setTimeout(()=>$('#imOk',scrim).focus(),30);
 }
 
+/* ---------- cloud sync (Firebase) ----------
+   Firebase コンソールの「プロジェクトの設定 → マイアプリ」にある firebaseConfig の中身を、下の FB_CONFIG に貼り付けてください。
+   空のままなら同期は無効で、これまでどおりこのブラウザの中だけに保存します。 */
+const FB_CONFIG={
+  apiKey:"AIzaSyA4ENp6TMDVuvZQvPAw9IL-LGx0MwhraKw",
+  authDomain:"fusen-todo.firebaseapp.com",
+  projectId:"fusen-todo",
+  storageBucket:"fusen-todo.firebasestorage.app",
+  messagingSenderId:"234781332475",
+  appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
+};
+const FBV='10.14.1';
+const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
+const SKEY='fusen.sync';
+let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
+const saveSB=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SB))}catch(e){}};
+const hj=j=>j==null?null:hash(j)+':'+j.length;
+let FB=null;
+const metaJ=()=>JSON.stringify({areas:S.areas,places:S.places,labels:S.labels||[],sample:!!S.sample,lastReview:S.ui.lastReview||null});
+function setMeta(j){const m=JSON.parse(j);if(Array.isArray(m.areas))S.areas=m.areas;if(Array.isArray(m.places))S.places=m.places;if(Array.isArray(m.labels))S.labels=m.labels;S.sample=!!m.sample;if(m.lastReview)S.ui.lastReview=m.lastReview;TAGS=S.places}
+const fixTask=t=>{if(!Array.isArray(t.tags))t.tags=[];if(!Array.isArray(t.labels))t.labels=[];return t};
+const tcol=()=>FB.FS.collection(FB.db,'users',SYNC.user.uid,'fusenTasks');
+const mref=()=>FB.FS.doc(FB.db,'users',SYNC.user.uid,'fusen','meta');
+function syncState(){if(!SYNC.user)return 'out';if(SYNC.state==='err')return 'err';if(!navigator.onLine)return 'offline';if(!SYNC.ready||SYNC.pT||SYNC.pM)return 'sync';return 'ok'}
+const syncShort=()=>({out:'ログインして同期',err:'同期エラー',offline:'オフライン',sync:'同期中…',ok:'同期済み'})[syncState()];
+const syncLong=()=>({out:'',err:'エラー：'+SYNC.err,offline:'オフラインです。つながると自動で送ります',sync:'同期しています…',ok:'同期済み（変更は自動で送られます）'})[syncState()];
+function syncUI(){const l=$('#syncLink');if(l){l.className='loglink sy-'+syncState();$('.sy',l).textContent=syncShort()}if(CFGP&&CFGP._draw)CFGP._draw()}
+addEventListener('online',syncUI);addEventListener('offline',syncUI);
+function syncRow(){
+  if(!SYNC.on)return `<div class="setrow"><span>同期</span><div class="hint">未設定です。index.html の FB_CONFIG に Firebase の設定を貼り付けると、Google アカウントで端末どうしを同期できます。</div></div>`;
+  const u=SYNC.user;
+  if(u)return `<div class="setrow"><span>同期</span><div class="sync-me">${u.photoURL?`<img src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">`:ic('user')}<div><b>${esc(u.displayName||'')}</b><small>${esc(u.email||'')}</small></div></div><div class="hint">${esc(syncLong())}</div><div class="databtns"><button class="btn" id="sgOut">ログアウト</button></div></div>`;
+  return `<div class="setrow"><span>同期</span><div class="databtns"><button class="btn primary" id="sgIn">${ic('user')}Google でログイン</button></div><div class="hint">${SYNC.err?esc(SYNC.err)+'<br>':''}ログインすると、同じ Google アカウントの Mac・iPhone などで自動的に同期されます。</div></div>`;
+}
+const authMsg=e=>{const c=e&&e.code||'';return c==='auth/unauthorized-domain'?'このサイトのドメインが Firebase の「承認済みドメイン」に入っていません':c==='auth/network-request-failed'?'ネットワークにつながっていません':c==='auth/operation-not-allowed'?'Firebase で Google ログインが有効になっていません':'ログインできませんでした（'+(c||e)+'）'};
+const fsMsg=e=>{const c=e&&e.code||'';return c==='permission-denied'?'Firestore のルールで拒否されました':c==='unavailable'?'サーバーにつながりません':(e&&e.message)||String(e)};
+function syncErr(e){SYNC.state='err';SYNC.err=fsMsg(e);syncUI()}
+async function fbInit(){
+  if(!SYNC.on||FB)return;
+  try{
+    const base=`https://www.gstatic.com/firebasejs/${FBV}/`;
+    const [A,AU,FS]=await Promise.all(['firebase-app.js','firebase-auth.js','firebase-firestore.js'].map(f=>import(base+f)));
+    const app=A.initializeApp(FB_CONFIG);
+    let db;try{db=FS.initializeFirestore(app,{localCache:FS.persistentLocalCache({tabManager:FS.persistentMultipleTabManager()})})}catch(e){db=FS.getFirestore(app)}
+    const auth=AU.getAuth(app);
+    FB={AU,FS,db,auth,unsub:[]};
+    AU.getRedirectResult(auth).catch(e=>{SYNC.err=authMsg(e);syncUI()});
+    AU.onAuthStateChanged(auth,u=>{if(u)startSync(u);else stopSync()});
+  }catch(e){SYNC.on=true;SYNC.err='Firebase を読み込めませんでした';syncUI()}
+}
+async function signIn(){
+  if(!FB){toast('同期の準備中です。少し待ってからもう一度押してください');return}
+  const {AU,auth}=FB;const p=new AU.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});SYNC.err='';
+  try{await AU.signInWithPopup(auth,p)}catch(e){
+    if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment','auth/web-storage-unsupported'].includes(e.code)){try{await AU.signInWithRedirect(auth,p)}catch(e2){SYNC.err=authMsg(e2);syncUI()}}
+    else if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request'){SYNC.err=authMsg(e);syncUI()}}
+}
+async function signOutSync(){flushSave();if(FB)await FB.AU.signOut(FB.auth)}
+function stopSync(){if(FB){FB.unsub.forEach(f=>f());FB.unsub=[]}SYNC.user=null;SYNC.ready=false;SYNC.state='out';syncUI()}
+function askMerge(n,m){return new Promise(res=>{const scrim=document.createElement('div');scrim.className='scrim';
+  scrim.innerHTML=`<div class="sheet" role="dialog" aria-label="データの扱い"><div class="sheet-body"><b class="im-h">${ic('sync')}クラウドにデータがあります</b>
+   <p class="im-p">クラウドに ${m}件、この端末にはクラウドにないタスクが ${n}件 あります。この端末の分をどうしますか？</p>
+   <div class="hint">「クラウドだけ使う」を選ぶと、この端末の ${n}件 は消えます。心配なら先に設定からバックアップを書き出してください。</div></div>
+   <div class="sheet-foot"><span class="spacer"></span><button class="btn" id="mgCloud">クラウドだけ使う</button><button class="btn primary" id="mgMerge">合わせる</button></div></div>`;
+  document.body.appendChild(scrim);const fin=v=>{scrim.remove();res(v)};$('#mgCloud',scrim).onclick=()=>fin(false);$('#mgMerge',scrim).onclick=()=>fin(true)})}
+async function startSync(u){
+  if(SYNC.user&&SYNC.user.uid===u.uid)return;
+  SYNC.user=u;SYNC.ready=false;SYNC.state='sync';SYNC.err='';syncUI();
+  const {FS}=FB;
+  if(SB.uid!==u.uid){
+    /* この端末で初めてのログイン：まずサーバーの中身を確かめる */
+    let ms,ts;
+    try{[ms,ts]=await Promise.all([FS.getDocFromServer(mref()),FS.getDocsFromServer(tcol())])}
+    catch(e){SYNC.user=null;SYNC.state='err';SYNC.err=e&&e.code==='permission-denied'?fsMsg(e):'オンラインのときにもう一度試します（'+fsMsg(e)+'）';syncUI();
+      addEventListener('online',()=>{if(FB.auth.currentUser)startSync(FB.auth.currentUser)},{once:true});return}
+    const cloud=new Map(ts.docs.map(d=>[d.id,d.data().j]));
+    SB={uid:u.uid,h:{}};
+    if(ms.exists()||cloud.size){
+      const mine=S.tasks.filter(t=>!t.sample&&!cloud.has(t.id));
+      const merge=mine.length?await askMerge(mine.length,cloud.size):false;
+      const lm={areas:S.areas,places:S.places,labels:S.labels||[]};
+      S.tasks=[...[...cloud.values()].map(j=>fixTask(JSON.parse(j))),...(merge?mine:[])];
+      cloud.forEach((j,id)=>{SB.h[id]=hj(j)});
+      if(ms.exists()){const mj=ms.data().j;setMeta(mj);SB.h.__meta=hj(mj)}
+      if(merge)['areas','places','labels'].forEach(k=>{const have=new Set(S[k].map(x=>x.id));lm[k].forEach(x=>{if(!have.has(x.id))S[k].push(x)})});
+      TAGS=S.places;resetView();saveLocal();render();
+      toast(merge?'クラウドのデータと合わせました':'クラウドのデータを読み込みました');
+    }else toast('この端末のデータをクラウドに送ります');
+    saveSB();
+  }
+  attach();
+}
+let rrT=0;
+function remoteRender(){clearTimeout(rrT);const ae=document.activeElement;
+  const busy=D||DR||SWO||LADD||POP||$('.scrim')||$('#cmp')||$('#guide')||(ae&&ae.matches&&ae.matches('input,textarea'));
+  if(busy){rrT=setTimeout(remoteRender,800);return}render()}
+/* 1件ずつ「最後に同期した内容（SB.h）」と比べて、どちらで変わったかを判断する */
+function reconcile(id,rj,cur,setLocal,delLocal,allowDel){
+  const r=hj(rj),b=SB.h[id],l=cur==null?null:hj(cur);
+  if(r===b)return false;
+  if(rj==null){if(b===undefined||!allowDel)return false;let ch=false;if(l===b){delLocal();ch=true}delete SB.h[id];return ch}
+  let ch=false;if(l!==r){setLocal(rj);ch=true}SB.h[id]=r;return ch;
+}
+function afterRemote(ch){if(ch){saveLocal();remoteRender()}SYNC.ready=true;if(SYNC.state==='err'&&navigator.onLine)SYNC.state='sync';saveSB();pushNow();syncUI()}
+function attach(){
+  const {FS}=FB;let srv=false;
+  FB.unsub.push(FS.onSnapshot(tcol(),{includeMetadataChanges:true},snap=>{
+    if(!snap.metadata.fromCache)srv=true;
+    const rem=new Map(snap.docs.map(d=>[d.id,d.data().j]));
+    const loc=new Map(S.tasks.map(t=>[t.id,t]));
+    const ids=new Set([...rem.keys(),...Object.keys(SB.h).filter(k=>k!=='__meta'),...loc.keys()]);
+    let ch=false;
+    ids.forEach(id=>{const t=loc.get(id);
+      ch=reconcile(id,rem.has(id)?rem.get(id):null,t?JSON.stringify(t):null,
+        rj=>{const o=fixTask(JSON.parse(rj));if(t){Object.keys(t).forEach(k=>delete t[k]);Object.assign(t,o)}else S.tasks.push(o)},
+        ()=>{const i=S.tasks.indexOf(t);if(i>=0)S.tasks.splice(i,1)},srv)||ch});
+    SYNC.pT=snap.metadata.hasPendingWrites;afterRemote(ch);
+  },syncErr));
+  FB.unsub.push(FS.onSnapshot(mref(),{includeMetadataChanges:true},snap=>{
+    const ch=snap.exists()?reconcile('__meta',snap.data().j,metaJ(),setMeta,()=>{},false):false;
+    SYNC.pM=snap.metadata.hasPendingWrites;if(ch)padSig='';afterRemote(ch);
+  },syncErr));
+}
+function pushNow(){
+  if(!SYNC.ready||!SYNC.user||!FB)return;
+  const {FS}=FB,ops=[],loc=new Set();
+  S.tasks.forEach(t=>{loc.add(t.id);const j=JSON.stringify(t),h=hj(j);if(SB.h[t.id]!==h){ops.push([FS.doc(tcol(),t.id),j]);SB.h[t.id]=h}});
+  Object.keys(SB.h).forEach(id=>{if(id==='__meta'||loc.has(id))return;ops.push([FS.doc(tcol(),id),null]);delete SB.h[id]});
+  const mj=metaJ(),mh=hj(mj);if(SB.h.__meta!==mh){ops.push([mref(),mj]);SB.h.__meta=mh}
+  if(!ops.length)return;saveSB();
+  for(let i=0;i<ops.length;i+=400){const b=FS.writeBatch(FB.db);ops.slice(i,i+400).forEach(([r,j])=>j==null?b.delete(r):b.set(r,{j,t:Date.now()}));b.commit().catch(syncErr)}
+  SYNC.pT=true;syncUI();
+}
+
 /* ---------- toast ---------- */
 let toastT;
 function toast(msg,act){
@@ -3937,6 +4083,8 @@ const fixVH=()=>{const de=document.documentElement;const st=IOS&&(navigator.stan
   const g=Math.max(0,gap)+adj;if(st&&g>0&&g<220){de.classList.add('vh-fix');de.style.setProperty('--gap',g+'px')}else{de.classList.remove('vh-fix');de.style.removeProperty('--gap')}};
 addEventListener('resize',fixVH);addEventListener('orientationchange',()=>setTimeout(fixVH,350));addEventListener('pageshow',fixVH);
 load();fixVH();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
+setTimeout(()=>{$$('.due-b.back').forEach(e=>{const b=e.parentNode;e.remove();if(b&&b.classList.contains('badges')&&!b.children.length)b.remove()})},6100);
+fbInit();
 })();
 </script>
 
