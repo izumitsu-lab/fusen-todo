@@ -1630,6 +1630,14 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 }
 .fp-h>span{margin-left:8px}
 @media (max-width:760px){.fp-h>span{margin-left:0}}
+.logrow .ldel{color:var(--ink3)!important;display:flex;align-items:center;padding:3px!important;opacity:.55}
+.logrow .ldel svg.i{width:13px;height:13px}
+.logrow:hover .ldel{opacity:1}.logrow .ldel:hover{color:var(--now)!important;background:color-mix(in srgb,var(--now) 10%,transparent)!important}
+.log-purge{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin:28px 0 8px;padding-top:16px;border-top:1px solid var(--line)}
+.log-purge .btn{color:var(--now);display:inline-flex;align-items:center;gap:6px}.log-purge .btn svg.i{width:13px;height:13px}
+.log-purge .btn.armed{background:var(--now);color:#fff;border-color:transparent}
+.log-purge small{font-size:12px;color:var(--ink3)}
+@media (max-width:760px){.logrow .ldel{opacity:1;padding:8px!important;margin:-6px -6px -6px 0}.logrow .ldel svg.i{width:16px;height:16px}.log-purge{margin:28px 16px 8px}.log-purge .btn{min-height:44px;font-size:15px}.log-purge small{font-size:13px}}
 /*PH-END*/
 /* iOS のホーム画面アプリで、表示領域が画面より短く報告される不具合の補正。
    ページ全体の高さは変えず、画面下端に付く要素だけを --gap 分だけ下へずらす（JS で html.vh-fix を付ける） */
@@ -2477,10 +2485,21 @@ function renderLog(el){
   const by={};done.forEach(x=>{const k=dayKey(new Date(x.doneAt));(by[k]=by[k]||[]).push(x)});
   const label=k=>{if(k===tk)return '今日';const d=new Date(k+'T00:00');const y=new Date();y.setDate(y.getDate()-1);if(k===dayKey(y))return '昨日';return (d.getMonth()+1)+'月'+d.getDate()+'日（'+'日月火水木金土'[d.getDay()]+'）'};
   const tm=ms=>{const d=new Date(ms);return clock(d.getHours()*60+d.getMinutes())};
+  const cut=(()=>{const d=new Date();d.setMonth(d.getMonth()-1);d.setHours(0,0,0,0);return d})();const MON_AGO_L=(cut.getMonth()+1)+'月'+cut.getDate()+'日';
+  const old=done.filter(x=>x.doneAt<cut.getTime());
   el.innerHTML=`<div class="list-scroll">${phHead()}<div class="list">
    <div class="log-sum"><div><small>今日 完了</small><b>${today.length}件</b></div><div><small>今日の作業時間</small><b>${fmtMin(today.reduce((s,x)=>s+(x.minutes||0),0))}</b></div><div><small>過去7日間</small><b>${wk.length}件</b></div></div>
-   ${done.length?Object.keys(by).map(k=>`<div class="lgroup logday"><h3>${label(k)}<span>${by[k].length}件</span></h3>${by[k].map((x,i)=>`<div class="logrow ${colorOf(x.t)}"><span class="ok">${ic('log')}</span><div class="lt"><b>${esc(x.title)}</b>${x.parent?`<small>${ic('clip')}${esc(x.parent)}</small>`:''}${x.proj?`<small>${ic('clip')}プロジェクト完了</small>`:''}</div><time>${fmtShort(x.minutes)} · ${tm(x.doneAt)}</time><button data-restore="${k}|${i}">戻す</button></div>`).join('')}</div>`).join(''):'<div class="empty-list"><b>まだ完了したタスクはありません</b>付箋の丸をクリックすると、くしゃっと丸めてここに記録します。</div>'}
+   ${done.length?Object.keys(by).map(k=>`<div class="lgroup logday"><h3>${label(k)}<span>${by[k].length}件</span></h3>${by[k].map((x,i)=>`<div class="logrow ${colorOf(x.t)}"><span class="ok">${ic('log')}</span><div class="lt"><b>${esc(x.title)}</b>${x.parent?`<small>${ic('clip')}${esc(x.parent)}</small>`:''}${x.proj?`<small>${ic('clip')}プロジェクト完了</small>`:''}</div><time>${fmtShort(x.minutes)} · ${tm(x.doneAt)}</time><button data-restore="${k}|${i}">戻す</button><button class="ldel" data-ldel="${k}|${i}" title="ログから削除" aria-label="ログから削除">${ic('x')}</button></div>`).join('')}</div>`).join('')
+   +(old.length?`<div class="log-purge"><button class="btn" id="logPurge">${ic('x')}1か月より前のログを消す（${old.length}件）</button><small>${MON_AGO_L}より前に完了したものが対象です</small></div>`:''):'<div class="empty-list"><b>まだ完了したタスクはありません</b>付箋の丸をクリックすると、くしゃっと丸めてここに記録します。</div>'}
   </div></div>`;
+  /* ログから消す（元に戻せる）。完了済みプロジェクトを消すときは、中のタスクのつながりも外して覚えておく */
+  const purge=(list,msg)=>{const ids=new Set(list.map(x=>x.t.id));const snap=S.tasks.slice();const links=[];
+    S.tasks.forEach(t=>{if(t.project&&ids.has(t.project)&&!ids.has(t.id)){links.push([t,t.project]);t.project=null}});
+    S.tasks=S.tasks.filter(t=>!ids.has(t.id));save();render();
+    toast(msg,{label:'元に戻す',fn:()=>{S.tasks=snap;links.forEach(([t,p])=>{t.project=p});save();render()}})};
+  $$('[data-ldel]',el).forEach(b=>b.onclick=()=>{const [k,i]=b.dataset.ldel.split('|');const x=by[k][+i];purge([x],'ログから削除しました')});
+  const pg=$('#logPurge',el);if(pg)pg.onclick=()=>{if(!pg.classList.contains('armed')){pg.classList.add('armed');pg.lastChild.textContent=`もう一度押すと ${old.length}件 を消します`;setTimeout(()=>{if(pg.isConnected&&pg.classList.contains('armed')){pg.classList.remove('armed');pg.lastChild.textContent=`1か月より前のログを消す（${old.length}件）`}},4000);return}
+    purge(old,`${old.length}件のログを消しました`)};
   $$('[data-restore]',el).forEach(b=>b.onclick=()=>{const [k,i]=b.dataset.restore.split('|');const x=by[k][+i];
     x.t.status=x.t.prevStatus||'next';x.t.doneAt=null;x.t.sched=null;
     save();render();toast(SECT[x.t.status].en+' に戻しました')});
