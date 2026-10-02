@@ -1354,8 +1354,8 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 /* iOS のホーム画面アプリで、表示領域が画面より短く報告される不具合の補正。
    ページ全体の高さは変えず、画面下端に付く要素だけを --gap 分だけ下へずらす（JS で html.vh-fix を付ける） */
 html.vh-fix{--bpad:max(env(safe-area-inset-bottom,0px),20px)}
-html.vh-fix .side,html.vh-fix .scrim,html.vh-fix .guide,html.vh-fix .cmp{bottom:calc(-1 * var(--gap))}
 @media (max-width:760px){
+  html.vh-fix .side,html.vh-fix .scrim,html.vh-fix .guide,html.vh-fix .cmp{bottom:calc(-1 * var(--gap))}
   html.vh-fix .tabs{bottom:calc(-1 * var(--gap));height:calc(58px + var(--bpad));padding-bottom:var(--bpad);box-sizing:border-box}
   html.vh-fix .fab{bottom:calc(74px + var(--bpad) - var(--gap))}
   html.vh-fix .toast{bottom:calc(144px + var(--bpad) - var(--gap))}
@@ -3488,7 +3488,9 @@ let wasNarrow=narrow();
 window.addEventListener('resize',()=>{if(narrow()!==wasNarrow){wasNarrow=narrow();render();return}if(S.ui.tl)renderTL()});
 
 let VHINFO={};
-const fixVH=()=>{const de=document.documentElement;const st=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
+/* iPhone / iPad のホーム画面アプリだけが対象。Mac の Safari で「Dock に追加」したアプリには適用しない */
+const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const fixVH=()=>{const de=document.documentElement;const st=IOS&&(navigator.standalone===true||matchMedia('(display-mode: standalone)').matches);
   const sh=innerHeight>innerWidth?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height);
   const gap=st?Math.round(sh-innerHeight):0;VHINFO={st,sh,ih:innerHeight,gap};
   /* 実機（画面852・表示領域793）で「補正 = ずれ − 45」がぴったりだったので、それを自動の既定値にする */
