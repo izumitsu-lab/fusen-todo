@@ -2743,7 +2743,7 @@ function openEditor(t,pos,msg,opts={}){
   const proj=isProj(d);
   const scrim=document.createElement('div');scrim.className='scrim edscrim';
   scrim.innerHTML=`<div class="sheet ed ${colorOf(d)}" role="dialog" aria-label="${proj?'プロジェクト':'タスク'}を編集">
-   <div class="ed-nav"><button class="ed-nb" data-act="cancel">キャンセル</button><b></b><button class="ed-nb b" data-act="save">${isNew?'追加':'保存'}</button></div>
+   <div class="ed-nav">${isNew?'<button class="ed-nb" data-act="cancel">キャンセル</button>':'<span class="ed-nb"></span>'}<b></b><button class="ed-nb b" data-act="save">${isNew?'追加':'完了'}</button></div>
    <div class="ed-scroll">
     ${msg?`<div class="ed-msg">${msg}</div>`:''}
     <div class="ed-head">${isNew||proj?`<span class="ed-ck0 ${proj?'pj':''}">${proj?ic('clip'):''}</span>`:`<button class="ed-ck" id="edDone" title="完了にする" aria-label="完了にする">${ic('log')}</button>`}
@@ -2751,13 +2751,17 @@ function openEditor(t,pos,msg,opts={}){
      <textarea class="ed-n" id="edNote" rows="1" placeholder="メモ">${esc(d.note)}</textarea></div></div>
     <div id="edGroups"></div>
    </div>
-   <div class="ed-foot">${isNew?'':'<button class="ed-del" id="edDel">削除</button>'}<span class="spacer"></span><span class="kbd-hint">⌘⏎ で保存</span><button class="btn" data-act="cancel">キャンセル</button><button class="btn primary" data-act="save">${isNew?'追加':'保存'}</button></div>
+   <div class="ed-foot">${isNew?'':'<button class="ed-del" id="edDel">削除</button>'}<span class="spacer"></span>${isNew?'<span class="kbd-hint">⌘⏎ で追加</span><button class="btn" data-act="cancel">キャンセル</button><button class="btn primary" data-act="save">追加</button>':'<span class="kbd-hint">変更はすぐに保存されます</span><button class="btn primary" data-act="save">完了</button>'}</div>
    <div class="ed-page" id="edPage" hidden></div>
   </div>`;
   const sheet=$('.sheet',scrim),grpEl=$('#edGroups',scrim),ti=$('#edTitle',scrim),nt=$('#edNote',scrim);
   const grow=x=>{x.style.height='auto';x.style.height=x.scrollHeight+'px'};
-  ti.oninput=()=>{d.title=ti.value.replace(/\n/g,' ');grow(ti)};nt.oninput=()=>{d.note=nt.value;grow(nt)};
-  ti.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();if(e.metaKey||e.ctrlKey)return;commit()}};
+  /* 既存のタスクは、変えたそばから保存する（保存ボタンは不要） */
+  const orig=t?JSON.parse(JSON.stringify(t)):null;let live=false,lt=0;
+  const applyLive=()=>{if(isNew||!live)return;keep();const ti2=d.title.trim();Object.assign(t,d,{title:ti2||t.title});save();render()};
+  const liveSoon=()=>{if(isNew||!live)return;clearTimeout(lt);lt=setTimeout(applyLive,400)};
+  ti.oninput=()=>{d.title=ti.value.replace(/\n/g,' ');grow(ti);liveSoon()};nt.oninput=()=>{d.note=nt.value;grow(nt);liveSoon()};
+  ti.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();if(e.metaKey||e.ctrlKey)return;isNew?commit():close()}};
   const keep=()=>{d.title=ti.value.replace(/\n/g,' ');d.note=nt.value;const w=$('#edWait',scrim);if(w)d.waitingFor=w.value};
   /* ---- row values ---- */
   const V={
@@ -2791,7 +2795,7 @@ function openEditor(t,pos,msg,opts={}){
     const top=grpEl.closest('.ed-scroll').scrollTop;
     grpEl.innerHTML=g1+g2+g3+hint+acts;grpEl.closest('.ed-scroll').scrollTop=top;
     $$('.er[data-k]',grpEl).forEach(b=>b.onclick=()=>{keep();if(pick===b.dataset.k&&!narrow()){closePick();return}openPick(b.dataset.k,b)});
-    const w=$('#edWait',grpEl);if(w)w.oninput=()=>{d.waitingFor=w.value};
+    const w=$('#edWait',grpEl);if(w)w.oninput=()=>{d.waitingFor=w.value;liveSoon()};
     const ct=$('#edCTime',grpEl);if(ct)ct.onchange=()=>{const v=ct.value;if(v){const [h,m]=v.split(':').map(Number);d.ctime=h*60+m}else d.ctime=null;drawRows()};
     const cx=$('#edCTimeX',grpEl);if(cx)cx.onclick=e=>{e.preventDefault();d.ctime=null;drawRows()};
     $$('#edKind button',grpEl).forEach(b=>b.onclick=()=>{d.info=!!b.dataset.v;drawRows()});
@@ -2799,7 +2803,7 @@ function openEditor(t,pos,msg,opts={}){
     const tp=$('#edMkProj',grpEl);if(tp)tp.onclick=()=>{keep();if(d.status==='inbox')d.status='next';d.kind='project';d.minutes=null;d.tags=[];d.sched=null;if(commit()===false){d.kind=undefined;return}const T=taskById(d.id);if(T&&isProj(T)){T.start=null;T.rep=null;openProject(T.id,true)}};
     const dp=$('#edFinProj',grpEl);if(dp)dp.onclick=()=>{keep();if(commit()===false)return;const P=taskById(d.id);if(!P)return;P.prevStatus='next';P.status='done';P.doneAt=Date.now();if(S.ui.proj===P.id)S.ui.section='projects';save();render();toast('プロジェクトを完了しました',{label:'元に戻す',fn:()=>{P.status='next';P.doneAt=null;save();render()}})};
     const dm=$('#edDelM',grpEl);if(dm)dm.onclick=()=>doDel(dm);
-    sheet.className='sheet ed '+colorOf(d);
+    sheet.className='sheet ed '+colorOf(d);if(live){clearTimeout(lt);applyLive()}
   };
   /* ---- picker ---- */
   const po=(v,label,on,pre='',em='')=>`<button class="po ${on?'on':''}" data-v="${v}">${pre}<span class="pol">${label}</span>${em?`<em>${em}</em>`:''}<i class="pck">${ic('log')}</i></button>`;
@@ -2888,19 +2892,22 @@ function openEditor(t,pos,msg,opts={}){
     save();close();render();
   };
   const doDel=b=>{if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='もう一度押すと削除';return}const i=S.tasks.findIndex(x=>x.id===d.id);const old=S.tasks[i];if(i>=0)S.tasks.splice(i,1);save();close();render();if(old)toast('削除しました',{label:'元に戻す',fn:()=>{S.tasks.splice(Math.min(i,S.tasks.length),0,old);save();render()}})};
-  const close=()=>{closePick(true);document.removeEventListener('pointerdown',popOut,true);document.removeEventListener('keydown',onKey,true);window.removeEventListener('resize',onRs);scrim.remove()};
+  const close=()=>{closePick(true);document.removeEventListener('pointerdown',popOut,true);document.removeEventListener('keydown',onKey,true);window.removeEventListener('resize',onRs);
+    if(!isNew&&live&&taskById(t.id)){clearTimeout(lt);applyLive();live=false;
+      if(JSON.stringify(t)!==JSON.stringify(orig))toast('変更を保存しました',{label:'元に戻す',fn:()=>{Object.keys(t).forEach(k=>{if(!(k in orig))delete t[k]});Object.assign(t,JSON.parse(JSON.stringify(orig)));save();render()}})}
+    live=false;scrim.remove()};
   const onKey=e=>{const tops_=$$('.scrim');if(tops_[tops_.length-1]!==scrim||$('#guide'))return;
     if(e.key==='Escape'){e.preventDefault();e.stopPropagation();if(pick)closePick();else close();return}
-    if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)&&!isIME(e)){e.preventDefault();commit()}};
+    if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)&&!isIME(e)){e.preventDefault();isNew?commit():close()}};
   const onRs=()=>{if(pickEl&&!narrow())placePick()};
   document.addEventListener('keydown',onKey,true);window.addEventListener('resize',onRs);
-  $$('[data-act="cancel"]',scrim).forEach(b=>b.onclick=close);$$('[data-act="save"]',scrim).forEach(b=>b.onclick=()=>commit());
+  $$('[data-act="cancel"]',scrim).forEach(b=>b.onclick=close);$$('[data-act="save"]',scrim).forEach(b=>b.onclick=()=>isNew?commit():close());
   const dl=$('#edDel',scrim);if(dl)dl.onclick=()=>doDel(dl);
   const dn=$('#edDone',scrim);if(dn)dn.onclick=()=>{keep();if(!d.title.trim())return;dn.classList.add('on');setTimeout(()=>{Object.assign(t,d,{title:d.title.trim()});close();finishComplete({t})},260)};
   const openedAt=Date.now();/* タップで開いた直後の「おまけのクリック」が下の行に当たらないようにする */
-  scrim.addEventListener('click',e=>{if(Date.now()-openedAt<450){e.preventDefault();e.stopPropagation()}},true);
+  scrim.addEventListener('click',e=>{if(narrow()&&Date.now()-openedAt<450){e.preventDefault();e.stopPropagation()}},true);
   scrim.addEventListener('pointerdown',e=>{if(e.target===scrim&&Date.now()-openedAt>450)close()});
-  drawRows();document.body.appendChild(scrim);requestAnimationFrame(()=>{grow(ti);grow(nt)});
+  drawRows();document.body.appendChild(scrim);live=!isNew;requestAnimationFrame(()=>{grow(ti);grow(nt)});
   setTimeout(()=>{if(narrow()&&!isNew)return;ti.focus();ti.setSelectionRange(ti.value.length,ti.value.length)},30);
   if(msg&&/エリア/.test(msg)&&!area(d.area))setTimeout(()=>{const r=$('.er[data-k="area"]',grpEl);if(r)openPick('area',r)},60);
 }
