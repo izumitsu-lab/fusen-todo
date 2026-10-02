@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="Fusen">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#F8F7F4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#222120" media="(prefers-color-scheme: dark)">
 <style>html{color-scheme:light}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
@@ -1350,6 +1350,12 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 }
 @keyframes edIn{from{transform:translateX(100%)}}
 @keyframes edOut{to{transform:translateX(100%)}}
+/* ホーム画面アプリ（standalone）では画面いっぱいに描き、上下の安全領域は自分で空ける */
+@media (display-mode:standalone){
+  html,body{height:100%;min-height:100vh;min-height:-webkit-fill-available}
+  .app{height:100vh;height:-webkit-fill-available}
+  @supports (height:100lvh){.app{height:100lvh}}
+}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 @media (max-width:760px){
   .app{grid-template-columns:1fr}
