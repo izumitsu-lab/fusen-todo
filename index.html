@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="Fusen">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#F8F7F4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#222120" media="(prefers-color-scheme: dark)">
 <style>html{color-scheme:light}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
@@ -1350,12 +1350,23 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 }
 @keyframes edIn{from{transform:translateX(100%)}}
 @keyframes edOut{to{transform:translateX(100%)}}
-/* ホーム画面アプリ（standalone）では画面いっぱいに描き、上下の安全領域は自分で空ける */
-@media (display-mode:standalone){
-  html,body{height:100%;min-height:100vh;min-height:-webkit-fill-available}
-  .app{height:100vh;height:-webkit-fill-available}
-  @supports (height:100lvh){.app{height:100lvh}}
+/* iOS のホーム画面アプリで表示領域が実際の画面より短く報告される不具合への補正（JS で html.vh-fix を付ける） */
+html.vh-fix{--bpad:max(env(safe-area-inset-bottom,0px),20px)}
+html.vh-fix,html.vh-fix body{height:var(--real-h)!important}
+html.vh-fix .app{height:var(--real-h)}
+html.vh-fix .side{bottom:auto;height:var(--real-h)}
+html.vh-fix .scrim{bottom:auto;height:var(--real-h)}
+html.vh-fix .guide,html.vh-fix .cmp{bottom:auto;height:var(--real-h)}
+@media (max-width:760px){
+  html.vh-fix .tabs{bottom:auto;top:calc(var(--real-h) - 58px - var(--bpad));height:calc(58px + var(--bpad));padding-bottom:var(--bpad);box-sizing:border-box}
+  html.vh-fix .fab{bottom:auto;top:calc(var(--real-h) - 130px - var(--bpad))}
+  html.vh-fix .toast{bottom:auto;top:calc(var(--real-h) - 190px - var(--bpad))}
+  html.vh-fix .scrim.edscrim .sheet.ed{height:calc(var(--real-h) - 10px - env(safe-area-inset-top,0px))}
+  html.vh-fix .scrim .sheet{max-height:calc(var(--real-h) - 60px)}
+  html.vh-fix .ed-scroll,html.vh-fix .edp-body{padding-bottom:calc(28px + var(--bpad))}
+  html.vh-fix .list.lv{padding-bottom:calc(150px + var(--bpad))}
 }
+@media (display-mode:standalone) and (max-width:760px){.bar{padding-top:calc(16px + env(safe-area-inset-top,0px))}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 @media (max-width:760px){
   .app{grid-template-columns:1fr}
@@ -2901,7 +2912,8 @@ function openConfig(btn){
      <div class="setrow"><span>＋ボタンで開く画面</span><div class="seg">${[['rich','リッチ（置き場所まで決める）'],['simple','シンプル（Inboxに書き出すだけ）']].map(([v,l])=>`<button data-plus="${v}" class="${(S.ui.plus||'rich')===v?'on':''}">${l}</button>`).join('')}</div><div class="hint">${MODK}K はいつでもシンプルな書き出しです。</div></div>
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
-     <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く（?）</button></div>`;
+     <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く（?）</button></div>
+     ${VHINFO.st?`<div class="hint">表示の診断：画面 ${VHINFO.sh} ／ 表示領域 ${VHINFO.ih} ／ 補正 ${document.documentElement.classList.contains('vh-fix')?VHINFO.gap:0}px</div>`:''}`;
     $('#kbT',el).onclick=()=>{kbOpen=!kbOpen;draw()};
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
     $$('[data-plus]',el).forEach(b=>b.onclick=()=>{S.ui.plus=b.dataset.plus;save();draw()});
@@ -3479,6 +3491,12 @@ document.addEventListener('keydown',e=>{
 let wasNarrow=narrow();
 window.addEventListener('resize',()=>{if(narrow()!==wasNarrow){wasNarrow=narrow();render();return}if(S.ui.tl)renderTL()});
 
+let VHINFO={};
+const fixVH=()=>{const de=document.documentElement;const st=navigator.standalone===true||matchMedia('(display-mode: standalone)').matches;
+  const sh=innerHeight>innerWidth?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height);
+  const gap=st?Math.round(sh-innerHeight):0;VHINFO={st,sh,ih:innerHeight,gap};
+  if(st&&gap>4&&gap<220){de.classList.add('vh-fix');de.style.setProperty('--real-h',sh+'px')}else{de.classList.remove('vh-fix');de.style.removeProperty('--real-h')}};
+fixVH();addEventListener('resize',fixVH);addEventListener('orientationchange',()=>setTimeout(fixVH,350));addEventListener('pageshow',fixVH);
 load();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
 })();
 </script>
