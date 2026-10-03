@@ -270,6 +270,7 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;-webkit-user-selec
 
 /* toast */
 .toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--win);padding:9px 10px 9px 16px;border-radius:10px;font-size:12.5px;display:flex;align-items:center;gap:12px;opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.2,.9,.3,1.2);z-index:1100;box-shadow:var(--shadow-pop);max-width:calc(100% - 32px)}
+.toast{width:max-content;box-sizing:border-box}.toast span{min-width:0}
 .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .toast button{white-space:nowrap;flex:none;color:var(--win);font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(127,127,127,.25)}
 .kbd-hint{font-size:10.5px;color:var(--ink3)}
@@ -984,12 +985,14 @@ body.is-dragging #listScroll{overflow:hidden}
 .sw-bg{position:absolute;inset:0;display:none;align-items:center;color:#fff;font-size:13px;font-weight:700}
 .sw-bg svg.i{width:18px;height:18px;stroke-width:2.4}
 .row.swl .sw-l{display:flex}.row.swr .sw-r{display:flex}
-.sw-l{background:#3BAE77;padding-left:22px;gap:8px;transition:background .15s}
-.row.ready .sw-l{background:#22936A}
+.sw-l{justify-content:flex-start}
 .sw-r{justify-content:flex-end}
-.sw-r button{width:78px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#fff;font-size:11.5px;font-weight:600}
-.sw-r button svg.i{stroke-width:2}
-.sw-r button:first-child{background:#F0932B}.sw-r button:last-child{background:#6E6A62}
+.sw-l button,.sw-r button{width:74px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#fff;font-size:11.5px;font-weight:600}
+.sw-l button svg.i,.sw-r button svg.i{stroke-width:2}
+.sw-bg button[data-sw="due"]{background:#E8702A}.sw-bg button[data-sw="tick"]{background:#C98A1B}
+.sw-bg button[data-sw="list"]{background:#4A86E8}.sw-bg button[data-sw="area"]{background:#2FA38A}.sw-bg button[data-sw="del"]{background:#E05248}.sw-bg button.armed{background:#B3261E}
+.sw-sub{font-size:13.5px;color:var(--ink3);margin:2px 2px 10px;line-height:1.6}
+.sw-date{position:relative;cursor:pointer}.sw-date input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;margin:0;padding:0;font-size:16px;-webkit-appearance:none;appearance:none}
 .ladd{display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;height:42px;padding:0 12px;color:var(--ink3);font-size:13px;text-align:left;border-radius:8px;opacity:.5;transition:opacity .15s,background .15s,color .15s}
 .ladd svg.i{width:16px;height:16px;margin:0 2px}
 .lgroup:hover .ladd,.ladd:focus-visible{opacity:1}
@@ -1392,10 +1395,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .row.ph .rm .mlab{color:var(--ink2)}
   .row.ph .ra,.row.ph .rwhere,.row.ph .rmin{display:none!important}
   .row.ph.sel .row-in{background:var(--pop)}
-  .row.ph .sw-r button{width:77px;font-size:12.5px}
-  .row.ph .sw-r button[data-sw="move"]{background:#3A76D6}.row.ph .sw-r button[data-sw="edit"]{background:#8E8A82}.row.ph .sw-r button[data-sw="del"]{background:#E05248}
-  .row.ph .sw-r button.armed{background:#B3261E}
-  .row.ph .sw-l{font-size:14px}
+  .row.ph .sw-bg button{font-size:12.5px}
   /* group headers */
   .lv .lgroup{margin-bottom:0}
   .lv .lgh{padding:20px 16px 8px!important;font-size:15px!important;font-weight:700;color:var(--ink);gap:8px;background:none}
@@ -2359,7 +2359,7 @@ function rowHTMLPhone(t){
   const m=t.minutes!=null&&!(t.status==='calendar'&&t.info)?fmtMin(t.minutes):'';
   const meta=rowMeta(t)+(lb?`<span class="ma"><i class="dot c-${areaColor(a)}"></i>${esc(lb)}</span>`:'')+(P?`<span class="mp">${ic('clip')}${esc(P.title)}</span>`:'')+(m?`<span class="mm">${m}</span>`:'');
   return `<div class="row ph ${colorOf(t)} ${justAdded===t.id?'ladded':''}" data-id="${t.id}">
-   <div class="sw-bg sw-l">${ic('log')}完了</div><div class="sw-bg sw-r"><button data-sw="move">${ic('move')}移動</button><button data-sw="edit">${ic('edit')}編集</button><button data-sw="del">${ic('x')}削除</button></div>
+   <div class="sw-bg sw-l"><button data-sw="due">${ic('flag')}${t.status==='calendar'?'日付':'締切'}</button><button data-sw="tick">${ic('tickler')}Tickler</button></div><div class="sw-bg sw-r"><button data-sw="list">${ic('next')}リスト</button><button data-sw="area">${ic('folder')}エリア</button><button data-sw="del">${ic('x')}削除</button></div>
    <div class="row-in"><button class="chk" aria-label="完了">${ic('log')}</button>
     <div class="rt"><b>${esc(t.title)}</b>${t.note?`<div class="rnote">${esc(t.note.split('\n').find(x=>x.trim())||'')}</div>`:''}${meta?`<div class="rm">${meta}</div>`:''}</div>
    </div></div>`;
@@ -2368,7 +2368,7 @@ function rowHTML(t){
   if(narrow())return rowHTMLPhone(t);
   const meta=rowMeta(t),td=isTodayDue(t),m=t.minutes!=null&&!(t.status==='calendar'&&t.info)?fmtShort(t.minutes):'';
   return `<div class="row ${colorOf(t)} ${LSEL===t.id?'sel':''} ${justAdded===t.id?'ladded':''}" data-id="${t.id}">
-   <div class="sw-bg sw-l">${ic('log')}完了</div><div class="sw-bg sw-r"><button data-sw="move">${ic('move')}移動</button></div>
+   <div class="sw-bg sw-l"><button data-sw="due">${ic('flag')}${t.status==='calendar'?'日付':'締切'}</button><button data-sw="tick">${ic('tickler')}Tickler</button></div><div class="sw-bg sw-r"><button data-sw="list">${ic('next')}リスト</button><button data-sw="area">${ic('folder')}エリア</button><button data-sw="del">${ic('x')}削除</button></div>
    <div class="row-in"><button class="chk" aria-label="完了">${ic('log')}</button>
     <div class="rt"><b>${esc(t.title)}</b>${t.note?`<div class="rnote">${esc(t.note.split('\n').find(x=>x.trim())||'')}</div>`:''}${meta?`<div class="rm">${meta}</div>`:''}</div>
     ${rowWhere(t)}<span class="rmin">${m}</span>
@@ -2398,7 +2398,7 @@ function renderList(el){
     $$('[data-ra]',r).forEach(b=>b.onclick=e=>{e.stopPropagation();openMoveMenu(t,b)});
     $$('[data-sw]',r).forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.sw;
       if(k==='del'){if(!b.classList.contains('armed')){b.classList.add('armed');b.lastChild.textContent='削除？';return}closeSwipe(true);deleteTask(t);return}
-      closeSwipe(true);if(k==='edit')openEditor(t);else openMoveMenu(t,r)})});
+      closeSwipe(true);swAction(t,k,r)})});
   $$('.lgh',el).forEach(h=>h.onclick=()=>{const gid=h.dataset.fold;S.ui.lfold=S.ui.lfold||{};const f=S.ui.lfold[k]=S.ui.lfold[k]||{};f[gid]=!f[gid];save();renderMain()});
   $$('button.ladd',el).forEach(b=>b.onclick=()=>openAdd(b.dataset.add));
   const inp=$('#laddIn',el);if(inp){const G=LADD==='__end'?LG.find(g=>g.id===(LG.find(x=>x.id==='a:none')?'a:none':endG)):LG.find(g=>g.id===LADD);
@@ -2494,7 +2494,7 @@ let SWO=null;
 function closeSwipe(now){if(!SWO)return;const r=SWO;SWO=null;const i=$('.row-in',r);if(i){i.style.transition=now?'none':'transform .25s cubic-bezier(.2,.8,.2,1)';i.style.transform=''}setTimeout(()=>r.classList.remove('swo','swl','swr','ready'),now?0:250)}
 document.addEventListener('pointerdown',e=>{if(SWO&&!e.target.closest('.row.swo'))closeSwipe()},true);
 function swipeDown(e,el,u){
-  const SW=narrow()?231:78,sx=e.clientX,sy=e.clientY,inn=$('.row-in',el),base=SWO===el?-SW:0;let mode=null,dx=base;
+  const SWL=148,SWR=222,sx=e.clientX,sy=e.clientY,inn=$('.row-in',el),base=SWO===el?(el.classList.contains('swl')?SWL:-SWR):0;let mode=null,dx=base;
   if(SWO&&SWO!==el)closeSwipe();
   /* 長押し（約0.4秒）で並べ替えのドラッグを始める */
   const hold=SWO===el?0:setTimeout(()=>{if(mode)return;mode='drag';off();
@@ -2507,17 +2507,82 @@ function swipeDown(e,el,u){
   const mv=ev=>{const x=ev.clientX-sx,y=ev.clientY-sy;
     if(!mode&&Math.hypot(x,y)>8)clearTimeout(hold);
     if(!mode){if(Math.abs(x)>8&&Math.abs(x)>Math.abs(y)*1.3)mode='h';else if(Math.abs(y)>8)mode='v';else return}
-    if(mode!=='h')return;dx=Math.max(-SW-42,Math.min(170,base+x));inn.style.transition='none';inn.style.transform=`translateX(${dx}px)`;
-    el.classList.toggle('swl',dx>0);el.classList.toggle('swr',dx<0);el.classList.toggle('ready',dx>96)};
+    if(mode!=='h')return;dx=Math.max(-SWR-36,Math.min(SWL+36,base+x));inn.style.transition='none';inn.style.transform=`translateX(${dx}px)`;
+    el.classList.toggle('swl',dx>0);el.classList.toggle('swr',dx<0)};
   const up=ev=>{clearTimeout(hold);off();
     if(mode==='drag')return;
     if(!mode){if(ev.type==='pointercancel')return;if(SWO===el){closeSwipe();return}openEditor(u.t);return}
     if(mode!=='h')return;
     inn.style.transition='transform .25s cubic-bezier(.2,.8,.2,1)';
-    if(dx>96){inn.style.transform='translateX(110%)';setTimeout(()=>{el.style.height=el.offsetHeight+'px';el.offsetHeight;el.classList.add('collapse')},200);setTimeout(()=>finishComplete(u),420);return}
-    if(dx<-40){inn.style.transform=`translateX(${-SW}px)`;SWO=el;el.classList.add('swo','swr');return}
+    $$('.sw-bg .armed',el).forEach(b=>{b.classList.remove('armed');b.lastChild.textContent='削除'});
+    if(dx>44){inn.style.transform=`translateX(${SWL}px)`;SWO=el;el.classList.add('swo','swl');el.classList.remove('swr');return}
+    if(dx<-44){inn.style.transform=`translateX(${-SWR}px)`;SWO=el;el.classList.add('swo','swr');el.classList.remove('swl');return}
     inn.style.transform='';if(SWO===el)SWO=null;setTimeout(()=>el.classList.remove('swl','swr','ready'),250)};
   window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
+}
+
+/* ---------- swipe actions（締切・Tickler / リスト・エリア・削除） ---------- */
+const mdw=k=>{const x=new Date(k+'T00:00');return (x.getMonth()+1)+'/'+x.getDate()+'（'+DOW[x.getDay()]+'）'};
+function swApply(t,fn,msg){
+  const was={};['status','due','start','minutes','cdate','ctime','area','tags','sched'].forEach(k=>{was[k]=Array.isArray(t[k])?[...t[k]]:t[k]});
+  fn();
+  if(t.status!=='inbox'&&t.status!=='calendar'&&!area(t.area)&&S.areas.length){save();render();openEditor(t,null,'エリアを選んでください');return}
+  save();render();toast(msg,{label:'元に戻す',fn:()=>{Object.assign(t,was);save();render()}});
+}
+function phSheet(title,sub,html,bind){
+  const scrim=document.createElement('div');scrim.className='scrim phsheet';
+  scrim.innerHTML=`<div class="sheet ph-sh" role="dialog" aria-label="${esc(title)}"><div class="grab"></div><div class="ph-shh"><button data-x>キャンセル</button><b>${esc(title)}</b><button tabindex="-1"></button></div><div class="ph-shb">${sub?`<div class="sw-sub">${sub}</div>`:''}${html}</div></div>`;
+  const close=()=>scrim.remove();
+  scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)close()});
+  $('[data-x]',scrim).onclick=close;$('#toast').classList.remove('show');document.body.appendChild(scrim);bind(scrim,close);
+}
+const nextMonth1=()=>{const x=new Date();return dayKey(new Date(x.getFullYear(),x.getMonth()+1,1))};
+function dateSheet(t,mode){
+  const cfg={due:{title:'締切',ico:'flag',bg:'#E8702A',opts:[['今日',todayKey()],['明日',addDays(1)],['来週の月曜',nextDow(1)],['1週間後',addDays(7)]],min:todayKey(),cur:t.due,clear:t.due?'締切を外す':''},
+    tick:{title:'Tickler',ico:'tickler',bg:'#C98A1B',opts:[['明日',addDays(1)],['来週の月曜',nextDow(1)],['1週間後',addDays(7)],['来月1日',nextMonth1()]],min:addDays(1),cur:t.start,clear:tickled(t)?'Tickler から出す':'',sub:'いつまで隠しますか？',note:'選んだ日まで Next Action から消え、その日になると自動で戻ってきます。'},
+    cal:{title:'日付',ico:'calendar',bg:'#E5534B',opts:[['今日',todayKey()],['明日',addDays(1)],['来週の月曜',nextDow(1)],['1週間後',addDays(7)]],min:'',cur:t.cdate,clear:''}}[mode];
+  const sub=esc(t.title)+(cfg.sub?' ― '+cfg.sub:cfg.cur&&(mode!=='tick'||tickled(t))?`（いま：${mdw(cfg.cur)}）`:'');
+  const html=`<div class="ph-ig">${cfg.opts.map(([l,v])=>`<button class="ph-ir ic" data-v="${v}"><span class="ph-ico" style="background:${cfg.bg}">${ic(cfg.ico)}</span><span class="l">${l}</span><span class="v">${mdw(v)}</span>${cfg.cur===v?`<span class="tp-ck">${ic('log')}</span>`:''}</button>`).join('')}
+    <label class="ph-ir ic sw-date"><span class="ph-ico g-gray">${ic('cal')}</span><span class="l">日付を選ぶ…</span><input type="date" ${cfg.min?`min="${cfg.min}"`:''} value="${cfg.cur||''}" aria-label="日付を選ぶ"></label></div>
+    ${cfg.clear?`<div class="ph-ig"><button class="ph-ir act del" data-v="">${cfg.clear}</button></div>`:''}${cfg.note?`<div class="sw-sub">${cfg.note}</div>`:''}`;
+  const apply=v=>{
+    if(mode==='due')swApply(t,()=>{t.due=v||null},v?`締切を ${mdw(v)} にしました`:'締切を外しました');
+    else if(mode==='cal')swApply(t,()=>{if(t.status!=='calendar'){t.status='calendar';t.start=null}t.cdate=v},`${mdw(v)} の予定にしました`);
+    else swApply(t,()=>{t.start=v||null;if(v){t.sched=null;if(t.status==='inbox'||t.status==='someday'||t.status==='calendar')t.status='next';if(t.minutes==null)t.minutes=30}},
+      v?`${mdw(v)} まで Tickler にしまいました`:'Tickler から出しました');
+  };
+  phSheet(cfg.title,sub,html,(el,close)=>{
+    $$('[data-v]',el).forEach(b=>b.onclick=()=>{close();apply(b.dataset.v)});
+    const di=$('.sw-date input',el);di.onchange=()=>{if(di.value&&(!cfg.min||di.value>=cfg.min)){close();apply(di.value)}};
+  });
+}
+function listSheet(t){
+  const L=[['inbox','Inbox','inbox'],['next','Next Action','next'],['waiting','Waiting','waiting'],['someday','Someday','someday'],['calendar','Calendar…','calendar']];
+  const cur=tickled(t)?'':t.status;
+  phSheet('リスト',esc(t.title),`<div class="ph-ig">${L.map(([k,l,i])=>`<button class="ph-ir ic" data-v="${k}"><span class="ph-ico g-${k}">${ic(i)}</span><span class="l">${l}</span>${cur===k?`<span class="tp-ck">${ic('log')}</span>`:''}</button>`).join('')}</div>`,
+    (el,close)=>$$('[data-v]',el).forEach(b=>b.onclick=()=>{const k=b.dataset.v;close();
+      if(k==='calendar')return dateSheet(t,'cal');
+      if(k===cur)return;
+      swApply(t,()=>{t.status=k;t.start=null;if(k!=='inbox'&&t.minutes==null)t.minutes=30},`${SECT[k].en} に移動しました`)}));
+}
+function areaSheet(t){
+  const rows=orderedAreas().map(a=>{const sub=rootOf(a)!==a;return `<button class="ph-ir ic ${sub?'sub':''}" data-v="${a.id}"><span class="ph-dt c-${areaColor(a)}"><i class="dot"></i></span><span class="l">${esc(a.name)}</span>${t.area===a.id?`<span class="tp-ck">${ic('log')}</span>`:''}</button>`}).join('');
+  phSheet('エリア',esc(t.title),`<div class="ph-ig">${rows||'<div class="ph-none pad">エリアはまだありません</div>'}</div>${t.status==='inbox'&&t.area?`<div class="ph-ig"><button class="ph-ir act" data-v="">エリアなしにする</button></div>`:''}`,
+    (el,close)=>$$('[data-v]',el).forEach(b=>b.onclick=()=>{const v=b.dataset.v||null;close();if(v===t.area)return;
+      swApply(t,()=>{t.area=v;addAreaPlaces(t)},v?`${areaLabel(area(v))} に移しました`:'エリアを外しました')}));
+}
+function swAction(t,k,r){
+  if(!narrow()){/* 幅の広い画面ではこれまでのメニューを使う */
+    const a=r.querySelector('.rt')||r;
+    if(k==='due')return datePop(a,{title:t.status==='calendar'?'日付は？':'締切は？',cur:t.status==='calendar'?t.cdate:t.due,none:t.status!=='calendar'&&!!t.due},v=>t.status==='calendar'?(v&&swApply(t,()=>{t.cdate=v},`予定を ${mdw(v)} にしました`)):swApply(t,()=>{t.due=v},v?`締切を ${mdw(v)} にしました`:'締切を外しました'));
+    if(k==='tick')return moveTask(t,'tickler',a);
+    if(k==='area')return openAreaPop(a,t,v=>{if(v!==t.area)swApply(t,()=>{t.area=v;addAreaPlaces(t)},v?`${areaLabel(area(v))} に移しました`:'エリアを外しました')});
+    return openMoveMenu(t,a);
+  }
+  if(k==='due')return dateSheet(t,t.status==='calendar'?'cal':'due');
+  if(k==='tick')return dateSheet(t,'tick');
+  if(k==='list')return listSheet(t);
+  if(k==='area')return areaSheet(t);
 }
 
 /* ---------- list drag (reorder / regroup) ---------- */
@@ -2569,7 +2634,7 @@ function renderTabs(){
   let any=ck==='sec:today';
   let h=btn('g-today',ck==='sec:today',ic('today'),'Today','','data-slot="sec:today"');
   tabSlots().forEach((k,i)=>{const s=slotInfo(k);if(!s){h+=btn('g-more',false,ic('plus'),'未設定','',`data-empty="${i}"`);return}
-    const on=ck===k;if(on)any=true;h+=btn('g-'+s.gc,on,s.ico,s.l,k==='sec:inbox'&&ib?(ib>99?'99+':ib):'',`data-slot="${k}"`)});
+    const on=ck===k;if(on)any=true;h+=btn('g-'+s.gc,on,s.ico,s.l,'',`data-slot="${k}"`)});
   h+=btn('g-more',!any,ic('list'),'リスト','','data-tab="more"');
   el.innerHTML=h;
   $$('[data-slot]',el).forEach(b=>b.onclick=()=>{const k=b.dataset.slot;if(curKey()===k){const sc=$('#view .list-scroll');if(sc)sc.scrollTop=0;return}goSlot(k)});
