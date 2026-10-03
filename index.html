@@ -1646,9 +1646,14 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 @media (max-width:760px){
   .tab{min-width:0}
   .tab .tn{max-width:100%;padding:0 3px;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .tab .tdot{display:block;width:21px;height:21px;border-radius:6px;background:var(--sd);filter:var(--stk-filter);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
-  .tab:not(.on) .tdot{opacity:.8}
-  .tab.on .tdot{box-shadow:0 0 0 2px var(--win),0 0 0 3.5px var(--accent)}
+  .tp-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:12px}
+  .tp-grid button{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--ink2);background:var(--sel)}
+  .tp-grid button svg.i{width:24px;height:24px;stroke-width:1.7}
+  .tp-grid button.on{background:var(--accent);color:#fff}
+  .tp-prev{display:flex;justify-content:center;padding:6px 0 14px}
+  .tp-prev .tab{flex:none;width:84px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--accent);font-size:11px;font-weight:600}
+  .tp-prev .tab .sq svg.i{width:26px;height:26px;stroke-width:1.7}
+  .ph-shh button svg.i{width:18px;height:18px;transform:rotate(90deg);vertical-align:-3px;stroke-width:2.2}
   .tp-ck{display:flex;color:var(--accent)}.tp-ck svg.i{width:18px;height:18px;stroke-width:2.4}
   .ph-ico.g-inbox{background:#8A877F}.ph-ico.g-today{background:#F0932B}.ph-ico.g-next{background:#4A86E8}.ph-ico.g-calendar{background:#E5534B}
   .ph-ico.g-log,.ph-ico.g-review{background:#8E8A82}
@@ -1769,6 +1774,25 @@ const I={
  phone:'<path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/>',
  filter:'<path d="M4 6.5h16M7 12h10M10 17.5h4"/>',
  sync:'<path d="M7 18.5h10a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.7 1.3A3.4 3.4 0 0 0 7 18.5z"/><path d="M10 14.5l2-2 2 2M12 12.5v4"/>',
+ cart:'<path d="M3.5 4.5h2l2.2 10.5h10l1.8-7.5H7"/><circle cx="9.5" cy="19" r="1.3"/><circle cx="16.5" cy="19" r="1.3"/>',
+ bag:'<path d="M5.5 8h13l-1 12h-11z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
+ heart:'<path d="M12 19.5S4.5 15 4.5 9.6A3.9 3.9 0 0 1 12 7.8a3.9 3.9 0 0 1 7.5 1.8C19.5 15 12 19.5 12 19.5z"/>',
+ brief:'<rect x="3.5" y="7.5" width="17" height="12" rx="2"/><path d="M9 7.5v-2a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3.5 12.5h17"/>',
+ star:'<path d="M12 4.2l2.4 4.9 5.4.7-3.9 3.8.9 5.4L12 16.4 7.2 19l.9-5.4-3.9-3.8 5.4-.7z"/>',
+ leaf:'<path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14z"/><path d="M5 19l7.5-7.5"/>',
+ dumbbell:'<path d="M7 7.5v9M17 7.5v9M4.5 10v4M19.5 10v4M7 12h10"/>',
+ music:'<path d="M9 17.5V6l10-2v11.5"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="15.5" r="2.5"/>',
+ plane:'<path d="M20.5 4 3.5 11l6.5 2.5L12.5 20z"/><path d="M10 13.5 20.5 4"/>',
+ car:'<path d="M4.5 16.5v-4l2.2-5.2h10.6l2.2 5.2v4z"/><path d="M4.5 12.5h15"/><circle cx="8" cy="16.5" r="1.6"/><circle cx="16" cy="16.5" r="1.6"/>',
+ gift:'<rect x="4.5" y="10" width="15" height="10" rx="1"/><path d="M3.5 7.5h17V10h-17zM12 7.5V20M12 7.5c-1.4-3-5.5-3.6-5.5-1.4S12 7.5 12 7.5zM12 7.5c1.4-3 5.5-3.6 5.5-1.4S12 7.5 12 7.5z"/>',
+ coffee:'<path d="M5 9.5h11v4.5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16M8.5 4v2.5M12 4v2.5"/>',
+ folder:'<path d="M3.5 7a1.5 1.5 0 0 1 1.5-1.5h4l2 2h8a1.5 1.5 0 0 1 1.5 1.5v8.5A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/>',
+ people:'<circle cx="9" cy="9" r="3"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><circle cx="16.5" cy="8.5" r="2.4"/><path d="M16.3 13.9c2.3 0 3.8 1.3 4.2 3.9"/>',
+ yen:'<path d="M7 4.5l5 7 5-7M12 11.5V20M8 13.5h8M8 17h8"/>',
+ grad:'<path d="M2.5 9.5 12 5l9.5 4.5L12 14z"/><path d="M6.5 11.5V16c2.8 2.3 8.2 2.3 11 0v-4.5M21.5 9.5V14"/>',
+ wrench:'<path d="M14.5 4.8a4 4 0 0 0-4.6 5.4L4.6 15.6a1.6 1.6 0 0 0 2.3 2.3l5.4-5.3a4 4 0 0 0 5.4-4.6l-2.4 2.4-2.1-.6-.6-2.1z"/>',
+ food:'<path d="M7 3.5v17M4.5 3.5v5a2.5 2.5 0 0 0 5 0v-5M16.5 20.5v-17c-2.2 1-3.5 3.5-3.5 7 0 1.7 1 2.5 3.5 2.5"/>',
+ pill:'<rect x="3.2" y="8.6" width="17.6" height="6.8" rx="3.4" transform="rotate(-40 12 12)"/><path d="M9.6 9.1l4.8 5.8"/>',
  sort:'<path d="M4 7h11M4 12h8M4 17h5M17.5 5v14M14.5 16l3 3 3-3"/>'
 };
 const ic=(n,cls='i')=>`<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[n]||''}</svg>`;
@@ -2472,12 +2496,14 @@ function listDrop(d){
 /* ---------- phone tabs ---------- */
 /* iPhone の下タブ：Today ＋ 自分で選ぶ3つ ＋ リスト（全部） */
 const DEF_TABS=['sec:next','sec:inbox','sec:calendar'];
+const TAB_ICONS=['folder','star','heart','brief','building','home','cart','bag','food','coffee','people','user','book','grad','pc','phone','mail','cal','pin','flag','bolt','leaf','dumbbell','pill','music','plane','car','gift','yen','wrench','clip','tag','moon','someday'];
+const tabIcon=(k,ty)=>((S.ui.tabIcons||{})[k])||(ty==='proj'?'clip':'folder');
 const TABSEC={inbox:['Inbox','inbox'],next:['Next','next'],calendar:['Calendar','calendar'],waiting:['Waiting','waiting'],someday:['Someday','someday'],tickler:['Tickler','tickler'],projects:['プロジェクト','clip'],log:['完了ログ','log'],review:['週次レビュー','review']};
 const tabSlots=()=>Array.isArray(S.ui.tabs)&&S.ui.tabs.length===3?S.ui.tabs:DEF_TABS;
 function slotInfo(k){if(!k)return null;const c=k.indexOf(':'),ty=k.slice(0,c),v=k.slice(c+1);
   if(ty==='sec'&&TABSEC[v])return {ty,v,l:TABSEC[v][0],ico:ic(TABSEC[v][1]),pico:`<span class="ph-ico g-${v}">${ic(TABSEC[v][1])}</span>`,gc:['log','review'].includes(v)?'more':v};
-  if(ty==='area'){const a=area(v);if(a)return {ty,v,l:a.name,ico:`<i class="tdot c-${areaColor(a)}"></i>`,pico:`<span class="ph-dt c-${areaColor(a)}"><i class="dot"></i></span>`,gc:'more'}}
-  if(ty==='proj'){const p=taskById(v);if(isProj(p)&&p.status!=='done')return {ty,v,l:p.title,ico:ic('clip'),pico:`<span class="ph-ico g-projects">${ic('clip')}</span>`,gc:'projects'}}
+  if(ty==='area'){const a=area(v);if(a)return {ty,v,l:a.name,ico:ic(tabIcon(k,'area')),pico:`<span class="ph-dt c-${areaColor(a)}"><i class="dot"></i></span>`,tico:`<span class="ph-ico g-gray">${ic(tabIcon(k,'area'))}</span>`,gc:'more'}}
+  if(ty==='proj'){const p=taskById(v);if(isProj(p)&&p.status!=='done')return {ty,v,l:p.title,ico:ic(tabIcon(k,'proj')),pico:`<span class="ph-ico g-projects">${ic('clip')}</span>`,tico:`<span class="ph-ico g-gray">${ic(tabIcon(k,'proj'))}</span>`,gc:'more'}}
   return null}
 const curKey=()=>projMode()?'proj:'+S.ui.proj:F.area?'area:'+F.area:'sec:'+S.ui.section;
 function goSlot(k){LSEL=null;if(k==='sec:today'){S.ui.section='today';F.area=null;save();render();return}
@@ -2497,9 +2523,16 @@ function renderTabs(){
   $$('[data-empty]',el).forEach(b=>b.onclick=()=>openTabPicker(+b.dataset.empty));
   $('[data-tab="more"]',el).onclick=()=>{if(S.ui.section==='more'){const sc=$('#view .list-scroll');if(sc)sc.scrollTop=0;return}S.ui.section='more';F.area=null;LSEL=null;save();render()};
 }
-function openTabPicker(i){
-  const scrim=document.createElement('div');scrim.className='scrim phsheet';
-  const draw=()=>{const T=tabSlots(),cur=T[i];
+function openTabPicker(i,startIcon){
+  const scrim=document.createElement('div');scrim.className='scrim phsheet';let step=startIcon?'icon':'list';
+  const draw=()=>{const T=tabSlots(),cur=T[i],cs=slotInfo(cur);
+    if(step==='icon'&&cs&&cs.ty!=='sec'){const now=tabIcon(cur,cs.ty);
+      scrim.innerHTML=`<div class="sheet ph-sh" role="dialog" aria-label="アイコンを選ぶ"><div class="grab"></div>
+       <div class="ph-shh"><button id="tpBack">${ic('chev')}戻る</button><b>アイコン</b><button class="b" id="tpOk">完了</button></div>
+       <div class="ph-shb"><div class="tp-prev"><span class="tab on"><span class="sq">${ic(now)}</span><span class="tn">${esc(cs.l)}</span></span></div>
+        <div class="ph-ig"><div class="tp-grid">${TAB_ICONS.map(n=>`<button class="${n===now?'on':''}" data-ico="${n}" aria-label="${n}">${ic(n)}</button>`).join('')}</div></div></div></div>`;
+      $('#tpBack',scrim).onclick=()=>{step='list';draw()};$('#tpOk',scrim).onclick=done;
+      $$('[data-ico]',scrim).forEach(b=>b.onclick=()=>{S.ui.tabIcons=S.ui.tabIcons||{};S.ui.tabIcons[cur]=b.dataset.ico;save();renderTabs();const sb=$('.ph-shb',scrim).scrollTop;draw();$('.ph-shb',scrim).scrollTop=sb});return}
     const row=(k,sub)=>{const s=slotInfo(k);if(!s)return '';const j=T.indexOf(k);
       return `<button class="ph-ir ic ${sub?'sub':''}" data-k="${k}">${s.pico}<span class="l">${esc(s.l)}</span>${k===cur?`<span class="tp-ck">${ic('log')}</span>`:j>=0?`<span class="v">${j+2}番目</span>`:''}</button>`};
     const secs=Object.keys(TABSEC).map(v=>row('sec:'+v)).join('');
@@ -2507,15 +2540,18 @@ function openTabPicker(i){
     const pjs=projects().map(p=>row('proj:'+p.id)).join('');
     scrim.innerHTML=`<div class="sheet ph-sh" role="dialog" aria-label="タブを選ぶ"><div class="grab"></div>
      <div class="ph-shh"><button id="tpX">キャンセル</button><b>${i+2}番目のタブ</b><button class="b" id="tpReset">初期設定</button></div>
-     <div class="ph-shb"><div class="ph-sec">リスト</div><div class="ph-ig">${secs}</div>
+     <div class="ph-shb">${cs&&cs.ty!=='sec'?`<div class="ph-ig" style="margin-top:6px"><button class="ph-ir ic" id="tpIco"><span class="ph-ico g-gray">${ic(tabIcon(cur,cs.ty))}</span><span class="l">「${esc(cs.l)}」のアイコン</span><span class="cv">${ic('chev')}</span></button></div>`:''}
+      <div class="ph-sec">リスト</div><div class="ph-ig">${secs}</div>
       ${ars?`<div class="ph-sec">エリア</div><div class="ph-ig">${ars}</div>`:''}
       ${pjs?`<div class="ph-sec">プロジェクト</div><div class="ph-ig">${pjs}</div>`:''}
-      <div class="ph-none pad">すでに別の位置にあるものを選ぶと、2つの位置が入れ替わります。</div></div></div>`;
+      <div class="ph-none pad">すでに別の位置にあるものを選ぶと、2つの位置が入れ替わります。エリアとプロジェクトは、選んだあとにアイコンを決められます。</div></div></div>`;
     $('#tpX',scrim).onclick=close;
+    const ti=$('#tpIco',scrim);if(ti)ti.onclick=()=>{step='icon';draw()};
     $('#tpReset',scrim).onclick=()=>{S.ui.tabs=[...DEF_TABS];done()};
-    $$('[data-k]',scrim).forEach(b=>b.onclick=()=>{const k=b.dataset.k,t=[...tabSlots()],j=t.indexOf(k);if(j>=0&&j!==i)t[j]=t[i];t[i]=k;S.ui.tabs=t;done()})};
-  const close=()=>scrim.remove();
-  const done=()=>{save();close();renderTabs();renderBar();if(S.ui.section==='more')renderMain()};
+    $$('[data-k]',scrim).forEach(b=>b.onclick=()=>{const k=b.dataset.k,t=[...tabSlots()],j=t.indexOf(k);if(j>=0&&j!==i)t[j]=t[i];t[i]=k;S.ui.tabs=t;save();renderTabs();
+      if(k.startsWith('sec:'))done();else{step='icon';draw();$('.ph-shb',scrim).scrollTop=0}})};
+  const close=()=>{scrim.remove();if(S.ui.section==='more')renderMain()};
+  const done=()=>{save();scrim.remove();renderTabs();renderBar();if(S.ui.section==='more')renderMain()};
   scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)close()});
   draw();document.body.appendChild(scrim);
 }
@@ -3279,7 +3315,7 @@ function openSettings(btn){
   el.style.left=Math.max(12,Math.min(r.right-w,innerWidth-w-12))+'px';el.style.top=Math.max(12,Math.min(r.bottom+8,innerHeight-h-12))+'px';
   document.addEventListener('pointerdown',setOutside,true);
 }
-const openPlus=()=>S.ui.plus==='simple'?openCapture():openComposer();
+const openPlus=()=>openCapture();
 let CFGP=null;
 function closeConfig(){if(CFGP){CFGP.remove();CFGP=null;document.removeEventListener('pointerdown',cfgOutside,true)}}
 function cfgOutside(e){if(CFGP&&!CFGP.contains(e.target)&&!e.target.closest('#cfgBtn,#sCfg,#syncLink'))closeConfig()}
@@ -3291,7 +3327,6 @@ function openConfig(btn){
   const draw=()=>{
     el.innerHTML=`<h3>設定<button class="ph-close" data-phx>完了</button></h3>
      ${syncRow()}
-     <div class="setrow"><span>＋ボタンで開く画面</span><div class="seg">${[['rich','リッチ（置き場所まで決める）'],['simple','シンプル（Inboxに書き出すだけ）']].map(([v,l])=>`<button data-plus="${v}" class="${(S.ui.plus||'rich')===v?'on':''}">${l}</button>`).join('')}</div><div class="hint desk-only">${MODK}K はいつでもシンプルな書き出しです。</div></div>
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow desk-only"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
      <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く<span class="desk-only">（?）</span></button></div>
@@ -3299,7 +3334,6 @@ function openConfig(btn){
     {const a=$('#sgIn',el);if(a)a.onclick=signIn;const b=$('#sgOut',el);if(b)b.onclick=async()=>{await signOutSync();toast('ログアウトしました（この端末のデータはそのまま残ります）')}}
     const kb=$('#kbT',el);if(kb)kb.onclick=()=>{kbOpen=!kbOpen;draw()};$$('[data-phx]',el).forEach(b=>b.onclick=closeConfig);
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
-    $$('[data-plus]',el).forEach(b=>b.onclick=()=>{S.ui.plus=b.dataset.plus;save();draw()});
     $$('[data-vh]',el).forEach(b=>b.onclick=()=>{const v=+b.dataset.vh;S.ui.vhAdj=v?Math.max(-120,Math.min(120,(VHINFO.adj||0)+v)):null;save();fixVH();draw()});
     $('#cfgGuide',el).onclick=()=>{closeConfig();openGuide()};
     place();
@@ -3534,151 +3568,6 @@ function datePop(anchor,{title,cur,today=true,none=false,min},onPick){
     $('.fp-date',el).onclick=e=>{if(e.target===di)return;try{di.showPicker()}catch(_){di.classList.add('show');di.focus()}}});
 }
 let CMP=null;
-function openComposer(pre){
-  if($('#cmp'))return;if(DR)commitDraft();closePop();closeSettings();closeConfig();closeSide();
-  const P=projMode()?taskById(S.ui.proj):null;
-  const d=pre||{title:'',note:'',area:F.area||(P?P.area:null),minutes:30,minSet:false,tags:[],energy:'normal',due:null,project:P?P.id:null,rep:null};
-  if(!pre)addAreaPlaces(d);
-  const el=document.createElement('div');el.className='cmp';el.id='cmp';el.setAttribute('role','dialog');el.setAttribute('aria-label','新しい付箋');
-  el.innerHTML=`<button class="cmp-x" aria-label="閉じる">${ic('x')}</button>
-   <div class="cmp-h"><h2>何が気になっていますか？</h2><p>書いたら、下のトレイへ置きます</p></div>
-   <div class="cmp-stage"><div></div>
-    <div class="cmp-note"><div class="cmp-tabs"></div><div class="cmp-nl"><span class="cmp-al"></span><span class="cmp-mn"></span></div>
-     <textarea class="cmp-title" rows="1" maxlength="120" placeholder="何をする？"></textarea>
-     <textarea class="cmp-memo" rows="1" placeholder="メモ"></textarea>
-     <div class="cmp-seals"></div></div>
-    <div class="cmp-subs"></div></div>
-   <div class="cmp-mid"></div>
-   <div class="cmp-th"><span class="cmp-thl">置き場所</span><button class="cmp-qb">✦ 迷ったら、問いに答えて決める</button></div>
-   <div class="cmp-trays">${TRAYS.map(([k,l,s,i,c])=>`<button class="ctray ${k==='two'?'two':''}" data-tray="${k}" style="--c:${c}"><span class="tback"></span><span class="tfront"><span class="tsq">${ic(i)}</span><b>${l}</b><span class="ts">${s}</span><span class="tc"></span></span></button>`).join('')}</div>
-   <div class="cmp-foot">迷ったら <button class="cmp-ib">Inbox に入れておく</button>（あとで仕分け）</div>`;
-  document.body.appendChild(el);
-  const note=$('.cmp-note',el),ti=$('.cmp-title',el),me=$('.cmp-memo',el);ti.value=d.title||'';me.value=d.note||'';
-  CMP={el,d,q:null,busy:false};
-  const grow=x=>{x.style.height='auto';x.style.height=x.scrollHeight+'px'};
-  ti.oninput=()=>{d.title=ti.value;grow(ti)};me.oninput=()=>{d.note=me.value;grow(me)};
-  ti.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();me.focus()}};
-  const shake=x=>x.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(-3px)'},{transform:'none'}],{duration:300});
-  const draw=()=>{
-    const a=area(d.area),R=rootOf(a);
-    note.className='cmp-note c-'+(a?areaColor(a):'paper');
-    $('.cmp-tabs',el).innerHTML=tops().map(t=>`<button class="cmp-tab c-${t.color} ${R===t?'on':''}" data-a="${t.id}" title="${esc(t.name)}">${esc(t.name)}</button>`).join('');
-    $$('.cmp-tab',el).forEach(b=>b.onclick=()=>{const v=b.dataset.a;const was=d.area;d.area=R&&R.id===v&&d.area===v?null:v;if(d.area!==was&&d.area)addAreaPlaces(d);draw()});
-    $('.cmp-al',el).textContent=a?areaLabel(a):'エリアなし';$('.cmp-mn',el).textContent=d.minSet||d.minutes!==30?fmtShort(d.minutes):'';
-    const ks=R?kids(R.id):[];
-    $('.cmp-subs',el).innerHTML=ks.length?[...ks.map(k=>`<button data-s="${k.id}" class="${d.area===k.id?'on':''}">${esc(k.name)}</button>`),`<button data-s="${R.id}" class="${d.area===R.id?'on':''}">サブエリアなし</button>`].join(''):'';
-    $$('.cmp-subs button',el).forEach(b=>b.onclick=()=>{d.area=b.dataset.s;addAreaPlaces(d);draw()});
-    const Pj=d.project&&taskById(d.project);
-    const seals=[d.due?`⚑ ${dlLabel(d.due).l}`:'',d.rep?'↻ '+repLabel(d.rep):'',...d.tags.map(tagName),d.energy&&d.energy!=='normal'?ENERGY.find(x=>x.id===d.energy).l:'',Pj?'📎 '+Pj.title:''].filter(Boolean);
-    $('.cmp-seals',el).innerHTML=seals.map(s=>`<span>${esc(s)}</span>`).join('');
-    drawMid();drawTrays();
-  };
-  const dc=(k,icon,lab,set)=>`<button class="dc ${set?'set':''}" data-dc="${k}">${ic(icon)}<span>${esc(lab)}</span></button>`;
-  const drawMid=()=>{
-    const mid=$('.cmp-mid',el),Pj=d.project&&taskById(d.project);
-    $('.cmp-qb',el).hidden=CMP.q!=null;$('.cmp-thl',el).textContent=CMP.q!=null?'答えに合うトレイが浮かび上がります':'置き場所';
-    if(CMP.q==null){
-      mid.innerHTML=`<div class="cmp-det">${dc('min','clock',d.minSet||d.minutes!==30?fmtMin(d.minutes):'時間',d.minSet||d.minutes!==30)}${dc('due','flag',d.due?dlLabel(d.due).l:'締切',!!d.due)}${dc('tag','pin',d.tags.length?d.tags.map(tagName).join('・'):'場所',d.tags.length)}${dc('en','bolt',d.energy&&d.energy!=='normal'?ENERGY.find(x=>x.id===d.energy).l:'集中度',d.energy&&d.energy!=='normal')}${dc('proj','clip',Pj?Pj.title:'プロジェクト',!!Pj)}${dc('rep','repeat',d.rep?repLabel(d.rep):'繰り返し',!!d.rep)}</div>`;
-      $$('[data-dc]',mid).forEach(b=>b.onclick=e=>{e.stopPropagation();detail(b.dataset.dc,b)});return}
-    const Q={0:{t:'行動が必要ですか？',o:[['yes','はい','やることがある','next'],['no','いいえ','情報・いつか','someday']]},
-      1:{t:'2分で終わりますか？',o:[['two','はい、いまやる','済ませて完了ログへ','log'],['later','いいえ、あとで','置き場所を選ぶ','next']]},
-      2:{t:'いつ・誰が？',o:[['next','次にやる','Next Action','next'],['calendar','日時が決まっている','Calendar','calendar'],['waiting','人の返事を待つ','Waiting','waiting'],['tickler','その日まで見なくていい','Tickler','tickler']]},
-      no:{t:'行動がいらないなら',o:[['someday','いつかやりたい','Someday','someday'],['calinfo','その日に知っておきたい','Calendar（情報）','calendar'],['drop','もう要らない','書かずに閉じる','x']]}}[CMP.q];
-    const n=CMP.q==='no'?2:CMP.q+1;
-    mid.innerHTML=`<div class="cmp-q"><div class="kick">問い ${n} / 3<button class="cmp-qx">問いをやめる</button></div><div class="qt">${Q.t}</div>
-      <div class="qopts">${Q.o.map(([v,l,s,i])=>`<button class="qopt" data-q="${v}"><span class="tsq" style="--gc:${{log:'#3BAE77',next:'#4A86E8',someday:'#2FA38A',calendar:'#E5534B',waiting:'#8C7AE6',tickler:'#C98A1B',x:'#8A877F'}[i]}">${ic(i)}</span><span><b>${l}</b><small>${s}</small></span></button>`).join('')}</div>
-      <div class="qsteps">${[0,1,2].map(i=>`<i class="${i<n?'on':''}"></i>`).join('')}</div></div>`;
-    $('.cmp-qx',mid).onclick=()=>{CMP.q=null;draw()};
-    $$('[data-q]',mid).forEach(b=>b.onclick=()=>{const v=b.dataset.q;
-      if(v==='yes'){CMP.q=1;draw()}else if(v==='no'){CMP.q='no';draw()}else if(v==='later'){CMP.q=2;draw()}
-      else if(v==='drop'){close(true)}else if(v==='calinfo')trayPick('calendar',{info:true});else trayPick(v)});
-  };
-  const HINT={0:null,1:['two','next','calendar','waiting','tickler'],2:['next','calendar','waiting','tickler'],no:['someday','calendar']};
-  const drawTrays=()=>{const h=CMP.q!=null?HINT[CMP.q]:null;
-    $$('.ctray',el).forEach(b=>{const k=b.dataset.tray;b.classList.toggle('dim',!!h&&!h.includes(k));b.classList.toggle('hint',!!h&&h.includes(k));const c=trayCount(k);$('.tc',b).textContent=c?c+'枚':''})};
-  const detail=(k,b)=>{
-    if(k==='min')miniPop(b,`<div class="fp-h">所要時間</div>${MINS.map(m=>`<button class="fp-item ${d.minutes===m?'on':''}" data-v="${m}"><span>${fmtMin(m)}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,(p,c)=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{d.minutes=+x.dataset.v;d.minSet=true;c();draw()}));
-    else if(k==='due')datePop(b,{title:'締切は？',cur:d.due,none:!!d.due},v=>{d.due=v;draw()});
-    else if(k==='tag')miniPop(b,`<div class="fp-h">場所・時間帯・道具<span>複数選べます</span></div>${sepMap(TAGS,g=>`<button class="fp-item ${d.tags.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`,'<div class="fp-sep"></div>')}`,p=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{const v=x.dataset.v;d.tags=d.tags.includes(v)?d.tags.filter(y=>y!==v):[...d.tags,v];x.classList.toggle('on');draw()}));
-    else if(k==='en')miniPop(b,`<div class="fp-h">集中度</div>${ENERGY.map(x=>`<button class="fp-item ${d.energy===x.id?'on':''}" data-v="${x.id}"><span class="en-dot en-${x.id}"></span><span>${x.l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,(p,c)=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{d.energy=x.dataset.v;c();draw()}));
-    else if(k==='proj')openProjPop(b,d,v=>{d.project=v;const Pj=v&&taskById(v);if(Pj&&Pj.area&&d.area!==Pj.area){d.area=Pj.area;addAreaPlaces(d)}draw()});
-    else if(k==='rep'){const w=new Date().getDay(),dm=new Date().getDate();const R=[['','なし'],['daily','毎日'],['weekdays','平日'],['weekly','毎週'+DOW[w]+'曜'],['monthly','毎月'+dm+'日']];
-      miniPop(b,`<div class="fp-h">繰り返し</div>${R.map(([v,l])=>`<button class="fp-item ${(d.rep?d.rep.type:'')===v?'on':''}" data-v="${v}"><span>${l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,(p,c)=>$$('.fp-item',p).forEach(x=>x.onclick=()=>{const v=x.dataset.v;d.rep=v?{type:v,dows:[w],dom:dm,anchor:weekIdx(todayKey()),lead:0}:null;c();draw()}))}
-  };
-  const trayEl=k=>$(`.ctray[data-tray="${k}"]`,el);
-  const ok=k=>{d.title=ti.value.trim();if(!d.title){shake(note);ti.focus();toast('まず、何をするかを書いてください');return false}
-    if(k!=='inbox'&&!area(d.area)&&S.areas.length){shake($('.cmp-tabs',el));toast('付箋の上のインデックスで、エリアを選んでください');return false}return true};
-  const trayPick=(k,o={})=>{if(CMP.busy||!ok(k))return;const tb=trayEl(k);
-    if(k==='calendar'){let cd=todayKey(),ct=null,info=!!o.info;
-      const body=()=>`<div class="fp-h">いつの予定ですか？</div><div class="cp-row">${[['今日',todayKey()],['明日',addDays(1)]].map(([l,v])=>`<button class="chip ${cd===v?'on':''}" data-d="${v}">${l}</button>`).join('')}<label class="chip datechip ${cd!==todayKey()&&cd!==addDays(1)?'on':''}">${ic('cal')}<b>${cd!==todayKey()&&cd!==addDays(1)?dueLabel(cd).l:'日付'}</b><input type="date" min="${todayKey()}" value="${cd}"></label></div>
-        <div class="fp-h">時刻</div><div class="cp-row"><button class="chip ${ct==null?'on':''}" data-t="">なし</button><label class="chip ${ct!=null?'on':''}">${ic('clock')}<input type="time" step="600" value="${ct!=null?clock(ct):''}" class="cp-time"></label></div>
-        <div class="fp-h">種類</div><div class="cp-row"><button class="chip ${!info?'on':''}" data-k="">行動</button><button class="chip ${info?'on':''}" data-k="1">情報</button></div>
-        <div class="cp-go"><button class="btn primary">この日に置く</button></div>`;
-      const bind=(p,c)=>{const re=()=>{p.innerHTML=body();bind(p,c)};
-        $$('[data-d]',p).forEach(x=>x.onclick=()=>{cd=x.dataset.d;re()});const di=$('input[type=date]',p);di.onchange=()=>{if(di.value){cd=di.value;re()}};$('.datechip',p).onclick=e=>{if(e.target===di)return;e.preventDefault();try{di.showPicker()}catch(_){}};
-        $$('[data-t]',p).forEach(x=>x.onclick=()=>{ct=null;re()});const tm=$('.cp-time',p);tm.onchange=()=>{if(tm.value){const [h,m]=tm.value.split(':').map(Number);ct=h*60+m}else ct=null;re()};
-        $$('[data-k]',p).forEach(x=>x.onclick=()=>{info=!!x.dataset.k;re()});
-        $('.cp-go .btn',p).onclick=()=>{c();place('calendar',{date:cd,time:ct,info})}};
-      miniPop(tb,body(),bind);return}
-    if(k==='waiting'){miniPop(tb,`<div class="fp-h">誰を待っていますか？</div><input class="wait-in cp-who" placeholder="佐藤さん" maxlength="30"><div class="cp-go"><button class="btn primary">Waiting に置く</button></div>`,(p,c)=>{const w=$('.cp-who',p);setTimeout(()=>w.focus(),30);const go=()=>{c();place('waiting',{who:w.value.trim()})};w.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();go()}};$('.btn',p).onclick=go});return}
-    if(k==='tickler'){datePop(tb,{title:'いつ Next Action に戻す？',today:false},v=>{if(v)place('tickler',{date:v})});return}
-    place(k,o)};
-  const place=(k,x={})=>{if(!ok(k))return;CMP.busy=true;
-    const t={id:uid(),status:'next',title:d.title,note:me.value.trim(),area:area(d.area)?d.area:null,minutes:d.minutes,tags:[...d.tags],energy:d.energy,due:d.due||null,x:0,y:0,waitingFor:'',sched:null,created:Date.now(),doneAt:null};
-    if(d.project&&taskById(d.project))t.project=d.project;if(d.rep)t.rep=JSON.parse(JSON.stringify(d.rep));
-    let em='';
-    if(k==='inbox'){t.status='inbox';if(!d.minSet&&d.minutes===30)t.minutes=null}
-    else if(k==='next'||k==='someday')t.status=k;
-    else if(k==='waiting'){t.status='waiting';t.waitingFor=x.who||'';em=x.who||''}
-    else if(k==='tickler'){t.start=x.date;em=(d=>(d.getMonth()+1)+'/'+d.getDate())(new Date(x.date+'T00:00'))}
-    else if(k==='calendar'){t.status='calendar';t.cdate=x.date;t.ctime=x.time;if(x.info)t.info=true;t.due=null;delete t.rep;em=(d=>(d.getMonth()+1)+'/'+d.getDate())(new Date(x.date+'T00:00'))+(x.time!=null?' '+clock(x.time):'')}
-    else if(k==='two'){t.status='done';t.prevStatus='next';t.doneAt=Date.now();if(!d.minSet)t.minutes=2}
-    if(t.rep&&!t.due)t.due=nextOcc(t.rep,todayKey(),true);
-    if(t.status!=='inbox'&&t.minutes==null)t.minutes=30;
-    const sp=findSpot(t.status==='done'?'next':t.status,true);t.x=sp.x;t.y=sp.y;
-    note.insertAdjacentHTML('beforeend',hankoHTML(k,em,'cmp-hanko'));note.classList.add('stamped');
-    const tb=trayEl(k);if(tb)tb.classList.add('on');
-    setTimeout(()=>fly(t,k,em),720)};
-  const fly=(t,k,em)=>{
-    const tgtSel=k==='inbox'?['#side [data-sec="inbox"]','[data-slot="sec:inbox"]','[data-tab="more"]']:k==='two'?['#side [data-sec="log"]','[data-slot="sec:today"]']:[`#side [data-sec="${k}"]`,`[data-slot="sec:${k}"]`,'[data-tab="more"]'];
-    const tg=tgtSel.map(s=>$(s)).find(e=>e&&e.getBoundingClientRect().width>0&&getComputedStyle(e).visibility!=='hidden');
-    const r=note.getBoundingClientRect();let tx=innerWidth/2,ty=innerHeight+80;if(tg){const q=tg.getBoundingClientRect();tx=q.left+q.width/2;ty=q.top+q.height/2}
-    const gh=note.cloneNode(true);gh.classList.add('cmp-fly');gh.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:1200`;
-    $$('textarea',gh).forEach((x,i)=>x.value=[ti.value,me.value][i]||'');document.body.appendChild(gh);
-    el.classList.add('out');
-    requestAnimationFrame(()=>{gh.style.transition='transform .6s cubic-bezier(.55,.05,.4,1),opacity .6s ease-in';gh.style.transform=`translate(${tx-r.left-r.width/2}px,${ty-r.top-r.height/2}px) scale(.12) rotate(-18deg)`;gh.style.opacity='.2'});
-    setTimeout(()=>{gh.remove();commit(t,k,em,tg)},600)};
-  const commit=(t,k,em,tg)=>{
-    S.tasks.push(t);if(S.sample===undefined)S.sample=false;justAdded=t.id;justStamped={id:t.id,k,em};setTimeout(()=>{if(justStamped&&justStamped.id===t.id)justStamped=null},3500);
-    save();teardown();render();
-    const sel=tg&&(tg.id?'#'+tg.id:tg.dataset.sec?`#side [data-sec="${tg.dataset.sec}"]`:tg.dataset.slot?`[data-slot="${tg.dataset.slot}"]`:tg.dataset.tab?`[data-tab="${tg.dataset.tab}"]`:null);const t2=sel&&$(sel);
-    if(t2){t2.classList.add('cmp-land');setTimeout(()=>t2.classList.remove('cmp-land'),900)}
-    const msg=k==='two'?'2分で完了 · 完了ログに記録しました':k==='tickler'?`${dueLabel(t.start).l} まで Tickler にしまいました`:k==='calendar'?`${calLabel(t)} の予定にしました`:`「${t.title}」を ${SECT[k].en} に貼りました`;
-    toast(msg,{label:'元に戻す',fn:()=>{S.tasks=S.tasks.filter(x=>x!==t);save();render()}})};
-  const teardown=()=>{document.removeEventListener('keydown',key,true);closePop();el.remove();CMP=null};
-  const close=drop=>{if(CMP&&CMP.busy)return;const had=ti.value.trim();const snap={...d,title:ti.value,note:me.value};teardown();
-    if(had)toast(drop?'書かずに閉じました':'書きかけの付箋を閉じました',{label:'元に戻す',fn:()=>openComposer(snap)})};
-  const key=e=>{if(POP||isIME(e))return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
-  document.addEventListener('keydown',key,true);
-  $('.cmp-x',el).onclick=()=>close();
-  $('.cmp-qb',el).onclick=()=>{CMP.q=0;draw()};
-  $('.cmp-ib',el).onclick=()=>{if(ok('inbox'))place('inbox')};
-  $$('.ctray',el).forEach(b=>b.onclick=()=>trayPick(b.dataset.tray));
-  // drag the sticky into a tray
-  note.addEventListener('pointerdown',e=>{
-    if(e.button!==0||e.target.closest('textarea,button')||CMP.busy)return;
-    const sx=e.clientX,sy=e.clientY;let on=false,hot=null;
-    const mv=ev=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(!on&&Math.hypot(dx,dy)<6)return;
-      if(!on){on=true;note.classList.add('dragging');note.style.pointerEvents='none'}
-      note.style.transform=`translate(${dx}px,${dy}px) rotate(${dx/40-1.4}deg) scale(.92)`;
-      const tr=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.ctray');
-      if(tr!==hot){hot&&hot.classList.remove('on');hot=tr;hot&&hot.classList.add('on')}};
-    const up=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);
-      if(!on)return;note.style.pointerEvents='';note.classList.remove('dragging');note.style.transform='';
-      if(hot){hot.classList.remove('on');trayPick(hot.dataset.tray)}};
-    window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up)});
-  draw();requestAnimationFrame(()=>{grow(ti);grow(me)});setTimeout(()=>ti.focus(),60);
-}
 
 /* ---------- capture (⌘K) ---------- */
 function openCapture(){
@@ -4077,7 +3966,7 @@ function renderMore(el){
    <div class="ph-sec">ふりかえり</div>
    <div class="ph-ig">${it('data-msec="review"','review','g-red','週次レビュー',rvAgo==null?'未実施':agoLabel(S.ui.lastReview),rvAgo==null||rvAgo>=7?'warn':'')}${it('data-msec="log"','log','g-gray','完了ログ',doneToday?'今日 '+doneToday:'')}${it('id="mTl"','cal','g-blue','今日のタイムライン','')}</div>
    <div class="ph-sec">下のタブ<small>Today と リスト のあいだの3つ</small></div>
-   <div class="ph-ig">${tabSlots().map((k,i)=>{const s=slotInfo(k);return `<button class="ph-ir ic" data-tabslot="${i}">${s?s.pico:`<span class="ph-ico g-gray">${ic('plus')}</span>`}<span class="l">${s?esc(s.l):'未設定'}</span><span class="v">${i+2}番目</span><span class="cv">${ic('chev')}</span></button>`}).join('')}</div>
+   <div class="ph-ig">${tabSlots().map((k,i)=>{const s=slotInfo(k);return `<button class="ph-ir ic" data-tabslot="${i}">${s?(s.tico||s.pico):`<span class="ph-ico g-gray">${ic('plus')}</span>`}<span class="l">${s?esc(s.l):'未設定'}</span><span class="v">${i+2}番目</span><span class="cv">${ic('chev')}</span></button>`}).join('')}</div>
    <div class="ph-sec">アプリ</div>
    <div class="ph-ig">${it('id="mSet"','palette','g-gray','デザイン','')}${it('id="mCfg"','gear','g-gray','設定','')}${it('id="mGuide"','book','g-gray','手引き','')}</div>
    ${S.sample?'<div class="ph-ig"><button class="ph-ir act del" id="mSample">サンプルを消去</button></div>':''}
