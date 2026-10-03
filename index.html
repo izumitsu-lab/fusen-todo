@@ -1658,6 +1658,45 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .ph-ico.g-inbox{background:#8A877F}.ph-ico.g-today{background:#F0932B}.ph-ico.g-next{background:#4A86E8}.ph-ico.g-calendar{background:#E5534B}
   .ph-ico.g-log,.ph-ico.g-review{background:#8E8A82}
 }
+
+/* ---------- quick add card ---------- */
+.scrim.qk-scrim{display:block;padding:0}
+.qk{position:fixed;left:0;right:0;bottom:0;box-sizing:border-box;background:var(--pop);border-radius:16px 16px 0 0;padding:8px 14px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -12px rgba(0,0,0,.3);animation:qkUp .26s cubic-bezier(.2,.8,.2,1)}
+.qk.kb{padding-bottom:10px}
+@keyframes qkUp{from{transform:translateY(100%)}}
+.qk-grab{width:36px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 10px}
+.qk-in{display:flex;gap:12px;align-items:flex-start;padding:2px 2px 0}
+.qk-ck{width:22px;height:22px;border-radius:50%;border:1.8px dashed var(--ink3);flex:none;margin-top:2px;opacity:.7;box-sizing:border-box}
+.qk-tx{flex:1;min-width:0}
+.qk-t,.qk-n{display:block;width:100%;border:0;outline:none;background:none;resize:none;padding:0;color:var(--ink);overflow:hidden;font-family:inherit;box-sizing:border-box}
+.qk-t{font-size:18px;font-weight:600;line-height:1.4}
+.qk-n{font-size:14.5px;line-height:1.5;color:var(--ink2);margin-top:4px}
+.qk-t::placeholder,.qk-n::placeholder{color:var(--ink3);font-weight:inherit}
+.qk-who{display:flex;align-items:center;gap:8px;margin:10px 0 0 34px;padding:6px 10px;border-radius:9px;background:var(--sel);color:var(--ink3)}
+.qk-who[hidden]{display:none}
+.qk-who svg.i{width:15px;height:15px}.qk-who input{flex:1;min-width:0;border:0;outline:none;background:none;font-size:15px;color:var(--ink)}
+.qk-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0 34px}.qk-chips:empty{display:none}
+.qk-chip{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 8px 0 10px;border-radius:14px;background:var(--sel);font-size:13px;font-weight:600;color:var(--ink2);max-width:100%;white-space:nowrap;overflow:hidden}
+.qk-chip svg.i{width:13px;height:13px;flex:none}.qk-chip .dot{width:8px;height:8px;border-radius:50%}
+.qk-chip>svg.i:last-child{opacity:.5;margin-left:2px;width:11px;height:11px}
+.qk-chip.due{background:color-mix(in srgb,#E8702A 14%,var(--pop));color:#B4561A}
+.qk-bar{display:flex;align-items:center;gap:0;margin-top:12px}
+.qk-dest{display:flex;align-items:center;gap:6px;height:34px;padding:0 9px 0 6px;border-radius:17px;background:var(--sel);font-size:14px;font-weight:600;color:var(--ink);margin-right:4px;min-width:0;white-space:nowrap;flex:none}
+.qk-dest .qk-sq{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;flex:none}
+.qk-dest .qk-sq svg.i{width:13px;height:13px;stroke-width:2.1}.qk-dest>svg.i{width:14px;height:14px;color:var(--ink3)}
+.qk-ib{width:38px;height:38px;border-radius:19px;display:flex;align-items:center;justify-content:center;color:var(--ink3);flex:none}
+.qk-ib[hidden]{display:none}
+.qk-ib svg.i{width:21px;height:21px}.qk-ib.set{color:var(--accent)}.qk-ib.set[data-q="due"]{color:#E8702A}
+.qk-ib:hover,.qk-ib.open,.qk-dest:hover,.qk-dest.open{background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.qk-send{width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;margin-left:auto;flex:none;transition:opacity .15s}
+.qk-send svg.i{width:19px;height:19px;stroke-width:2.4}.qk-send:disabled{opacity:.35;cursor:default}
+.qk-msg{font-size:12.5px;color:var(--ink3);margin:10px 0 2px 34px;display:flex;gap:8px;align-items:center;min-width:0}.qk-msg:empty{display:none}
+.qk-msg span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.qk-msg svg.i{width:14px;height:14px;color:#3BAE77;stroke-width:2.4;flex:none}.qk-msg button{color:var(--accent);font-weight:600;flex:none}
+.qk-msg.warn{color:var(--now)}
+@media (min-width:761px){.qk{left:50%;right:auto;bottom:auto;top:16vh;width:560px;margin-left:-280px;border-radius:14px;padding:16px 18px 12px;animation:rise .2s cubic-bezier(.2,.9,.3,1.1)}.qk-grab{display:none}}
+@media (max-width:760px){.qk-t{font-size:19px}.qk-n,.qk-who input{font-size:16px}.qk-ib{width:36px;height:40px}.qk{padding-left:12px;padding-right:12px}}
+@media (max-width:370px){.qk-dest{font-size:13px}.qk-ib{width:34px}}
 /*PH-END*/
 /* iOS のホーム画面アプリで、表示領域が画面より短く報告される不具合の補正。
    ページ全体の高さは変えず、画面下端に付く要素だけを --gap 分だけ下へずらす（JS で html.vh-fix を付ける） */
@@ -1793,6 +1832,7 @@ const I={
  wrench:'<path d="M14.5 4.8a4 4 0 0 0-4.6 5.4L4.6 15.6a1.6 1.6 0 0 0 2.3 2.3l5.4-5.3a4 4 0 0 0 5.4-4.6l-2.4 2.4-2.1-.6-.6-2.1z"/>',
  food:'<path d="M7 3.5v17M4.5 3.5v5a2.5 2.5 0 0 0 5 0v-5M16.5 20.5v-17c-2.2 1-3.5 3.5-3.5 7 0 1.7 1 2.5 3.5 2.5"/>',
  pill:'<rect x="3.2" y="8.6" width="17.6" height="6.8" rx="3.4" transform="rotate(-40 12 12)"/><path d="M9.6 9.1l4.8 5.8"/>',
+ up:'<path d="M12 19V5M6 11l6-6 6 6"/>',
  sort:'<path d="M4 7h11M4 12h8M4 17h5M17.5 5v14M14.5 16l3 3 3-3"/>'
 };
 const ic=(n,cls='i')=>`<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[n]||''}</svg>`;
@@ -3315,7 +3355,7 @@ function openSettings(btn){
   el.style.left=Math.max(12,Math.min(r.right-w,innerWidth-w-12))+'px';el.style.top=Math.max(12,Math.min(r.bottom+8,innerHeight-h-12))+'px';
   document.addEventListener('pointerdown',setOutside,true);
 }
-const openPlus=()=>openCapture();
+const openPlus=()=>openQuick();
 let CFGP=null;
 function closeConfig(){if(CFGP){CFGP.remove();CFGP=null;document.removeEventListener('pointerdown',cfgOutside,true)}}
 function cfgOutside(e){if(CFGP&&!CFGP.contains(e.target)&&!e.target.closest('#cfgBtn,#sCfg,#syncLink'))closeConfig()}
@@ -3569,29 +3609,122 @@ function datePop(anchor,{title,cur,today=true,none=false,min},onPick){
 }
 let CMP=null;
 
-/* ---------- capture (⌘K) ---------- */
-function openCapture(){
-  if($('#capture'))return;if(DR)commitDraft();closePop();closeSettings();closeConfig();
-  const scrim=document.createElement('div');scrim.className='scrim cap-scrim';scrim.id='capture';
-  const got=[];const P0=PL()[0]?.name||'PC',A0=S.areas[0]?.name||'仕事';
-  scrim.innerHTML=`<div class="sheet capsheet" role="dialog" aria-label="すばやく書き出す">
-    <div class="cap-in">${ic('inbox')}<input class="cap-q" id="capIn" placeholder="気になっていることを、そのまま" maxlength="120" autocomplete="off"></div>
-    <div class="cap-help">⏎ で Inbox に入れて、続けて書けます。<code>#${esc(P0)}</code> 場所 · <code>30分</code> 時間 · <code>@${esc(A0)}</code> エリア · Esc で閉じる</div>
-    <ul class="cap-got" id="capGot"></ul></div>`;
+/* ---------- quick add（＋ / ⌘K）：下から出るカード ---------- */
+const QDEST=[['inbox','Inbox','inbox','あとで仕分ける'],['today','Today','today','締切を今日にする'],['next','Next Action','next','次にやる'],['waiting','Waiting','waiting','誰かを待っている'],['someday','Someday','someday','いつかやりたい'],['calendar','Calendar','calendar','その日だけの予定'],['tickler','Tickler','tickler','その日まで隠す']];
+const QGC={inbox:'#8A877F',today:'#F0932B',next:'#4A86E8',waiting:'#8C7AE6',someday:'#2FA38A',calendar:'#E5534B',tickler:'#C98A1B'};
+let QDRAFT=null;
+function quickDefaults(){
+  const sec=S.ui.section,P=projMode()?taskById(S.ui.proj):null;
+  const d={dest:'inbox',area:null,project:null,due:null,minutes:null,tags:[],labels:[],energy:'normal',cdate:null,start:null};
+  if(P){d.dest='next';d.project=P.id;d.area=P.area||null}
+  else if(F.area){d.dest='next';d.area=F.area}
+  else if(QDEST.some(x=>x[0]===sec))d.dest=sec;
+  if(d.dest==='calendar')d.cdate=todayKey();if(d.dest==='tickler')d.start=addDays(1);
+  addAreaPlaces(d);return d;
+}
+function openQuick(){
+  if($('#quick')){$('#quick .qk-t').focus();return}
+  if(DR)commitDraft();closePop();closeSettings();closeConfig();closeSide();
+  const dr=QDRAFT;QDRAFT=null;const d=dr?dr.d:quickDefaults();let last=null;
+  const scrim=document.createElement('div');scrim.className='scrim qk-scrim';scrim.id='quick';
+  scrim.innerHTML=`<div class="qk" role="dialog" aria-label="タスクを追加"><div class="qk-grab"></div>
+   <div class="qk-in"><span class="qk-ck"></span><div class="qk-tx"><textarea class="qk-t" rows="1" maxlength="120" placeholder="新しいタスク" enterkeyhint="send" autocomplete="off"></textarea><textarea class="qk-n" rows="1" placeholder="メモ"></textarea></div></div>
+   <label class="qk-who" hidden>${ic('user')}<input placeholder="誰を待っている？" maxlength="30" autocomplete="off"></label>
+   <div class="qk-chips"></div>
+   <div class="qk-bar"><button class="qk-dest" aria-haspopup="true"></button>
+    <button class="qk-ib" data-q="due" title="締切">${ic('flag')}</button><button class="qk-ib" data-q="area" title="エリア">${ic('folder')}</button><button class="qk-ib" data-q="tag" title="場所・時間帯・道具">${ic('pin')}</button><button class="qk-ib" data-q="min" title="所要時間">${ic('clock')}</button><button class="qk-ib" data-q="more" title="そのほか">${ic('more')}</button>
+    <button class="qk-send" aria-label="追加" disabled>${ic('up')}</button></div>
+   <div class="qk-msg"></div></div>`;
   document.body.appendChild(scrim);
-  const inp=$('#capIn',scrim),ul=$('#capGot',scrim);
-  const drawGot=()=>{ul.innerHTML=got.map(t=>`<li>${ic('log')}<span>${esc(t.title)}</span><em>${[t.area&&area(t.area)?areaLabel(area(t.area)):'',t.minutes!=null?fmtShort(t.minutes):'',...(t.tags||[]).map(tagName)].filter(Boolean).map(esc).join(' · ')}</em><button data-undo="${t.id}">取り消す</button></li>`).join('');
-    $$('[data-undo]',ul).forEach(b=>b.onclick=()=>{const t=got.find(x=>x.id===b.dataset.undo);if(!t)return;S.tasks=S.tasks.filter(x=>x!==t);got.splice(got.indexOf(t),1);save();render();drawGot();inp.focus()})};
-  const add=()=>{const p=parse(inp.value);if(!p.title)return;
-    const vis=S.ui.section==='inbox'&&!F.area&&!isList();const sp=findSpot('inbox',!vis);
-    const t={id:uid(),status:'inbox',title:p.title,note:'',area:p.area,minutes:p.mins,tags:p.tags,labels:p.labels,energy:'normal',x:sp.x,y:sp.y,waitingFor:'',sched:null,created:Date.now(),doneAt:null};if(t.area)addAreaPlaces(t);
-    S.tasks.push(t);if(S.sample===undefined)S.sample=false;if(vis)justAdded=t.id;save();render();got.unshift(t);inp.value='';drawGot()};
-  const close=()=>{document.removeEventListener('keydown',key,true);scrim.remove();if(got.length)toast(`${got.length}件を Inbox に入れました`)};
-  const key=e=>{if(isIME(e))return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
-  inp.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();add()}};
+  const card=$('.qk',scrim),ti=$('.qk-t',scrim),nt=$('.qk-n',scrim),who=$('.qk-who input',scrim),msgEl=$('.qk-msg',scrim),send=$('.qk-send',scrim);
+  if(dr){ti.value=dr.title;nt.value=dr.note;who.value=dr.who||''}
+  const grow=x=>{x.style.height='auto';x.style.height=x.scrollHeight+'px'};
+  const focusT=()=>setTimeout(()=>ti.focus(),20);
+  const sync=()=>{send.disabled=!ti.value.trim()};
+  ti.oninput=()=>{grow(ti);sync()};nt.oninput=()=>grow(nt);
+  const md=k=>{const x=new Date(k+'T00:00');return (x.getMonth()+1)+'/'+x.getDate()+'（'+DOW[x.getDay()]+'）'};
+  const draw=()=>{
+    const q=QDEST.find(x=>x[0]===d.dest);
+    $('.qk-dest',scrim).innerHTML=`<span class="qk-sq" style="background:${QGC[d.dest]}">${ic(q[2])}</span>${q[1]}${ic('chev')}`;
+    $('.qk-who',scrim).hidden=d.dest!=='waiting';
+    const P=d.project&&taskById(d.project),ch=[];
+    if(d.dest==='calendar')ch.push(['cdate',ic('calendar')+(d.cdate===todayKey()?'今日':md(d.cdate))+' の予定',0,'']);
+    if(d.dest==='tickler')ch.push(['start',ic('tickler')+md(d.start)+' まで隠す',0,'']);
+    if(d.due&&d.dest!=='calendar')ch.push(['due',ic('flag')+dlLabel(d.due).l,1,'due']);
+    if(d.area&&area(d.area))ch.push(['area',`<i class="dot c-${areaColor(area(d.area))}"></i>`+esc(areaLabel(area(d.area))),1,'']);
+    if(P)ch.push(['proj',ic('clip')+esc(P.title),1,'']);
+    if(d.minutes!=null)ch.push(['min',ic('clock')+fmtMin(d.minutes),1,'']);
+    d.tags.forEach(g=>{const x=TAGS.find(y=>y.id===g);if(x)ch.push(['tag:'+g,ic(x.icon||'pin')+esc(x.name),1,''])});
+    d.labels.forEach(g=>{const n=labName(g);if(n)ch.push(['lab:'+g,'#'+esc(n),1,''])});
+    if(d.energy&&d.energy!=='normal')ch.push(['en',ic('bolt')+ENERGY.find(e=>e.id===d.energy).l,1,'']);
+    $('.qk-chips',scrim).innerHTML=ch.map(([k,h,x,c])=>`<button class="qk-chip ${c}" data-c="${k}">${h}${x?ic('x'):''}</button>`).join('');
+    $$('.qk-chip',scrim).forEach(b=>b.onclick=()=>{const k=b.dataset.c;
+      if(k==='cdate'){pickDest('calendar',b);return}if(k==='start'){pickDest('tickler',b);return}
+      if(k==='due')d.due=null;else if(k==='area')setArea(null);else if(k==='proj')d.project=null;else if(k==='min')d.minutes=null;else if(k==='en')d.energy='normal';
+      else if(k.startsWith('tag:'))d.tags=d.tags.filter(x=>x!==k.slice(4));else if(k.startsWith('lab:'))d.labels=d.labels.filter(x=>x!==k.slice(4));
+      draw();focusT()});
+    const set={due:!!d.due,area:!!d.area,tag:d.tags.length>0,min:d.minutes!=null,more:!!d.project||d.labels.length>0||(d.energy&&d.energy!=='normal')};
+    $$('.qk-ib',scrim).forEach(b=>{b.classList.toggle('set',!!set[b.dataset.q]);if(b.dataset.q==='due')b.hidden=d.dest==='calendar'});
+  };
+  const say=(h,warn)=>{msgEl.className='qk-msg'+(warn?' warn':'');msgEl.innerHTML=h};
+  const setArea=v=>{const old=areaPlaces(d.area);d.tags=d.tags.filter(x=>!old.includes(x));d.area=v||null;addAreaPlaces(d)};
+  const pickDest=(k,anchor)=>{
+    if(k==='calendar'){datePop(anchor,{title:'いつの予定？',cur:d.cdate},v=>{if(!v)return;d.dest='calendar';d.cdate=v;draw();focusT()});return}
+    if(k==='tickler'){datePop(anchor,{title:'いつ Next Action に戻す？',cur:d.start,today:false},v=>{if(!v)return;d.dest='tickler';d.start=v;draw();focusT()});return}
+    d.dest=k;draw();if(k==='waiting')setTimeout(()=>who.focus(),20);else focusT()};
+  $('.qk-dest',scrim).onclick=e=>{const b=e.currentTarget;
+    miniPop(b,`<div class="fp-h">行き先</div>${QDEST.map(([k,l,i,sub])=>`<button class="fp-item ${d.dest===k?'on':''}" data-v="${k}"><span class="mvi" style="--gc:${QGC[k]}">${ic(i)}</span><span>${l}</span><em class="fp-sub">${sub}</em></button>`).join('')}`,
+      (el,c)=>$$('.fp-item',el).forEach(x=>x.onclick=()=>{c();pickDest(x.dataset.v,b)}))};
+  const pops={
+    due:b=>datePop(b,{title:'締切は？',cur:d.due,none:!!d.due},v=>{d.due=v;draw();focusT()}),
+    area:b=>openAreaPop(b,{area:d.area,status:d.dest==='inbox'?'inbox':'next'},v=>{setArea(v);if(msgEl.classList.contains('warn'))say('');draw();focusT()}),
+    tag:b=>miniPop(b,`<div class="fp-h">場所・時間帯・道具<span>複数選べます</span></div>${sepMap(TAGS,g=>`<button class="fp-item ${d.tags.includes(g.id)?'on':''}" data-v="${g.id}">${ic(g.icon||'pin')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`,'<div class="fp-sep"></div>')}`,
+      el=>$$('.fp-item',el).forEach(x=>x.onclick=()=>{const v=x.dataset.v;d.tags=d.tags.includes(v)?d.tags.filter(y=>y!==v):[...d.tags,v];x.classList.toggle('on');draw()})),
+    min:b=>miniPop(b,`<div class="fp-h">所要時間</div>${MINS.map(m=>`<button class="fp-item ${d.minutes===m?'on':''}" data-v="${m}"><span>${fmtMin(m)}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}${d.minutes!=null?'<div class="fp-sep"></div><button class="fp-item" data-v=""><span>なし</span></button>':''}`,
+      (el,c)=>$$('.fp-item',el).forEach(x=>x.onclick=()=>{d.minutes=x.dataset.v?+x.dataset.v:null;c();draw();focusT()})),
+    more:b=>{const P=d.project&&taskById(d.project);
+      miniPop(b,`<div class="fp-h">そのほか</div><button class="fp-item" data-m="proj">${ic('clip')}<span>プロジェクト</span><em class="fp-sub">${P?esc(P.title):'なし'}</em></button><button class="fp-item" data-m="lab">${ic('tag')}<span>タグ</span><em class="fp-sub">${d.labels.length?d.labels.map(labName).join('・'):'なし'}</em></button><button class="fp-item" data-m="en">${ic('bolt')}<span>集中度</span><em class="fp-sub">${(ENERGY.find(e=>e.id===d.energy)||{}).l||'普通'}</em></button><button class="fp-item" data-m="edit">${ic('edit')}<span>詳しく編集する…</span></button>`,
+        (el,c)=>$$('.fp-item',el).forEach(x=>x.onclick=()=>{const m=x.dataset.m;c();
+          if(m==='proj')openProjPop(b,d,v=>{d.project=v;const PP=v&&taskById(v);if(PP&&PP.area&&d.area!==PP.area)setArea(PP.area);if(PP&&d.dest==='inbox')d.dest='next';draw();focusT()});
+          else if(m==='lab')miniPop(b,`<div class="fp-h">タグ<span>複数選べます</span></div>${S.labels.some(y=>!y.sep)?sepMap(S.labels,g=>`<button class="fp-item ${d.labels.includes(g.id)?'on':''}" data-v="${g.id}">${ic('tag')}<span>${esc(g.name)}</span><i class="fp-check">${ic('log')}</i></button>`,'<div class="fp-sep"></div>'):'<div class="fp-none">タグはまだありません。<br>「詳しく編集する…」から作れます。</div>'}`,
+            el2=>$$('.fp-item',el2).forEach(y=>y.onclick=()=>{const v=y.dataset.v;d.labels=d.labels.includes(v)?d.labels.filter(z=>z!==v):[...d.labels,v];y.classList.toggle('on');draw()}));
+          else if(m==='en')miniPop(b,`<div class="fp-h">集中度</div>${ENERGY.map(e=>`<button class="fp-item ${d.energy===e.id?'on':''}" data-v="${e.id}"><span class="en-dot en-${e.id}"></span><span>${e.l}</span><i class="fp-check">${ic('log')}</i></button>`).join('')}`,
+            (el2,c2)=>$$('.fp-item',el2).forEach(y=>y.onclick=()=>{d.energy=y.dataset.v;c2();draw();focusT()}));
+          else if(m==='edit'){const t=add(true);if(t){close(true);openEditor(t)}}}))}
+  };
+  $$('.qk-ib',scrim).forEach(b=>b.onclick=()=>{if(POP&&POP.btn===b){closePop();return}pops[b.dataset.q](b)});
+  function add(quiet){
+    const raw=ti.value.trim();if(!raw){ti.focus();ti.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'none'}],{duration:240});return null}
+    const p=parse(raw);const title=p.title||raw;
+    const ar=p.area||d.area,dest=d.dest,status=dest==='today'||dest==='tickler'?'next':dest;
+    if(status!=='inbox'&&status!=='calendar'&&!area(ar)&&S.areas.length){say('エリアを選んでください（Inbox ならあとで決められます）',true);pops.area($('.qk-ib[data-q="area"]',scrim));return null}
+    const t={id:uid(),status,title,note:nt.value.trim(),area:area(ar)?ar:null,minutes:p.mins??d.minutes??(status==='inbox'?null:30),tags:[...new Set([...d.tags,...p.tags])],labels:[...new Set([...d.labels,...p.labels])],energy:d.energy||'normal',x:0,y:0,waitingFor:status==='waiting'?who.value.trim():'',sched:null,created:Date.now(),doneAt:null};
+    if(p.area&&p.area!==d.area)addAreaPlaces(t);
+    if(dest==='today')t.due=todayKey();else if(d.due&&dest!=='calendar')t.due=d.due;
+    if(d.project&&taskById(d.project))t.project=d.project;
+    if(dest==='calendar')t.cdate=d.cdate||todayKey();
+    if(dest==='tickler')t.start=d.start||addDays(1);
+    const sp=findSpot(t.status,true);t.x=sp.x;t.y=sp.y;
+    S.tasks.push(t);if(S.sample===undefined)S.sample=false;justAdded=t.id;save();render();last=t;
+    ti.value='';nt.value='';who.value='';grow(ti);grow(nt);sync();
+    d.due=null;d.minutes=null;d.labels=[];d.energy='normal';d.tags=[];addAreaPlaces(d);draw();
+    if(!quiet){const q=QDEST.find(x=>x[0]===dest);say(`${ic('log')}<span>「${esc(t.title)}」を ${q[1]} に追加しました</span><button class="qk-undo">取り消す</button>`);
+      $('.qk-undo',msgEl).onclick=()=>{S.tasks=S.tasks.filter(x=>x!==last);last=null;save();render();say('');focusT()};focusT()}
+    return t;
+  }
+  send.onclick=()=>add();
+  ti.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!isIME(e)){e.preventDefault();add()}};
+  who.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();ti.focus()}};
+  const vv=window.visualViewport;
+  const place=()=>{if(!vv||!narrow()){card.style.bottom='';return}const kb=Math.max(0,innerHeight-vv.height-vv.offsetTop);card.style.bottom=kb+'px';card.classList.toggle('kb',kb>40)};
+  if(vv){vv.addEventListener('resize',place);vv.addEventListener('scroll',place)}
+  const close=keepNo=>{if(!keepNo&&(ti.value.trim()||nt.value.trim()))QDRAFT={d,title:ti.value,note:nt.value,who:who.value};
+    if(vv){vv.removeEventListener('resize',place);vv.removeEventListener('scroll',place)}
+    document.removeEventListener('keydown',key,true);closePop();scrim.remove();if(QDRAFT)toast('書きかけは、次に開いたときに残っています')};
+  const key=e=>{if(POP||isIME(e))return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
   document.addEventListener('keydown',key,true);
   scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)close()});
-  setTimeout(()=>inp.focus(),30);
+  draw();sync();grow(ti);grow(nt);place();ti.focus();setTimeout(()=>ti.focus(),60);
 }
 
 /* ---------- search ---------- */
@@ -3995,7 +4128,7 @@ function renderMain(){
 function render(){closePop();renderSide();renderBar();renderMain();renderTabs();if(S.ui.tl)renderTL();$('#tl').classList.toggle('open',S.ui.tl)}
 
 document.addEventListener('keydown',e=>{
-  if((MAC?e.metaKey:e.ctrlKey)&&!e.altKey&&!e.shiftKey&&e.key.toLowerCase()==='k'){e.preventDefault();if($('.scrim:not(#capture)')||$('#guide')||$('#cmp'))return;if($('#capture'))$('#capIn').focus();else openCapture();return}
+  if((MAC?e.metaKey:e.ctrlKey)&&!e.altKey&&!e.shiftKey&&e.key.toLowerCase()==='k'){e.preventDefault();if($('#quick')){$('#quick .qk-t').focus();return}if($('.scrim')||$('#guide'))return;openQuick();return}
   if(e.target.closest('input,textarea,select')||$('.scrim')||$('#guide')||$('#cmp'))return;
   if(e.metaKey||e.ctrlKey||e.altKey)return;
   const k=e.key.toLowerCase();
