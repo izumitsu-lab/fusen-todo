@@ -1926,7 +1926,7 @@ function normalize(){
 function rollover(){const t=todayKey();let n=0;S.tasks.forEach(k=>{if(k.sched&&k.sched.date!==t&&k.status!=='done'){k.sched=null;n++}});return n}
 let saveT;const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};function save(){clearTimeout(saveT);saveT=setTimeout(()=>{saveT=0;saveLocal();pushNow()},150)}
 const flushSave=()=>{if(!saveT)return;clearTimeout(saveT);saveT=0;saveLocal();pushNow()};
-addEventListener('pagehide',flushSave);document.addEventListener('visibilitychange',()=>{if(document.hidden)flushSave()});
+addEventListener('pagehide',flushSave);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S&&purgeOld()){save();render()}});document.addEventListener('visibilitychange',()=>{if(document.hidden)flushSave()});
 const F={tags:new Set(),labels:new Set(),area:null,time:null,due:null,energy:null};
 const DUEF=[{id:'d0',l:'今日まで（遅れを含む）',f:n=>n<=0},{id:'d3',l:'3日以内',f:n=>n<=3},{id:'d7',l:'1週間以内',f:n=>n<=7},{id:'d14',l:'2週間以内',f:n=>n<=14},{id:'dany',l:'締切があるもの',f:n=>true}];
 const TIMEF=[{id:'le15',l:'15分以内',f:m=>m<=15},{id:'le30',l:'30分以内',f:m=>m<=30},{id:'le60',l:'60分以内',f:m=>m<=60},{id:'gt60',l:'60分以上',f:m=>m>=60}];
@@ -2693,6 +2693,15 @@ function renderProjects(el){
 function logItems(){
   return S.tasks.filter(t=>t.status==='done').map(t=>({t,title:t.title,parent:isChild(t)?projOf(t).title:null,proj:isProj(t),minutes:isProj(t)?null:t.minutes,doneAt:t.doneAt||0})).sort((a,b)=>b.doneAt-a.doneAt);
 }
+/* 完了タスクの保存期間（日数）。0 は自動で消さない。同期している端末で共有する */
+const KEEP=[[30,'1か月'],[14,'2週間'],[7,'1週間'],[3,'3日'],[1,'1日'],[0,'消さない']];
+const keepDays=()=>S.ui.logKeep==null?30:+S.ui.logKeep;
+const keepLabel=()=>(KEEP.find(x=>x[0]===keepDays())||[0,keepDays()+'日'])[1];
+function purgeOld(){const d=keepDays();if(!d)return null;const cut=Date.now()-d*864e5;
+  const gone=S.tasks.filter(t=>t.status==='done'&&t.doneAt&&t.doneAt<cut);if(!gone.length)return null;
+  const ids=new Set(gone.map(t=>t.id)),links=[];
+  S.tasks.forEach(t=>{if(t.project&&ids.has(t.project)&&!ids.has(t.id)){links.push([t,t.project]);t.project=null}});
+  S.tasks=S.tasks.filter(t=>!ids.has(t.id));return {gone,links}}
 function renderLog(el){
   const done=logItems();
   const tk=todayKey();const today=done.filter(x=>dayKey(new Date(x.doneAt))===tk);
@@ -2700,12 +2709,11 @@ function renderLog(el){
   const by={};done.forEach(x=>{const k=dayKey(new Date(x.doneAt));(by[k]=by[k]||[]).push(x)});
   const label=k=>{if(k===tk)return '今日';const d=new Date(k+'T00:00');const y=new Date();y.setDate(y.getDate()-1);if(k===dayKey(y))return '昨日';return (d.getMonth()+1)+'月'+d.getDate()+'日（'+'日月火水木金土'[d.getDay()]+'）'};
   const tm=ms=>{const d=new Date(ms);return clock(d.getHours()*60+d.getMinutes())};
-  const cut=(()=>{const d=new Date();d.setMonth(d.getMonth()-1);d.setHours(0,0,0,0);return d})();const MON_AGO_L=(cut.getMonth()+1)+'月'+cut.getDate()+'日';
-  const old=done.filter(x=>x.doneAt<cut.getTime());
   el.innerHTML=`<div class="list-scroll">${phHead()}<div class="list">
    <div class="log-sum"><div><small>今日 完了</small><b>${today.length}件</b></div><div><small>今日の作業時間</small><b>${fmtMin(today.reduce((s,x)=>s+(x.minutes||0),0))}</b></div><div><small>過去7日間</small><b>${wk.length}件</b></div></div>
    ${done.length?Object.keys(by).map(k=>`<div class="lgroup logday"><h3>${label(k)}<span>${by[k].length}件</span></h3>${by[k].map((x,i)=>`<div class="logrow ${colorOf(x.t)}"><span class="ok">${ic('log')}</span><div class="lt"><b>${esc(x.title)}</b>${x.parent?`<small>${ic('clip')}${esc(x.parent)}</small>`:''}${x.proj?`<small>${ic('clip')}プロジェクト完了</small>`:''}</div><time>${fmtShort(x.minutes)} · ${tm(x.doneAt)}</time><button data-restore="${k}|${i}">戻す</button><button class="ldel" data-ldel="${k}|${i}" title="ログから削除" aria-label="ログから削除">${ic('x')}</button></div>`).join('')}</div>`).join('')
-   +(old.length?`<div class="log-purge"><button class="btn" id="logPurge">${ic('x')}1か月より前のログを消す（${old.length}件）</button><small>${MON_AGO_L}より前に完了したものが対象です</small></div>`:''):'<div class="empty-list"><b>まだ完了したタスクはありません</b>付箋の丸をクリックすると、くしゃっと丸めてここに記録します。</div>'}
+   :'<div class="empty-list"><b>まだ完了したタスクはありません</b>付箋の丸をクリックすると、くしゃっと丸めてここに記録します。</div>'}
+   <div class="log-purge"><small>${keepDays()?`完了から${keepLabel()}を過ぎたタスクは自動で削除されます`:'完了したタスクは自動では削除されません'}（設定で変更できます）</small></div>
   </div></div>`;
   /* ログから消す（元に戻せる）。完了済みプロジェクトを消すときは、中のタスクのつながりも外して覚えておく */
   const purge=(list,msg)=>{const ids=new Set(list.map(x=>x.t.id));const snap=S.tasks.slice();const links=[];
@@ -2713,8 +2721,6 @@ function renderLog(el){
     S.tasks=S.tasks.filter(t=>!ids.has(t.id));save();render();
     toast(msg,{label:'元に戻す',fn:()=>{S.tasks=snap;links.forEach(([t,p])=>{t.project=p});save();render()}})};
   $$('[data-ldel]',el).forEach(b=>b.onclick=()=>{const [k,i]=b.dataset.ldel.split('|');const x=by[k][+i];purge([x],'ログから削除しました')});
-  const pg=$('#logPurge',el);if(pg)pg.onclick=()=>{if(!pg.classList.contains('armed')){pg.classList.add('armed');pg.lastChild.textContent=`もう一度押すと ${old.length}件 を消します`;setTimeout(()=>{if(pg.isConnected&&pg.classList.contains('armed')){pg.classList.remove('armed');pg.lastChild.textContent=`1か月より前のログを消す（${old.length}件）`}},4000);return}
-    purge(old,`${old.length}件のログを消しました`)};
   $$('[data-restore]',el).forEach(b=>b.onclick=()=>{const [k,i]=b.dataset.restore.split('|');const x=by[k][+i];
     x.t.status=x.t.prevStatus||'next';x.t.doneAt=null;x.t.sched=null;
     save();render();toast(SECT[x.t.status].en+' に戻しました')});
@@ -2774,7 +2780,7 @@ function fitForTL(opening){
 }
 function applyTL(){const tl=$('#tl');tl.classList.toggle('open',S.ui.tl);if(S.ui.tl)requestAnimationFrame(renderTL)}
 let lastDay=todayKey();
-setInterval(()=>{if(lastDay!==todayKey()){lastDay=todayKey();rollover();save();render();return}if(rollover()){save();render();toast('日付が変わりました。未完了の予定はボードに戻りました')}const n=$('#nowLine');if(n){n.style.top=nowMin()/60*HP+8+'px';n.firstChild.textContent=clock(nowMin())}},30000);
+setInterval(()=>{if(lastDay!==todayKey()){lastDay=todayKey();rollover();purgeOld();save();render();return}if(rollover()){save();render();toast('日付が変わりました。未完了の予定はボードに戻りました')}const n=$('#nowLine');if(n){n.style.top=nowMin()/60*HP+8+'px';n.firstChild.textContent=clock(nowMin())}},30000);
 
 /* ---------- drag engine ---------- */
 let D=null;
@@ -3445,12 +3451,15 @@ function openConfig(btn){
   const draw=()=>{
     el.innerHTML=`<h3>設定<button class="ph-close" data-phx>完了</button></h3>
      ${syncRow()}
+     <div class="setrow"><span>完了したタスクを残す期間</span><div class="seg">${KEEP.map(([v,l])=>`<button data-keep="${v}" class="${keepDays()===v?'on':''}">${l}</button>`).join('')}</div><div class="hint">${keepDays()?'これより前に完了したタスクは自動で削除されます。':'完了ログはずっと残ります。'}同期している端末すべてに適用されます。</div></div>
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow desk-only"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
      <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く<span class="desk-only">（?）</span></button></div>
      ${VHINFO.st?`<div class="setrow"><span>画面下端の位置（ホーム画面アプリ）</span><div class="vhadj"><button class="btn" data-vh="-5">上へ</button><b>${(VHINFO.adj||0)>0?'+':''}${VHINFO.adj||0}${VHINFO.auto?'（自動）':''}</b><button class="btn" data-vh="5">下へ</button><button class="btn" data-vh="0">自動</button></div><div class="hint">タブバーが浮く・めり込むときに調整します。診断：画面 ${VHINFO.sh} ／ 表示領域 ${VHINFO.ih} ／ 補正 ${VHINFO.gap}${VHINFO.adj?(VHINFO.adj>0?'+':'')+VHINFO.adj:''}px</div></div>`:''}`;
     {const a=$('#sgIn',el);if(a)a.onclick=signIn;const b=$('#sgOut',el);if(b)b.onclick=async()=>{await signOutSync();toast('ログアウトしました（この端末のデータはそのまま残ります）')}}
     const kb=$('#kbT',el);if(kb)kb.onclick=()=>{kbOpen=!kbOpen;draw()};$$('[data-phx]',el).forEach(b=>b.onclick=closeConfig);
+    $$('[data-keep]',el).forEach(b=>b.onclick=()=>{const prev=S.ui.logKeep;S.ui.logKeep=+b.dataset.keep;const r=purgeOld();save();render();draw();
+      if(r)toast(`完了から${keepLabel()}を過ぎた ${r.gone.length}件 を削除しました`,{label:'元に戻す',fn:()=>{S.ui.logKeep=prev;S.tasks=[...S.tasks,...r.gone];r.links.forEach(([t,p])=>{t.project=p});save();render();if(CFGP&&CFGP._draw)CFGP._draw()}})});
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
     $$('[data-vh]',el).forEach(b=>b.onclick=()=>{const v=+b.dataset.vh;S.ui.vhAdj=v?Math.max(-120,Math.min(120,(VHINFO.adj||0)+v)):null;save();fixVH();draw()});
     $('#cfgGuide',el).onclick=()=>{closeConfig();openGuide()};
@@ -3954,8 +3963,8 @@ let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(S
 const saveSB=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SB))}catch(e){}};
 const hj=j=>j==null?null:hash(j)+':'+j.length;
 let FB=null;
-const metaJ=()=>JSON.stringify({areas:S.areas,places:S.places,labels:S.labels||[],sample:!!S.sample,lastReview:S.ui.lastReview||null});
-function setMeta(j){const m=JSON.parse(j);if(Array.isArray(m.areas))S.areas=m.areas;if(Array.isArray(m.places))S.places=m.places;if(Array.isArray(m.labels))S.labels=m.labels;S.sample=!!m.sample;if(m.lastReview)S.ui.lastReview=m.lastReview;TAGS=S.places}
+const metaJ=()=>JSON.stringify({areas:S.areas,places:S.places,labels:S.labels||[],sample:!!S.sample,lastReview:S.ui.lastReview||null,logKeep:S.ui.logKeep??null});
+function setMeta(j){const m=JSON.parse(j);if(m.logKeep!=null)S.ui.logKeep=m.logKeep;if(Array.isArray(m.areas))S.areas=m.areas;if(Array.isArray(m.places))S.places=m.places;if(Array.isArray(m.labels))S.labels=m.labels;S.sample=!!m.sample;if(m.lastReview)S.ui.lastReview=m.lastReview;TAGS=S.places}
 const fixTask=t=>{if(!Array.isArray(t.tags))t.tags=[];if(!Array.isArray(t.labels))t.labels=[];return t};
 const tcol=()=>FB.FS.collection(FB.db,'users',SYNC.user.uid,'fusenTasks');
 const mref=()=>FB.FS.doc(FB.db,'users',SYNC.user.uid,'fusen','meta');
@@ -4039,7 +4048,7 @@ function reconcile(id,rj,cur,setLocal,delLocal,allowDel){
   if(rj==null){if(b===undefined||!allowDel)return false;let ch=false;if(l===b){delLocal();ch=true}delete SB.h[id];return ch}
   let ch=false;if(l!==r){setLocal(rj);ch=true}SB.h[id]=r;return ch;
 }
-function afterRemote(ch){if(ch){saveLocal();remoteRender()}SYNC.ready=true;if(SYNC.state==='err'&&navigator.onLine)SYNC.state='sync';saveSB();pushNow();syncUI()}
+function afterRemote(ch){if(purgeOld())ch=true;if(ch){saveLocal();remoteRender()}SYNC.ready=true;if(SYNC.state==='err'&&navigator.onLine)SYNC.state='sync';saveSB();pushNow();syncUI()}
 function attach(){
   const {FS}=FB;let srv=false;
   FB.unsub.push(FS.onSnapshot(tcol(),{includeMetadataChanges:true},snap=>{
@@ -4235,7 +4244,7 @@ const fixVH=()=>{const de=document.documentElement;const st=IOS&&(navigator.stan
   const adj=set?+S.ui.vhAdj:auto;VHINFO.adj=adj;VHINFO.auto=!set;
   const g=Math.max(0,gap)+adj;if(st&&g>0&&g<220){de.classList.add('vh-fix');de.style.setProperty('--gap',g+'px')}else{de.classList.remove('vh-fix');de.style.removeProperty('--gap')}};
 addEventListener('resize',fixVH);addEventListener('orientationchange',()=>setTimeout(fixVH,350));addEventListener('pageshow',fixVH);
-load();fixVH();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
+load();if(purgeOld())save();fixVH();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
 setTimeout(()=>{$$('.due-b.back').forEach(e=>{const b=e.parentNode;e.remove();if(b&&b.classList.contains('badges')&&!b.children.length)b.remove()})},6100);
 fbInit();
 })();
