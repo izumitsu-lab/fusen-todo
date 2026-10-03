@@ -1643,6 +1643,16 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .log-purge .btn.armed{background:var(--now);color:#fff;border-color:transparent}
 .log-purge small{font-size:12px;color:var(--ink3)}
 @media (max-width:760px){.logrow .ldel{opacity:1;padding:8px!important;margin:-6px -6px -6px 0}.logrow .ldel svg.i{width:16px;height:16px}.log-purge{margin:28px 16px 8px}.log-purge .btn{min-height:44px;font-size:15px}.log-purge small{font-size:13px}}
+@media (max-width:760px){
+  .tab{min-width:0}
+  .tab .tn{max-width:100%;padding:0 3px;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tab .tdot{display:block;width:21px;height:21px;border-radius:6px;background:var(--sd);filter:var(--stk-filter);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+  .tab:not(.on) .tdot{opacity:.8}
+  .tab.on .tdot{box-shadow:0 0 0 2px var(--win),0 0 0 3.5px var(--accent)}
+  .tp-ck{display:flex;color:var(--accent)}.tp-ck svg.i{width:18px;height:18px;stroke-width:2.4}
+  .ph-ico.g-inbox{background:#8A877F}.ph-ico.g-today{background:#F0932B}.ph-ico.g-next{background:#4A86E8}.ph-ico.g-calendar{background:#E5534B}
+  .ph-ico.g-log,.ph-ico.g-review{background:#8E8A82}
+}
 /*PH-END*/
 /* iOS のホーム画面アプリで、表示領域が画面より短く報告される不具合の補正。
    ページ全体の高さは変えず、画面下端に付く要素だけを --gap 分だけ下へずらす（JS で html.vh-fix を付ける） */
@@ -2460,13 +2470,54 @@ function listDrop(d){
 }
 
 /* ---------- phone tabs ---------- */
+/* iPhone の下タブ：Today ＋ 自分で選ぶ3つ ＋ リスト（全部） */
+const DEF_TABS=['sec:next','sec:inbox','sec:calendar'];
+const TABSEC={inbox:['Inbox','inbox'],next:['Next','next'],calendar:['Calendar','calendar'],waiting:['Waiting','waiting'],someday:['Someday','someday'],tickler:['Tickler','tickler'],projects:['プロジェクト','clip'],log:['完了ログ','log'],review:['週次レビュー','review']};
+const tabSlots=()=>Array.isArray(S.ui.tabs)&&S.ui.tabs.length===3?S.ui.tabs:DEF_TABS;
+function slotInfo(k){if(!k)return null;const c=k.indexOf(':'),ty=k.slice(0,c),v=k.slice(c+1);
+  if(ty==='sec'&&TABSEC[v])return {ty,v,l:TABSEC[v][0],ico:ic(TABSEC[v][1]),pico:`<span class="ph-ico g-${v}">${ic(TABSEC[v][1])}</span>`,gc:['log','review'].includes(v)?'more':v};
+  if(ty==='area'){const a=area(v);if(a)return {ty,v,l:a.name,ico:`<i class="tdot c-${areaColor(a)}"></i>`,pico:`<span class="ph-dt c-${areaColor(a)}"><i class="dot"></i></span>`,gc:'more'}}
+  if(ty==='proj'){const p=taskById(v);if(isProj(p)&&p.status!=='done')return {ty,v,l:p.title,ico:ic('clip'),pico:`<span class="ph-ico g-projects">${ic('clip')}</span>`,gc:'projects'}}
+  return null}
+const curKey=()=>projMode()?'proj:'+S.ui.proj:F.area?'area:'+F.area:'sec:'+S.ui.section;
+function goSlot(k){LSEL=null;if(k==='sec:today'){S.ui.section='today';F.area=null;save();render();return}
+  const s=slotInfo(k);if(!s)return;
+  if(s.ty==='proj'){openProject(s.v);S.ui.fromProjects=false;return}
+  F.area=s.ty==='area'?s.v:null;S.ui.section=s.ty==='area'?'next':s.v;if(s.v==='review'&&(S.ui.rvStep||0)>=RV.length-1)S.ui.rvStep=0;save();render()}
 function renderTabs(){
-  const el=$('#tabs');if(!el)return;const sec=S.ui.section,ib=S.tasks.filter(t=>t.status==='inbox').length;
-  const main=['today','next','inbox','calendar'];
-  const tab=(s,l,i,bd)=>`<button class="tab g-${s} ${sec===s&&!F.area?'on':''}" data-tab="${s}"><span class="sq">${ic(i)}</span><span>${l}</span>${bd?`<i class="bd">${bd}</i>`:''}</button>`;
-  el.innerHTML=tab('today','Today','today')+tab('next','Next','next')+tab('inbox','Inbox','inbox',ib)+tab('calendar','Calendar','calendar')+`<button class="tab g-more ${!main.includes(sec)||F.area?'on':''}" data-tab="more"><span class="sq">${ic('menu')}</span><span>その他</span></button>`;
-  $$('[data-tab]',el).forEach(b=>b.onclick=()=>{const s=b.dataset.tab;if(s==='more'){if(S.ui.section==='more'){const sc=$('#view .list-scroll');if(sc)sc.scrollTop=0;return}S.ui.section='more';F.area=null;LSEL=null;save();render();return}
-    if(S.ui.section===s&&!F.area){const sc=$('#listScroll');if(sc)sc.scrollTop=0;return}S.ui.section=s;F.area=null;LSEL=null;save();render()});
+  const el=$('#tabs');if(!el)return;const ib=S.tasks.filter(t=>t.status==='inbox').length,ck=curKey();
+  const btn=(cls,on,ico,l,bd,attr)=>`<button class="tab ${cls} ${on?'on':''}" ${attr}><span class="sq">${ico}</span><span class="tn">${esc(l)}</span>${bd?`<i class="bd">${bd}</i>`:''}</button>`;
+  let any=ck==='sec:today';
+  let h=btn('g-today',ck==='sec:today',ic('today'),'Today','','data-slot="sec:today"');
+  tabSlots().forEach((k,i)=>{const s=slotInfo(k);if(!s){h+=btn('g-more',false,ic('plus'),'未設定','',`data-empty="${i}"`);return}
+    const on=ck===k;if(on)any=true;h+=btn('g-'+s.gc,on,s.ico,s.l,k==='sec:inbox'&&ib?(ib>99?'99+':ib):'',`data-slot="${k}"`)});
+  h+=btn('g-more',!any,ic('list'),'リスト','','data-tab="more"');
+  el.innerHTML=h;
+  $$('[data-slot]',el).forEach(b=>b.onclick=()=>{const k=b.dataset.slot;if(curKey()===k){const sc=$('#view .list-scroll');if(sc)sc.scrollTop=0;return}goSlot(k)});
+  $$('[data-empty]',el).forEach(b=>b.onclick=()=>openTabPicker(+b.dataset.empty));
+  $('[data-tab="more"]',el).onclick=()=>{if(S.ui.section==='more'){const sc=$('#view .list-scroll');if(sc)sc.scrollTop=0;return}S.ui.section='more';F.area=null;LSEL=null;save();render()};
+}
+function openTabPicker(i){
+  const scrim=document.createElement('div');scrim.className='scrim phsheet';
+  const draw=()=>{const T=tabSlots(),cur=T[i];
+    const row=(k,sub)=>{const s=slotInfo(k);if(!s)return '';const j=T.indexOf(k);
+      return `<button class="ph-ir ic ${sub?'sub':''}" data-k="${k}">${s.pico}<span class="l">${esc(s.l)}</span>${k===cur?`<span class="tp-ck">${ic('log')}</span>`:j>=0?`<span class="v">${j+2}番目</span>`:''}</button>`};
+    const secs=Object.keys(TABSEC).map(v=>row('sec:'+v)).join('');
+    const ars=orderedAreas().map(a=>row('area:'+a.id,rootOf(a)!==a)).join('');
+    const pjs=projects().map(p=>row('proj:'+p.id)).join('');
+    scrim.innerHTML=`<div class="sheet ph-sh" role="dialog" aria-label="タブを選ぶ"><div class="grab"></div>
+     <div class="ph-shh"><button id="tpX">キャンセル</button><b>${i+2}番目のタブ</b><button class="b" id="tpReset">初期設定</button></div>
+     <div class="ph-shb"><div class="ph-sec">リスト</div><div class="ph-ig">${secs}</div>
+      ${ars?`<div class="ph-sec">エリア</div><div class="ph-ig">${ars}</div>`:''}
+      ${pjs?`<div class="ph-sec">プロジェクト</div><div class="ph-ig">${pjs}</div>`:''}
+      <div class="ph-none pad">すでに別の位置にあるものを選ぶと、2つの位置が入れ替わります。</div></div></div>`;
+    $('#tpX',scrim).onclick=close;
+    $('#tpReset',scrim).onclick=()=>{S.ui.tabs=[...DEF_TABS];done()};
+    $$('[data-k]',scrim).forEach(b=>b.onclick=()=>{const k=b.dataset.k,t=[...tabSlots()],j=t.indexOf(k);if(j>=0&&j!==i)t[j]=t[i];t[i]=k;S.ui.tabs=t;done()})};
+  const close=()=>scrim.remove();
+  const done=()=>{save();close();renderTabs();renderBar();if(S.ui.section==='more')renderMain()};
+  scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)close()});
+  draw();document.body.appendChild(scrim);
 }
 
 
@@ -3589,7 +3640,7 @@ function openComposer(pre){
     const tb=trayEl(k);if(tb)tb.classList.add('on');
     setTimeout(()=>fly(t,k,em),720)};
   const fly=(t,k,em)=>{
-    const tgtSel=k==='inbox'?['#side [data-sec="inbox"]','[data-tab="inbox"]']:k==='two'?['#side [data-sec="log"]','[data-tab="today"]']:[`#side [data-sec="${k}"]`,`[data-tab="${k}"]`,'[data-tab="more"]'];
+    const tgtSel=k==='inbox'?['#side [data-sec="inbox"]','[data-slot="sec:inbox"]','[data-tab="more"]']:k==='two'?['#side [data-sec="log"]','[data-slot="sec:today"]']:[`#side [data-sec="${k}"]`,`[data-slot="sec:${k}"]`,'[data-tab="more"]'];
     const tg=tgtSel.map(s=>$(s)).find(e=>e&&e.getBoundingClientRect().width>0&&getComputedStyle(e).visibility!=='hidden');
     const r=note.getBoundingClientRect();let tx=innerWidth/2,ty=innerHeight+80;if(tg){const q=tg.getBoundingClientRect();tx=q.left+q.width/2;ty=q.top+q.height/2}
     const gh=note.cloneNode(true);gh.classList.add('cmp-fly');gh.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;margin:0;z-index:1200`;
@@ -3600,7 +3651,7 @@ function openComposer(pre){
   const commit=(t,k,em,tg)=>{
     S.tasks.push(t);if(S.sample===undefined)S.sample=false;justAdded=t.id;justStamped={id:t.id,k,em};setTimeout(()=>{if(justStamped&&justStamped.id===t.id)justStamped=null},3500);
     save();teardown();render();
-    const sel=tg&&(tg.id?'#'+tg.id:tg.dataset.sec?`#side [data-sec="${tg.dataset.sec}"]`:tg.dataset.tab?`[data-tab="${tg.dataset.tab}"]`:null);const t2=sel&&$(sel);
+    const sel=tg&&(tg.id?'#'+tg.id:tg.dataset.sec?`#side [data-sec="${tg.dataset.sec}"]`:tg.dataset.slot?`[data-slot="${tg.dataset.slot}"]`:tg.dataset.tab?`[data-tab="${tg.dataset.tab}"]`:null);const t2=sel&&$(sel);
     if(t2){t2.classList.add('cmp-land');setTimeout(()=>t2.classList.remove('cmp-land'),900)}
     const msg=k==='two'?'2分で完了 · 完了ログに記録しました':k==='tickler'?`${dueLabel(t.start).l} まで Tickler にしまいました`:k==='calendar'?`${calLabel(t)} の予定にしました`:`「${t.title}」を ${SECT[k].en} に貼りました`;
     toast(msg,{label:'元に戻す',fn:()=>{S.tasks=S.tasks.filter(x=>x!==t);save();render()}})};
@@ -3932,9 +3983,9 @@ function toast(msg,act){
 /* ---------- render ---------- */
 /* ======================= iPhone 専用：上のバー・大きな見出し・その他・絞り込み ======================= */
 const PH_MAIN=['today','next','inbox','calendar'];
-const phSub=()=>!PH_MAIN.includes(S.ui.section)||!!F.area;
+const phSub=()=>{const k=curKey();return S.ui.section!=='more'&&k!=='sec:today'&&!tabSlots().includes(k)};
 function phTitle(){const sec=S.ui.section,PJ=projMode()?taskById(S.ui.proj):null;
-  return sec==='more'?'その他':sec==='log'?'完了ログ':sec==='projects'?'プロジェクト':sec==='review'?'週次レビュー':PJ?PJ.title:F.area?areaLabel(area(F.area)):SECT[sec].en}
+  return sec==='more'?'リスト':sec==='log'?'完了ログ':sec==='projects'?'プロジェクト':sec==='review'?'週次レビュー':PJ?PJ.title:F.area?areaLabel(area(F.area)):SECT[sec].en}
 function phFilterChips(){const o=[];
   if(F.due)o.push(['due','',ic('flag')+DUEF.find(x=>x.id===F.due).l.replace('（遅れを含む）','')]);
   if(F.time)o.push(['time','',ic('clock')+TIMEF.find(x=>x.id===F.time).l]);
@@ -3963,7 +4014,7 @@ function renderBarPhone(){
   const sec=S.ui.section,PJ=projMode()?taskById(S.ui.proj):null,listy=!['log','projects','review','more'].includes(sec);
   const back=phSub()&&sec!=='more';
   const bar=$('#bar');bar.className='bar pbar'+(sec==='review'?' compact always':'');
-  bar.innerHTML=`<div class="pb">${back?`<button class="pb-back" id="pbBack">${ic('chev')}${PJ&&S.ui.fromProjects?'プロジェクト':'その他'}</button>`:''}<b class="pb-t">${esc(phTitle())}</b><span class="spacer"></span>
+  bar.innerHTML=`<div class="pb">${back?`<button class="pb-back" id="pbBack">${ic('chev')}${PJ&&S.ui.fromProjects?'プロジェクト':'リスト'}</button>`:''}<b class="pb-t">${esc(phTitle())}</b><span class="spacer"></span>
    ${F.area&&!PJ?`<button class="pb-ib" id="editArea" aria-label="エリアを編集">${ic('edit')}</button>`:''}${PJ?`<button class="pb-ib" id="pEdit" aria-label="プロジェクトを編集">${ic('edit')}</button>`:''}
    ${sec==='projects'?`<button class="pb-ib" id="newProj" aria-label="新しいプロジェクト">${ic('plus')}</button>`:''}
    ${sec!=='more'&&sec!=='review'?`<button class="pb-ib" id="searchBtn" aria-label="検索">${ic('search')}</button>`:''}
@@ -4011,7 +4062,7 @@ function openFilterSheet(){
 }
 /* 「その他」画面 */
 function renderMore(el){
-  const cnt=s=>s==='tickler'?S.tasks.filter(tickled).length:S.tasks.filter(t=>t.status===s&&!isProj(t)&&!tickled(t)&&!queued(t)).length;
+  const cnt=s=>s==='today'?S.tasks.filter(t=>dueNow(t)||calNow(t)).length:s==='calendar'?S.tasks.filter(t=>t.status==='calendar'&&!(t.info&&t.cdate<todayKey())).length:s==='tickler'?S.tasks.filter(tickled).length:S.tasks.filter(t=>t.status===s&&!isProj(t)&&!tickled(t)&&!queued(t)).length;
   const rvAgo=S.ui.lastReview?-dayDiff(dayKey(new Date(S.ui.lastReview))):null;
   const doneToday=logItems().filter(x=>dayKey(new Date(x.doneAt))===todayKey()).length;
   const it=(attr,ico,cls,l,v,vc='')=>`<button class="ph-ir ic" ${attr}><span class="ph-ico ${cls}">${ic(ico)}</span><span class="l">${l}</span>${v!==''&&v!=null?`<span class="v ${vc}">${v}</span>`:''}<span class="cv">${ic('chev')}</span></button>`;
@@ -4019,11 +4070,14 @@ function renderMore(el){
   const areas=orderedAreas().filter(a=>{const R=rootOf(a);return R===a||!(S.ui.fold||{})[R.id]}).map(a=>{const sub=rootOf(a)!==a;const n=S.tasks.filter(t=>inArea(t,a.id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length;const kc=sub?0:kids(a.id).length;
     return `<button class="ph-ir ic ${sub?'sub':''}" data-marea="${a.id}"><span class="ph-dt c-${areaColor(a)}"><i class="dot"></i></span><span class="l">${esc(a.name)}</span>${kc?`<span class="ph-kids" data-mtog="${a.id}">${ic('chev')}${kc}</span>`:''}<span class="v">${n||''}</span><span class="cv">${ic('chev')}</span></button>`}).join('');
   el.innerHTML=`<div class="list-scroll"><div class="list ph-more">${phHead()}
+   <div class="ph-ig">${it('data-msec="inbox"','inbox','g-inbox','Inbox',cnt('inbox'))}${it('data-msec="today"','today','g-today','Today',cnt('today'))}${it('data-msec="next"','next','g-next','Next Action',cnt('next'))}${it('data-msec="calendar"','calendar','g-calendar','Calendar',cnt('calendar'))}</div>
    <div class="ph-ig">${it('data-msec="waiting"','waiting','g-waiting','Waiting',cnt('waiting'))}${it('data-msec="someday"','someday','g-someday','Someday',cnt('someday'))}${it('data-msec="tickler"','tickler','g-tickler','Tickler',cnt('tickler'))}${it('data-msec="projects"','clip','g-projects','プロジェクト',projects().length)}</div>
    <div class="ph-sec row">エリア<span>${fs.length?`<button id="mFold">${anyOpen?'すべてたたむ':'すべて開く'}</button>`:''}<button id="mAddArea">追加</button></span></div>
    <div class="ph-ig">${areas||'<div class="ph-none pad">エリアはまだありません</div>'}</div>
    <div class="ph-sec">ふりかえり</div>
    <div class="ph-ig">${it('data-msec="review"','review','g-red','週次レビュー',rvAgo==null?'未実施':agoLabel(S.ui.lastReview),rvAgo==null||rvAgo>=7?'warn':'')}${it('data-msec="log"','log','g-gray','完了ログ',doneToday?'今日 '+doneToday:'')}${it('id="mTl"','cal','g-blue','今日のタイムライン','')}</div>
+   <div class="ph-sec">下のタブ<small>Today と リスト のあいだの3つ</small></div>
+   <div class="ph-ig">${tabSlots().map((k,i)=>{const s=slotInfo(k);return `<button class="ph-ir ic" data-tabslot="${i}">${s?s.pico:`<span class="ph-ico g-gray">${ic('plus')}</span>`}<span class="l">${s?esc(s.l):'未設定'}</span><span class="v">${i+2}番目</span><span class="cv">${ic('chev')}</span></button>`}).join('')}</div>
    <div class="ph-sec">アプリ</div>
    <div class="ph-ig">${it('id="mSet"','palette','g-gray','デザイン','')}${it('id="mCfg"','gear','g-gray','設定','')}${it('id="mGuide"','book','g-gray','手引き','')}</div>
    ${S.sample?'<div class="ph-ig"><button class="ph-ir act del" id="mSample">サンプルを消去</button></div>':''}
@@ -4032,7 +4086,8 @@ function renderMore(el){
   $$('[data-marea]',el).forEach(b=>b.onclick=e=>{const tg=e.target.closest('[data-mtog]');if(tg){e.stopPropagation();S.ui.fold=S.ui.fold||{};S.ui.fold[tg.dataset.mtog]=!S.ui.fold[tg.dataset.mtog];save();renderMain();return}
     F.area=b.dataset.marea;S.ui.section='next';save();render()});
   const mf=$('#mFold',el);if(mf)mf.onclick=()=>{S.ui.fold=S.ui.fold||{};foldables().forEach(t=>{S.ui.fold[t.id]=anyOpen});save();renderMain()};
-  $('#mAddArea',el).onclick=()=>openAreaEditor(null);
+  $('#mAddArea',el).onclick=()=>{const a={id:uid(),name:'新しいエリア',color:COLORS[(S.areas.length*5)%28]};S.areas.push(a);save();renderMain();openAreaEditor(a)};
+  $$('[data-tabslot]',el).forEach(b=>b.onclick=()=>openTabPicker(+b.dataset.tabslot));
   $('#mTl',el).onclick=()=>{if(!S.ui.tl)toggleTL()};
   $('#mSet',el).onclick=e=>{e.stopPropagation();openSettings($('#mSet',el))};
   $('#mCfg',el).onclick=e=>{e.stopPropagation();openConfig($('#mCfg',el))};
