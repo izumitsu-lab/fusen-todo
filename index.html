@@ -978,6 +978,8 @@ mark{background:color-mix(in srgb,#FFD27A 75%,transparent);color:inherit;border-
 .row.done-anim .rt b{color:var(--ink3);text-decoration:line-through;text-decoration-color:var(--ink3)}
 .row.collapse{height:0!important;opacity:0;transition:height .26s cubic-bezier(.4,0,.2,1),opacity .2s}
 .row.ladded .row-in{animation:lflash 1.4s ease-out}
+.ghost.lg{touch-action:none}
+body.is-dragging #listScroll{overflow:hidden}
 @keyframes lflash{0%,30%{background:color-mix(in srgb,var(--sd) 22%,var(--win))}}
 .sw-bg{position:absolute;inset:0;display:none;align-items:center;color:#fff;font-size:13px;font-weight:700}
 .sw-bg svg.i{width:18px;height:18px;stroke-width:2.4}
@@ -2390,8 +2392,9 @@ function renderList(el){
    ${LADD==='__end'?addIn('__end'):addBtn('__end','lall')}<div class="lins" id="lins"></div></div></div>`;
   const sc=$('#listScroll',el);if(listScrollMem[k])sc.scrollTop=listScrollMem[k];
   sc.onscroll=()=>{listScrollMem[k]=sc.scrollTop};
+  sc.addEventListener('touchmove',e=>{if(D&&D.active)e.preventDefault()},{passive:false});
   $$('.row',el).forEach(r=>{const t=taskById(r.dataset.id);if(!t)return;bindItem(r,{t},'list');
-    r.oncontextmenu=e=>{e.preventDefault();openMoveMenu(t,r,{x:e.clientX,y:e.clientY})};
+    r.oncontextmenu=e=>{e.preventDefault();if(narrow()||(D&&D.active))return;openMoveMenu(t,r,{x:e.clientX,y:e.clientY})};
     $$('[data-ra]',r).forEach(b=>b.onclick=e=>{e.stopPropagation();openMoveMenu(t,b)});
     $$('[data-sw]',r).forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.dataset.sw;
       if(k==='del'){if(!b.classList.contains('armed')){b.classList.add('armed');b.lastChild.textContent='削除？';return}closeSwipe(true);deleteTask(t);return}
@@ -2493,11 +2496,21 @@ document.addEventListener('pointerdown',e=>{if(SWO&&!e.target.closest('.row.swo'
 function swipeDown(e,el,u){
   const SW=narrow()?231:78,sx=e.clientX,sy=e.clientY,inn=$('.row-in',el),base=SWO===el?-SW:0;let mode=null,dx=base;
   if(SWO&&SWO!==el)closeSwipe();
+  /* 長押し（約0.4秒）で並べ替えのドラッグを始める */
+  const hold=SWO===el?0:setTimeout(()=>{if(mode)return;mode='drag';off();
+    const r=el.getBoundingClientRect();
+    D={u,t:u.t,el,from:'list',sx,sy,cx:sx,cy:sy,active:false,ox:sx-r.left,oy:sy-r.top,zone:null};
+    try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}
+    window.addEventListener('pointermove',pmove);window.addEventListener('pointerup',pup);window.addEventListener('pointercancel',pup);
+    activate();position()},420);
+  const off=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up)};
   const mv=ev=>{const x=ev.clientX-sx,y=ev.clientY-sy;
+    if(!mode&&Math.hypot(x,y)>8)clearTimeout(hold);
     if(!mode){if(Math.abs(x)>8&&Math.abs(x)>Math.abs(y)*1.3)mode='h';else if(Math.abs(y)>8)mode='v';else return}
     if(mode!=='h')return;dx=Math.max(-SW-42,Math.min(170,base+x));inn.style.transition='none';inn.style.transform=`translateX(${dx}px)`;
     el.classList.toggle('swl',dx>0);el.classList.toggle('swr',dx<0);el.classList.toggle('ready',dx>96)};
-  const up=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);
+  const up=ev=>{clearTimeout(hold);off();
+    if(mode==='drag')return;
     if(!mode){if(ev.type==='pointercancel')return;if(SWO===el){closeSwipe();return}openEditor(u.t);return}
     if(mode!=='h')return;
     inn.style.transition='transform .25s cubic-bezier(.2,.8,.2,1)';
@@ -3632,7 +3645,7 @@ function openQuick(){
    <label class="qk-who" hidden>${ic('user')}<input placeholder="誰を待っている？" maxlength="30" autocomplete="off"></label>
    <div class="qk-chips"></div>
    <div class="qk-bar"><button class="qk-dest" aria-haspopup="true"></button>
-    <button class="qk-ib" data-q="due" title="締切">${ic('flag')}</button><button class="qk-ib" data-q="area" title="エリア">${ic('folder')}</button><button class="qk-ib" data-q="tag" title="場所・時間帯・道具">${ic('pin')}</button><button class="qk-ib" data-q="min" title="所要時間">${ic('clock')}</button><button class="qk-ib" data-q="more" title="そのほか">${ic('more')}</button>
+    <button class="qk-ib" data-q="area" title="エリア">${ic('folder')}</button><button class="qk-ib" data-q="due" title="締切">${ic('flag')}</button><button class="qk-ib" data-q="tag" title="場所・時間帯・道具">${ic('pin')}</button><button class="qk-ib" data-q="min" title="所要時間">${ic('clock')}</button><button class="qk-ib" data-q="more" title="そのほか">${ic('more')}</button>
     <button class="qk-send" aria-label="追加" disabled>${ic('up')}</button></div>
    <div class="qk-msg"></div></div>`;
   document.body.appendChild(scrim);
@@ -3650,8 +3663,8 @@ function openQuick(){
     const P=d.project&&taskById(d.project),ch=[];
     if(d.dest==='calendar')ch.push(['cdate',ic('calendar')+(d.cdate===todayKey()?'今日':md(d.cdate))+' の予定',0,'']);
     if(d.dest==='tickler')ch.push(['start',ic('tickler')+md(d.start)+' まで隠す',0,'']);
-    if(d.due&&d.dest!=='calendar')ch.push(['due',ic('flag')+dlLabel(d.due).l,1,'due']);
     if(d.area&&area(d.area))ch.push(['area',`<i class="dot c-${areaColor(area(d.area))}"></i>`+esc(areaLabel(area(d.area))),1,'']);
+    if(d.due&&d.dest!=='calendar')ch.push(['due',ic('flag')+dlLabel(d.due).l,1,'due']);
     if(P)ch.push(['proj',ic('clip')+esc(P.title),1,'']);
     if(d.minutes!=null)ch.push(['min',ic('clock')+fmtMin(d.minutes),1,'']);
     d.tags.forEach(g=>{const x=TAGS.find(y=>y.id===g);if(x)ch.push(['tag:'+g,ic(x.icon||'pin')+esc(x.name),1,''])});
@@ -3705,11 +3718,9 @@ function openQuick(){
     if(dest==='calendar')t.cdate=d.cdate||todayKey();
     if(dest==='tickler')t.start=d.start||addDays(1);
     const sp=findSpot(t.status,true);t.x=sp.x;t.y=sp.y;
-    S.tasks.push(t);if(S.sample===undefined)S.sample=false;justAdded=t.id;save();render();last=t;
-    ti.value='';nt.value='';who.value='';grow(ti);grow(nt);sync();
-    d.due=null;d.minutes=null;d.labels=[];d.energy='normal';d.tags=[];addAreaPlaces(d);draw();
-    if(!quiet){const q=QDEST.find(x=>x[0]===dest);say(`${ic('log')}<span>「${esc(t.title)}」を ${q[1]} に追加しました</span><button class="qk-undo">取り消す</button>`);
-      $('.qk-undo',msgEl).onclick=()=>{S.tasks=S.tasks.filter(x=>x!==last);last=null;save();render();say('');focusT()};focusT()}
+    S.tasks.push(t);if(S.sample===undefined)S.sample=false;justAdded=t.id;save();render();
+    if(!quiet){close(true);const q=QDEST.find(x=>x[0]===dest);
+      toast(`「${t.title}」を ${q[1]} に追加しました`,{label:'取り消す',fn:()=>{S.tasks=S.tasks.filter(x=>x!==t);save();render()}})}
     return t;
   }
   send.onclick=()=>add();
@@ -3720,7 +3731,7 @@ function openQuick(){
   if(vv){vv.addEventListener('resize',place);vv.addEventListener('scroll',place)}
   const close=keepNo=>{if(!keepNo&&(ti.value.trim()||nt.value.trim()))QDRAFT={d,title:ti.value,note:nt.value,who:who.value};
     if(vv){vv.removeEventListener('resize',place);vv.removeEventListener('scroll',place)}
-    document.removeEventListener('keydown',key,true);closePop();scrim.remove();if(QDRAFT)toast('書きかけは、次に開いたときに残っています')};
+    document.removeEventListener('keydown',key,true);closePop();if(document.activeElement&&scrim.contains(document.activeElement))document.activeElement.blur();scrim.remove();if(QDRAFT)toast('書きかけは、次に開いたときに残っています')};
   const key=e=>{if(POP||isIME(e))return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
   document.addEventListener('keydown',key,true);
   scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)close()});
