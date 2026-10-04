@@ -1662,6 +1662,114 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .ph-ico.g-log,.ph-ico.g-review{background:#8E8A82}
 }
 
+/* ---- 下タブの設定・条件リスト・アイコン選び ---- */
+.g-view{--gc:#5B6CC9}
+.ph-in{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:16px;color:var(--ink);text-align:right;outline:none;padding:8px 0}
+.ph-in::placeholder{color:var(--ink3)}
+.ph-ir .l0{flex:none;color:var(--ink)}
+.ph-seg{display:inline-flex;margin-left:auto;background:var(--sel);border-radius:9px;padding:2px;gap:2px}
+.ph-seg button{min-width:44px;height:30px;border-radius:7px;font-size:15px;font-weight:600;color:var(--ink2)}
+.ph-seg button.on{background:var(--pop);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.ph-cp .dot{width:9px;height:9px;border-radius:3px}
+.ph-cp.sub{font-size:.92em;opacity:.95}.ph-cp.sub .dot{width:7px;height:7px;border-radius:50%}
+.ph-cp.on .dot{box-shadow:0 0 0 1.5px #fff}
+.vx-mode{display:flex;align-items:center;gap:8px;padding:0 12px 12px;flex-wrap:wrap}
+.vx-mode>span{font-size:13px;color:var(--ink3);margin-right:2px}
+.vx-mode .ph-cp{height:28px;font-size:13px;padding:0 11px}
+.vx-prev .ph-ir{min-height:40px}.vx-prev .ph-ir .l{font-size:.94em}
+.ip-s{display:flex;align-items:center;gap:8px;margin:8px 0 2px;padding:0 12px;height:38px;border-radius:10px;background:var(--sel);color:var(--ink3)}
+.ip-s input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:16px;color:var(--ink);outline:none}
+.ip-s input::-webkit-search-cancel-button{display:none}
+.vcrumb{gap:5px!important;font-size:13.5px!important;line-height:1.4}.vcrumb svg.i{width:13px;height:13px;flex:none}
+.vcrumb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar h1 .vsum{font-size:12px;font-weight:400;color:var(--ink3);margin-left:4px;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;align-self:center}
+@media (max-width:1180px){.bar h1 .vsum{display:none}}
+.vm-off{margin-left:auto;font-size:11px;color:var(--ink3)}
+@media (max-width:760px){
+  .tabs[data-n="7"] .tab{font-size:10px!important}
+  .tabs[data-n="7"] .tab .tn{padding:0 1px}
+  .tab.nol .tn{display:none}
+  .tab.nol{justify-content:center}
+  .tab.nol .sq{height:34px!important}
+  .tab.nol .sq svg.i{width:28px!important;height:28px!important}
+  .tp-prev .tab.nol{height:44px;justify-content:center}
+  .ph-ico.g-view{background:#5B6CC9}.ph-ico.g-waiting{background:#8C7AE6}.ph-ico.g-someday{background:#2FA38A}.ph-ico.g-tickler{background:#C98A1B}
+}
+/* 条件リストの編集シート：PC では中央の小窓として表示（iPhone のシートと同じ部品） */
+@media (min-width:761px){
+.vx .ph-ig{background:var(--pop);border-radius:12px;overflow:hidden;margin:0 16px}
+.vx .ph-head .ph-ig,.vx .ph-sh .ph-ig{margin-left:0;margin-right:0}
+.vx .ph-ir{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:6px 14px 6px 16px;font-size:17px;color:var(--ink);text-align:left;box-sizing:border-box}
+.vx .ph-ir+.ph-ir::before{content:"";position:absolute;left:16px;right:0;top:0;border-top:.5px solid var(--line)}
+.vx .ph-ir.ic+.ph-ir.ic::before{left:58px}
+.vx .ph-ir .l{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vx .ph-ir small{display:block;font-size:13px;color:var(--ink3);margin-top:1px}
+.vx .ph-ir .v{color:var(--ink3);font-size:16px;white-space:nowrap}
+.vx .ph-ir .v.warn{color:var(--ph-red);font-weight:600}
+.vx .ph-ir .cv{display:flex;color:var(--ink3);opacity:.6}
+.vx .ph-ir .cv svg.i{width:16px;height:16px;transform:rotate(-90deg)}
+.vx .ph-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;background:var(--gc,#8E8A82);flex:none}
+.vx .ph-ico svg.i{width:17px;height:17px}
+.vx .ph-ico.g-red{background:#E05248}
+.vx .ph-ico.g-gray{background:#8E8A82}
+.vx .ph-ico.g-blue{background:#3A76D6}
+.vx .ph-dt{width:30px;display:flex;justify-content:center;flex:none}
+.vx .ph-dt .dot{width:12px;height:12px;border-radius:4px}
+.vx .ph-ir.sub{padding-left:40px}
+.vx .ph-ir.sub .ph-dt .dot{width:8px;height:8px;border-radius:50%}
+.vx .ph-ir.sub+.ph-ir::before,.vx .ph-ir+.ph-ir.sub::before{left:82px}
+.vx .ph-kids{display:inline-flex;align-items:center;gap:1px;font-size:14px;color:var(--ink3);padding:6px 8px;margin:-6px 0;border-radius:8px}
+.vx .ph-kids svg.i{width:14px;height:14px}
+.vx .ph-ir.act{justify-content:center;font-weight:600;color:var(--accent)}
+.vx .ph-ir.act.del{color:var(--ph-red)}
+.vx .ph-sec{font-size:13px;color:var(--ink3);padding:22px 32px 7px;font-weight:500}
+.vx .ph-sec small{margin-left:8px;font-size:12px;opacity:.85}
+.vx .ph-sec.row{display:flex;justify-content:space-between;align-items:flex-end}
+.vx .ph-sec.row span{display:flex;gap:16px}
+.vx .ph-sec button{color:var(--accent);font-size:15px;font-weight:500}
+.vx .ph-none{font-size:14px;color:var(--ink3);line-height:1.6}
+.vx .ph-none.pad{padding:12px 16px}
+.vx .ph-sw{width:51px;height:31px;border-radius:16px;background:var(--line2);position:relative;flex:none;margin-left:auto;transition:background .18s}
+.vx .ph-sw i{position:absolute;left:2px;top:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:transform .2s}
+.vx .ph-sw.on{background:#34C759}
+.vx .ph-sw.on i{transform:translateX(20px)}
+.vx .ph-more{padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))!important}
+.vx .ph-sh{width:100%;max-height:calc(100% - 40px);display:flex;flex-direction:column;background:var(--win);border-radius:14px 14px 0 0;padding:0 0 calc(12px + env(safe-area-inset-bottom,0px));animation:phUp .28s cubic-bezier(.2,.8,.2,1)}
+.vx .ph-sh .grab{width:36px;height:5px;border-radius:3px;background:var(--line2);margin:6px auto 0;flex:none}
+.vx .ph-shh{display:flex;align-items:center;justify-content:space-between;height:50px;padding:0 16px;flex:none}
+.vx .ph-shh b{font-size:17px}
+.vx .ph-shh button{font-size:17px;color:var(--accent);min-width:80px;text-align:left}
+.vx .ph-shh button.b{font-weight:700;text-align:right}
+.vx .ph-shh button:disabled{color:var(--ink3);opacity:.6}
+.vx .ph-shb{overflow-y:auto;padding:0 16px 8px;flex:1;min-height:0}
+.vx .ph-shb .ph-sec{padding-left:16px}
+.vx .ph-chips{display:flex;flex-wrap:wrap;gap:8px;padding:12px}
+.vx .ph-cp{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:18px;background:var(--sel);font-size:15px;color:var(--ink)}
+.vx .ph-cp svg.i{width:16px;height:16px;color:var(--ink2)}
+.vx .ph-cp.on{background:var(--accent);color:#fff}
+.vx .ph-cp.on svg.i{color:#fff}
+.vx .ph-br{flex-basis:100%;height:0}
+.vx .ph-big{margin:10px 16px 0;height:50px;border-radius:14px;background:var(--accent);color:#fff;font-size:17px;font-weight:700;flex:none}
+.vx .tp-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:12px}
+.vx .tp-grid button{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--ink2);background:var(--sel)}
+.vx .tp-grid button svg.i{width:24px;height:24px;stroke-width:1.7}
+.vx .tp-grid button.on{background:var(--accent);color:#fff}
+.vx .tp-ck{display:flex;color:var(--accent)}
+.vx .tp-ck svg.i{width:18px;height:18px;stroke-width:2.4}
+.vx .ph-ico.g-inbox{background:#8A877F}
+.vx .ph-ico.g-today{background:#F0932B}
+.vx .ph-ico.g-next{background:#4A86E8}
+.vx .ph-ico.g-calendar{background:#E5534B}
+.vx .ph-ico.g-log,.vx .ph-ico.g-review{background:#8E8A82}
+.scrim.phsheet.vx{align-items:center;padding:24px}
+.vx .ph-sh{width:540px;max-width:100%;max-height:min(780px,calc(100vh - 48px));border-radius:14px;padding:0 0 14px;box-shadow:var(--shadow-pop);animation:rise .2s cubic-bezier(.2,.9,.3,1.1)}
+.vx .ph-sh .grab{display:none}.vx .ph-shh{height:48px}.vx .ph-shh b,.vx .ph-shh button{font-size:15px}
+.vx .ph-ir{font-size:14px;min-height:42px}.vx .ph-ir small{font-size:12px}.vx .ph-ir .v{font-size:13px}
+.vx .ph-cp{height:30px;font-size:13px;padding:0 12px}.vx .ph-chips{gap:6px;padding:10px}
+.vx .ph-sec{padding-top:16px}.vx .ph-sw{transform:scale(.8);transform-origin:right center}
+.vx .tp-grid{grid-template-columns:repeat(8,1fr)}.vx .ph-in{font-size:14px}
+}
+
 /* ---------- quick add card ---------- */
 .scrim.qk-scrim{display:block;padding:0}
 .qk{position:fixed;left:0;right:0;bottom:0;box-sizing:border-box;background:var(--pop);border-radius:16px 16px 0 0;padding:8px 14px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -12px rgba(0,0,0,.3);animation:qkUp .26s cubic-bezier(.2,.8,.2,1)}
@@ -1907,7 +2015,7 @@ function normalize(){
     S.tasks.forEach(t=>{if(!Array.isArray(t.tags))return;const c=t.tags.includes('contact');t.tags=t.tags.filter(x=>x!=='contact'&&x!=='out');if(c)t.tags.push(/電話|予約|修理/.test(t.title||'')?'phone':'mail')})}
   S.v7=true;
   if(!Array.isArray(S.places)){S.places=DEF_PLACES.map(x=>({...x}));S.tasks.forEach(t=>{if(Array.isArray(t.tags)&&t.tags.includes('deep')){t.tags=t.tags.filter(x=>x!=='deep');if(!t.energy)t.energy='deep'}})}
-  TAGS=S.places;if(!Array.isArray(S.labels))S.labels=[];
+  TAGS=S.places;if(!Array.isArray(S.labels))S.labels=[];if(!Array.isArray(S.views))S.views=[];
   S.tasks.forEach(t=>{if(!Array.isArray(t.steps))t.steps=[]});S.areas.forEach(a=>{if(LEGACY[a.color])a.color=LEGACY[a.color]});
   if(S.v<4&&S.v>=3&&S.sample){S.v=4;const f=(re,v)=>{const k=S.tasks.find(t=>re.test(t.title)&&t.status!=='done');if(k&&!k.due)k.due=v};f(/経費精算/,addDays(-2));f(/見積もりの返信/,todayKey());f(/筋トレ/,todayKey());f(/論文/,addDays(3));f(/契約書/,todayKey())}
   if(S.v<3){S.v=3;if(S.sample&&!S.areas.some(a=>a.parent)&&area('work')){S.areas.splice(S.areas.indexOf(area('work'))+1,0,{id:'work-plan',name:'企画',color:'',parent:'work'},{id:'work-sales',name:'営業',color:'',parent:'work'});
@@ -1999,7 +2107,7 @@ const passTask=t=>(!F.energy||t.energy===F.energy)&&(!F.due||(dd=>!!dd&&DUEF.fin
 const uMin=u=>u.t.minutes||30;
 const entStart=u=>u.cal?u.t.ctime:u.t.sched.start;
 const uActive=u=>active(u.t);
-const addSec=()=>{const s=S.ui.section;return s==='log'||s==='review'?'inbox':['today','tickler','proj','projects'].includes(s)?'next':s};
+const addSec=()=>{const s=S.ui.section;if(s==='sv'){const v=curView();return v?vSts(v).find(x=>x!=='tickler')||'next':'next'}return s==='log'||s==='review'?'inbox':['today','tickler','proj','projects'].includes(s)?'next':s};
 
 /* ---------- parse ---------- */
 function parse(raw){
@@ -2024,6 +2132,8 @@ function renderSide(){
    <div class="sgrp">${['waiting','someday','tickler'].map(nav).join('')}
    <button class="nav gtd g-projects ${sec==='projects'&&!F.area?'on':''}" data-sec="projects"><span class="sq">${ic('clip')}</span><span class="lbl">プロジェクト</span><span class="n">${projects().length||''}</span></button></div>
    ${(n=>`<button class="ibx-card ${n?'':'empty'} ${sec==='inbox'&&!F.area?'on':''}" data-sec="inbox" data-drop="inbox" title="Inbox (1)"><span class="sq">${ic('inbox')}</span><span class="tt"><b>Inbox</b><small>${n?n+'件が仕分け待ち':'空っぽです。頭もすっきり'}</small></span>${n?`<span class="pile" aria-hidden="true"><i></i><i></i><i>${n>99?'99+':n}</i></span>`:''}</button>`)(S.tasks.filter(t=>t.status==='inbox').length)}
+   <div class="cap">条件リスト<span class="cap-b">${(S.views||[]).length?`<button id="viewMenu" aria-label="条件リストを管理" title="条件リストを管理">${ic('more')}</button>`:''}<button id="addView" aria-label="条件リストを追加" title="条件で絞ったリストを追加">${ic('plus')}</button></span></div>
+   ${(vs=>vs.length?`<div class="sgrp sviews">${vs.map(v=>`<button class="nav gtd g-view ${sec==='sv'&&S.ui.sv===v.id?'on':''}" data-vw="${v.id}" title="${esc(viewSum(v))}"><span class="sq">${ic(v.icon||'filter')}</span><span class="lbl">${esc(v.name)}</span><span class="n">${vCount(v)||''}</span></button>`).join('')}</div>`:'')((S.views||[]).filter(v=>v.side))}
    <div class="cap">エリア<span class="cap-b">${(fs=>fs.length?(op=>`<button id="foldAll" data-open="${op?1:''}" title="${op?'すべてたたむ':'すべて開く'}" aria-label="${op?'すべてたたむ':'すべて開く'}">${ic(op?'foldall':'unfoldall')}</button>`)(fs.some(t=>!(S.ui.fold||{})[t.id])):'')(foldables())}<button id="addArea" aria-label="エリアを追加" title="エリアを追加">${ic('plus')}</button></span></div>
    <div id="areaAddSlot"></div>
    <div class="sgrp sareas">${orderedAreas().map(a=>{const sub=rootOf(a)!==a;const n=S.tasks.filter(t=>inArea(t,a.id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length;const ps=projects().filter(p=>p.area===a.id);const R=rootOf(a);const fold=!!(S.ui.fold||{})[R.id];if(sub&&fold)return '';const hid=sub?0:kids(a.id).length+projects().filter(p=>p.area===a.id||kids(a.id).some(k=>k.id===p.area)).length;const open=!fold;
@@ -2044,6 +2154,9 @@ function renderSide(){
     const tg=e.target.closest('[data-toggle]');if(tg){e.stopPropagation();S.ui.fold=S.ui.fold||{};S.ui.fold[tg.dataset.toggle]=!S.ui.fold[tg.dataset.toggle];save();renderSide();return}
     F.area=F.area===b.dataset.area?null:b.dataset.area;S.ui.section='next';render();closeSide()});
   $('#addArea').onclick=showAreaAdd;
+  $$('#side [data-vw]').forEach(b=>{b.onclick=()=>{openView(b.dataset.vw);closeSide()};b.oncontextmenu=e=>{e.preventDefault();openViewEditor(viewOf(b.dataset.vw))}});
+  $('#addView').onclick=()=>{closeSide();openViewEditor(null,id=>{if(id)openView(id)})};
+  const vmb=$('#viewMenu');if(vmb)vmb.onclick=e=>{e.stopPropagation();openViewMenu(vmb)};
   const fa=$('#foldAll');if(fa)fa.onclick=()=>{const close=!!fa.dataset.open;S.ui.fold=S.ui.fold||{};foldables().forEach(t=>{S.ui.fold[t.id]=close});save();renderSide()};
   $('#sTl').onclick=()=>{closeSide();if(!S.ui.tl)toggleTL()};$('#sGuide').onclick=()=>{closeSide();openGuide()};
   $('#sCfg').onclick=e=>{e.stopPropagation();openConfig($('#sCfg'));closeSide()};
@@ -2119,14 +2232,14 @@ function renderBar(){
   const sec=S.ui.section,v=S.ui.view,isLog=sec==='log',noBoard=isLog||sec==='projects'||sec==='review';
   const list=noBoard?[]:S.tasks.filter(t=>visibleOnBoard(t)&&passes(t));
   const PJ=projMode()?taskById(S.ui.proj):null;
-  const title=isLog?'完了ログ':sec==='projects'?'プロジェクト':sec==='review'?'週次レビュー':PJ?`${ic('clip')}${esc(PJ.title)}`:F.area?`<i class="dot c-${areaColor(area(F.area))}"></i>`+esc(areaLabel(area(F.area))):SECT[sec].en;
+  const title=isLog?'完了ログ':sec==='projects'?'プロジェクト':sec==='review'?'週次レビュー':sec==='sv'?`${ic(curView().icon||'filter')}${esc(curView().name)}`:PJ?`${ic('clip')}${esc(PJ.title)}`:F.area?`<i class="dot c-${areaColor(area(F.area))}"></i>`+esc(areaLabel(area(F.area))):SECT[sec].en;
   $('#bar').classList.toggle('pj',!!PJ);
   $('#bar').innerHTML=`
    <button class="iconbtn menu-btn" id="menuBtn" aria-label="メニュー">${ic('menu')}</button>
-   <h1><span class="ttl">${title}</span><span class="cnt">${noBoard?'':list.length+'枚'}</span>${F.area&&!isLog?`<button class="iconbtn edit-area" id="editArea" title="エリアを編集">${ic('edit')}<span class="lb">編集</span></button>`:''}${PJ?`<button class="iconbtn edit-area" id="pEdit" title="プロジェクトを編集">${ic('edit')}<span class="lb">編集</span></button><button class="fbtn seqbtn ${PJ.seq?'on':''}" id="pSeq" title="オンにすると、先頭の1枚だけが Next Action に出ます">${ic('next')}<span>順番に進める${PJ.seq?'：オン':''}</span></button>`:''}${sec==='projects'?`<button class="btn" id="newProj">${ic('plus')}新しいプロジェクト</button>`:''}</h1>
-   ${noBoard?'':`<div class="seg" role="group" aria-label="表示">
+   <h1><span class="ttl">${title}</span><span class="cnt">${noBoard?'':list.length+'枚'}</span>${sec==='sv'?`<button class="iconbtn edit-area" id="editView" title="条件を編集">${ic('edit')}<span class="lb">条件を編集</span></button><span class="vsum" title="${esc(viewSum(curView()))}">${esc(viewSum(curView()))}</span>`:''}${F.area&&!isLog?`<button class="iconbtn edit-area" id="editArea" title="エリアを編集">${ic('edit')}<span class="lb">編集</span></button>`:''}${PJ?`<button class="iconbtn edit-area" id="pEdit" title="プロジェクトを編集">${ic('edit')}<span class="lb">編集</span></button><button class="fbtn seqbtn ${PJ.seq?'on':''}" id="pSeq" title="オンにすると、先頭の1枚だけが Next Action に出ます">${ic('next')}<span>順番に進める${PJ.seq?'：オン':''}</span></button>`:''}${sec==='projects'?`<button class="btn" id="newProj">${ic('plus')}新しいプロジェクト</button>`:''}</h1>
+   ${noBoard?'':`${sec==='sv'?'':`<div class="seg" role="group" aria-label="表示">
      <button class="${isList()?'on':''}" data-view="list" title="リスト (L)">${ic('list')}<span class="lb">リスト</span></button>
-     <button class="${!isList()?'on':''}" data-view="board" title="ボード (B)">${ic('board')}<span class="lb">ボード</span></button></div>
+     <button class="${!isList()?'on':''}" data-view="board" title="ボード (B)">${ic('board')}<span class="lb">ボード</span></button></div>`}
    <div class="filters"><button class="fbtn ${F.due?'on':''}" id="fDue" aria-haspopup="true" title="締切・予定日で絞り込み">${ic('flag')}<span>${F.due?DUEF.find(x=>x.id===F.due).l.replace('（遅れを含む）',''):'締切'}</span></button>
    <button class="fbtn ${F.time?'on':''}" id="fTime" aria-haspopup="true" title="所要時間で絞り込み">${ic('clock')}<span>${F.time?TIMEF.find(x=>x.id===F.time).l:'時間'}</span></button>
    <button class="fbtn ${F.tags.size?'on':''}" id="fTag" aria-haspopup="true" title="場所・時間帯・道具で絞り込み">${ic('pin')}<span>${F.tags.size?[...F.tags].map(tagName).join('・'):'場所'}</span></button>
@@ -2149,6 +2262,7 @@ function renderBar(){
   $('#setBtn').onclick=e=>{e.stopPropagation();openSettings($('#setBtn'))};
   const ea=$('#editArea');if(ea)ea.onclick=()=>openAreaEditor(area(F.area));
   const pe=$('#pEdit');if(pe)pe.onclick=()=>openEditor(PJ);
+  const evb=$('#editView');if(evb)evb.onclick=()=>openViewEditor(curView());
   const ps=$('#pSeq');if(ps)ps.onclick=()=>{PJ.seq=!PJ.seq;save();render();toast(PJ.seq?'先頭の1枚だけが Next Action に出ます（左上から順）':'すべての Next が表示されます')};
   const np=$('#newProj');if(np)np.onclick=()=>openEditor(null,null,null,{kind:'project'});
   $$('#bar [data-size]').forEach(b=>b.onclick=()=>{zoomBeforeTL=null;setZoom(+b.dataset.size)});
@@ -2224,7 +2338,7 @@ function zonesFor(){
 }
 const zoneOf=t=>{const z=zonesFor().find(z=>z.match(t));return z?z.id:null};
 const onBoardZ=(t,zn)=>zn&&(zn.tk?(!isProj(t)&&!isToday(t)):onBoard(t));
-const visibleOnBoard=t=>zoneMode()?onBoardZ(t,zonesFor().find(z=>z.match(t))):(t.status===S.ui.section&&onBoard(t)&&!isProj(t));
+const visibleOnBoard=t=>S.ui.section==='sv'?vMatch(t,curView()):zoneMode()?onBoardZ(t,zonesFor().find(z=>z.match(t))):(t.status===S.ui.section&&onBoard(t)&&!isProj(t));
 let ZG={},ZL=[];
 const viewKey=()=>todayMode()?'today':tickMode()?'tickler':calMode()?'calendar':projMode()?'proj:'+S.ui.proj:F.area;
 const AP=t=>t.apos&&t.apos[viewKey()];
@@ -2323,10 +2437,10 @@ function setZoom(z){
 
 /* ---------- list ---------- */
 const narrow=()=>matchMedia('(max-width:760px)').matches;
-const isList=()=>narrow()||S.ui.view==='list';
+const isList=()=>narrow()||S.ui.view==='list'||S.ui.section==='sv';
 const filterOn=()=>!!(F.tags.size||F.labels.size||F.time||F.due||F.energy);
 const LSORT=[{id:'manual',l:'手動（ドラッグで並べ替え）'},{id:'area',l:'エリアごと'},{id:'due',l:'締切が近い順'},{id:'min',l:'所要時間が短い順'}];
-const listKey=()=>'L:'+(zoneMode()?viewKey():S.ui.section);
+const listKey=()=>'L:'+(S.ui.section==='sv'?'sv:'+S.ui.sv:zoneMode()?viewKey():S.ui.section);
 const natSort=()=>calMode()?'cal':tickMode()?'tk':'manual';
 const lsortOf=()=>{const v=(S.ui.lsort||{})[listKey()];return v&&v!=='new'?v:natSort()};
 const ordOf=(t,k)=>t.lo&&t.lo[k]!=null?t.lo[k]:(t.created||0);
@@ -2348,6 +2462,12 @@ function listGroups(){
       items:S.tasks.filter(t=>vis(t)&&(zn.tk||!tickled(t))&&(zn.match(t)||(todayMode()&&zn.id==='today'&&calNow(t)))),drop:zn.drop,
       base:()=>({status:'next',area:F.area||(P?P.area:null),project:P?P.id:null})}));
   }
+  if(sec==='sv'){const v=curView();if(!v)return [];const A=(v.areas||[]).length===1?v.areas[0]:null,P=v.places||[],tg=P.length&&(v.placesAll||P.length===1)?[...P]:[];
+    const gs=vSts(v).map(st=>({id:'v:'+st,name:VST.find(x=>x[0]===st)[1],icon:st,cls:st,
+      items:S.tasks.filter(t=>vMatch(t,v)&&(st==='tickler'?tickled(t):!tickled(t)&&t.status===st)),
+      drop:st==='tickler'?t=>{if(!tickled(t))t.start=keyAdd(todayKey(),1);if(t.status==='inbox')t.status='next'}:t=>{t.status=st;t.start=null},
+      base:()=>({status:st==='tickler'?'next':st,area:A,tags:tg,start:st==='tickler'?keyAdd(todayKey(),1):null})}));
+    if(gs.length===1)gs[0].flat=true;return gs}
   if(sec==='inbox')return [{id:'inbox',name:'Inbox',icon:'inbox',cls:'inbox',items:S.tasks.filter(t=>t.status==='inbox'&&!isProj(t)),drop:t=>{t.status='inbox';t.start=null},base:()=>({status:'inbox',area:null})}];
   const L=S.tasks.filter(t=>t.status===sec&&vis(t)&&!tickled(t));
   if(!areaGrouped())return [{id:'s:'+sec,name:SECT[sec].en,flat:true,items:L,drop:t=>{t.status=sec;t.start=null},base:()=>({status:sec,area:null})}];
@@ -2367,7 +2487,7 @@ function rowMeta(t){
   (t.labels||[]).forEach(l=>{const n=labName(l);if(n)out.push(`<span class="mlab">#${esc(n)}</span>`)});
   return out.join('');
 }
-const areaGrouped=()=>!zoneMode()&&S.ui.section!=='inbox'&&lsortOf()==='area';
+const areaGrouped=()=>!zoneMode()&&S.ui.section!=='inbox'&&S.ui.section!=='sv'&&lsortOf()==='area';
 function rowWhere(t){
   if(projMode())return '';
   const a=area(t.area),P=isChild(t)?projOf(t):null;let lb='';
@@ -2435,8 +2555,8 @@ function renderList(el){
 function openAdd(gid){if(gid!=='__end'&&!LG.find(g=>g.id===gid))return;LADD=gid;LSEL=null;renderMain()}
 function addFromRow(G,raw){
   const p=parse(raw);if(!p.title||!G)return null;const b=G.base();
-  const t={id:uid(),status:b.status,title:p.title,note:'',area:p.area||b.area||null,minutes:p.mins??(b.status==='inbox'?null:30),tags:p.tags,labels:p.labels,energy:'normal',x:0,y:0,waitingFor:'',sched:null,created:Date.now(),doneAt:null};
-  if(b.project)t.project=b.project;
+  const t={id:uid(),status:b.status,title:p.title,note:'',area:p.area||b.area||null,minutes:p.mins??(b.status==='inbox'?null:30),tags:[...new Set([...(p.tags||[]),...(b.tags||[])])],labels:p.labels,energy:'normal',x:0,y:0,waitingFor:'',sched:null,created:Date.now(),doneAt:null};
+  if(b.project)t.project=b.project;if(b.start)t.start=b.start;
   if(G.zone)G.drop(t);
   if(t.status!=='inbox'&&t.minutes==null)t.minutes=30;
   if(t.area)addAreaPlaces(t);
@@ -2635,68 +2755,282 @@ function listDrop(d){
 }
 
 /* ---------- phone tabs ---------- */
-/* iPhone の下タブ：Today ＋ 自分で選ぶ3つ ＋ リスト（全部） */
-const DEF_TABS=['sec:next','sec:inbox','sec:calendar'];
-const TAB_ICONS=['folder','star','heart','brief','building','home','cart','bag','food','coffee','people','user','book','grad','pc','phone','mail','cal','pin','flag','bolt','leaf','dumbbell','pill','music','plane','car','gift','yen','wrench','clip','tag','moon','someday'];
-const tabIcon=(k,ty)=>((S.ui.tabIcons||{})[k])||(ty==='proj'?'clip':'folder');
+/* iPhone の下タブ：Today ＋ 自分で選ぶ3〜5つ ＋ リスト（全部） */
+const DEF_TABS=['sec:next','sec:inbox','sec:calendar','sec:waiting','sec:someday'];
+/* 下タブ用の追加アイコン：Lucide (ISC License) https://lucide.dev */
+Object.assign(I,{
+ 'u-presentation':'<path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/>',
+ 'u-clipboard-list':'<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+ 'u-file-text':'<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+ 'u-notebook-pen':'<path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>',
+ 'u-calculator':'<rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>',
+ 'u-chart-column':'<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
+ 'u-chart-line':'<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/>',
+ 'u-target':'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+ 'u-lightbulb':'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+ 'u-video':'<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
+ 'u-handshake':'<path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/>',
+ 'u-megaphone':'<path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"/><path d="M8 6v8"/>',
+ 'u-school':'<path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M18 4.933V21"/><path d="m4 6 7.106-3.79a2 2 0 0 1 1.788 0L20 6"/><path d="m6 11-3.52 2.147a1 1 0 0 0-.48.854V19a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a1 1 0 0 0-.48-.853L18 11"/><path d="M6 4.933V21"/><circle cx="12" cy="9" r="2"/>',
+ 'u-languages':'<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
+ 'u-code':'<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+ 'u-wallet':'<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+ 'u-credit-card':'<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/><path d="M6 14h2"/>',
+ 'u-piggy-bank':'<path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M16 10h.01"/><path d="M2 8v1a2 2 0 0 0 2 2h1"/>',
+ 'u-receipt':'<path d="M12 17V7"/><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"/><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"/>',
+ 'u-banknote':'<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+ 'u-landmark':'<path d="M10 18v-7"/><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/>',
+ 'u-store':'<path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/>',
+ 'u-package':'<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/>',
+ 'u-bed':'<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>',
+ 'u-sofa':'<path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"/><path d="M4 18v2"/><path d="M20 18v2"/><path d="M12 4v9"/>',
+ 'u-bath':'<path d="M10 4 8 6"/><path d="M17 19v2"/><path d="M2 12h20"/><path d="M7 19v2"/><path d="M9 5 7.621 3.621A2.121 2.121 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/>',
+ 'u-shirt':'<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>',
+ 'u-washing-machine':'<path d="M3 6h3"/><path d="M17 6h.01"/><rect width="18" height="20" x="3" y="2" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M12 18a2.5 2.5 0 0 0 0-5 2.5 2.5 0 0 1 0-5"/>',
+ 'u-key-round':'<path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>',
+ 'u-trash-2':'<path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+ 'u-recycle':'<path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"/><path d="m14 16-3 3 3 3"/><path d="M8.293 13.596 7.196 9.5 3.1 10.598"/><path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"/><path d="m13.378 9.633 4.096 1.098 1.097-4.096"/>',
+ 'u-hammer':'<path d="m15 12-9.373 9.373a1 1 0 0 1-3.001-3L12 9"/><path d="m18 15 4-4"/><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172v-.344a2 2 0 0 0-.586-1.414l-1.657-1.657A6 6 0 0 0 12.516 3H9l1.243 1.243A6 6 0 0 1 12 8.485V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/>',
+ 'u-paintbrush':'<path d="m14.622 17.897-10.68-2.913"/><path d="M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z"/><path d="M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15"/>',
+ 'u-scissors':'<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>',
+ 'u-sparkles':'<path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/>',
+ 'u-flower-2':'<path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><circle cx="12" cy="8" r="2"/><path d="M12 10v12"/><path d="M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z"/><path d="M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z"/>',
+ 'u-utensils':'<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+ 'u-chef-hat':'<path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/>',
+ 'u-cooking-pot':'<path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/>',
+ 'u-apple':'<path d="M12 6.528V3a1 1 0 0 1 1-1h0"/><path d="M18.237 21A15 15 0 0 0 22 11a6 6 0 0 0-10-4.472A6 6 0 0 0 2 11a15.1 15.1 0 0 0 3.763 10 3 3 0 0 0 3.648.648 5.5 5.5 0 0 1 5.178 0A3 3 0 0 0 18.237 21"/>',
+ 'u-cake':'<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/>',
+ 'u-wine':'<path d="M8 22h8"/><path d="M7 10h10"/><path d="M12 15v7"/><path d="M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z"/>',
+ 'u-beer':'<path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M9 12v6"/><path d="M13 12v6"/><path d="M14 7.5c-1 0-1.44.5-3 .5s-2-.5-3-.5-1.72.5-2.5.5a2.5 2.5 0 0 1 0-5c.78 0 1.57.5 2.5.5S9.44 2 11 2s2 1.5 3 1.5 1.72-.5 2.5-.5a2.5 2.5 0 0 1 0 5c-.78 0-1.5-.5-2.5-.5Z"/><path d="M5 8v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/>',
+ 'u-sandwich':'<path d="m2.37 11.223 8.372-6.777a2 2 0 0 1 2.516 0l8.371 6.777"/><path d="M21 15a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5.25"/><path d="M3 15a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h9"/><path d="m6.67 15 6.13 4.6a2 2 0 0 0 2.8-.4l3.15-4.2"/><rect width="20" height="4" x="2" y="11" rx="1"/>',
+ 'u-activity':'<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>',
+ 'u-heart-pulse':'<path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/>',
+ 'u-stethoscope':'<path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/>',
+ 'u-bike':'<circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/>',
+ 'u-footprints':'<path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/>',
+ 'u-brain':'<path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/><path d="M18 18a4 4 0 0 0 2-7.464"/><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/><path d="M6 18a4 4 0 0 1-2-7.464"/><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>',
+ 'u-smile':'<path d="M15 10V9"/><path d="M16.472 15a6 6 0 01-8.943 0"/><path d="M9 10V9"/><circle cx="12" cy="12" r="10"/>',
+ 'u-train-front':'<path d="M8 3.1V7a4 4 0 0 0 8 0V3.1"/><path d="m9 15-1-1"/><path d="m15 15 1-1"/><path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/>',
+ 'u-bus':'<path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>',
+ 'u-map':'<path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/>',
+ 'u-luggage':'<path d="M6 20a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2"/><path d="M8 18V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v14"/><path d="M10 20h4"/><circle cx="16" cy="20" r="2"/><circle cx="8" cy="20" r="2"/>',
+ 'u-tent':'<path d="M3.5 21 14 3"/><path d="M20.5 21 10 3"/><path d="M15.5 21 12 15l-3.5 6"/><path d="M2 21h20"/>',
+ 'u-mountain':'<path d="m8 3 4 8 5-5 5 15H2L8 3z"/>',
+ 'u-globe':'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+ 'u-hotel':'<path d="M10 22v-6.57"/><path d="M12 11h.01"/><path d="M12 7h.01"/><path d="M14 15.43V22"/><path d="M15 16a5 5 0 0 0-6 0"/><path d="M16 11h.01"/><path d="M16 7h.01"/><path d="M8 11h.01"/><path d="M8 7h.01"/><rect x="4" y="2" width="16" height="20" rx="2"/>',
+ 'u-camera':'<path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"/><circle cx="12" cy="13" r="3"/>',
+ 'u-gamepad-2':'<line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/>',
+ 'u-guitar':'<path d="m11.9 12.1 4.514-4.514"/><path d="M20.1 2.3a1 1 0 0 0-1.4 0l-1.114 1.114A2 2 0 0 0 17 4.828v1.344a2 2 0 0 1-.586 1.414A2 2 0 0 1 17.828 7h1.344a2 2 0 0 0 1.414-.586L21.7 5.3a1 1 0 0 0 0-1.4z"/><path d="m6 16 2 2"/><path d="M8.23 9.85A3 3 0 0 1 11 8a5 5 0 0 1 5 5 3 3 0 0 1-1.85 2.77l-.92.38A2 2 0 0 0 12 18a4 4 0 0 1-4 4 6 6 0 0 1-6-6 4 4 0 0 1 4-4 2 2 0 0 0 1.85-1.23z"/>',
+ 'u-headphones':'<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>',
+ 'u-film':'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/>',
+ 'u-tv':'<path d="m17 2-5 5-5-5"/><rect width="20" height="15" x="2" y="7" rx="2"/>',
+ 'u-book-open':'<path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/>',
+ 'u-puzzle':'<path d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z"/>',
+ 'u-dices':'<rect width="12" height="12" x="2" y="10" rx="2" ry="2"/><path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"/><path d="M6 18h.01"/><path d="M10 14h.01"/><path d="M15 6h.01"/><path d="M18 9h.01"/>',
+ 'u-trophy':'<path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/>',
+ 'u-fishing-hook':'<path d="m17.586 11.414-5.93 5.93a1 1 0 0 1-8-8l3.137-3.137a.707.707 0 0 1 1.207.5V10"/><path d="M20.414 8.586 22 7"/><circle cx="19" cy="10" r="2"/>',
+ 'u-brush':'<path d="m11 10 3 3"/><path d="M6.5 21A3.5 3.5 0 1 0 3 17.5a2.62 2.62 0 0 1-.708 1.792A1 1 0 0 0 3 21z"/><path d="M9.969 17.031 21.378 5.624a1 1 0 0 0-3.002-3.002L6.967 14.031"/>',
+ 'u-baby':'<path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M15 12h.01"/><path d="M19.38 6.813A9 9 0 0 1 20.8 10.2a2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/><path d="M9 12h.01"/>',
+ 'u-hand-heart':'<path d="M11 14h2a2 2 0 0 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"/><path d="m14.45 13.39 5.05-4.694C20.196 8 21 6.85 21 5.75a2.75 2.75 0 0 0-4.797-1.837.276.276 0 0 1-.406 0A2.75 2.75 0 0 0 11 5.75c0 1.2.802 2.248 1.5 2.946L16 11.95"/><path d="m2 15 6 6"/><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a1 1 0 0 0-2.75-2.91"/>',
+ 'u-party-popper':'<path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/>',
+ 'u-message-circle':'<path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/>',
+ 'u-dog':'<path d="M11.25 16.25h1.5L12 17z"/><path d="M16 14v.5"/><path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444a11.702 11.702 0 0 0-.493-3.309"/><path d="M8 14v.5"/><path d="M8.5 8.5c-.384 1.05-1.083 2.028-2.344 2.5-1.931.722-3.576-.297-3.656-1-.113-.994 1.177-6.53 4-7 1.923-.321 3.651.845 3.651 2.235A7.497 7.497 0 0 1 14 5.277c0-1.39 1.844-2.598 3.767-2.277 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5"/>',
+ 'u-cat':'<path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21s-9-3-9-7.56c0-1.25.5-2.4 1-3.44 0 0-1.89-6.42-.5-7 1.39-.58 4.72.23 6.5 2.23A9.04 9.04 0 0 1 12 5Z"/><path d="M8 14v.5"/><path d="M16 14v.5"/><path d="M11.25 16.25h1.5L12 17l-.75-.75Z"/>',
+ 'u-paw-print':'<circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>',
+ 'u-fish':'<path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z"/><path d="M18 12v.5"/><path d="M16 17.93a9.77 9.77 0 0 1 0-11.86"/><path d="M7 10.67C7 8 5.58 5.97 2.73 5.5c-1 1.5-1 5 .23 6.5-1.24 1.5-1.24 5-.23 6.5C5.58 18.03 7 16 7 13.33"/><path d="M10.46 7.26C10.2 5.88 9.17 4.24 8 3h5.8a2 2 0 0 1 1.98 1.67l.23 1.4"/><path d="m16.01 17.93-.23 1.4A2 2 0 0 1 13.8 21H9.5a5.96 5.96 0 0 0 1.49-3.98"/>',
+ 'u-sun':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+ 'u-cloud':'<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>',
+ 'u-cloud-rain':'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/>',
+ 'u-snowflake':'<path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/>',
+ 'u-tree-pine':'<path d="m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17Z"/><path d="M12 22v-3"/>',
+ 'u-sprout':'<path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/>',
+ 'u-waves':'<path d="M2 12q2.5 2 5 0t5 0 5 0 5 0"/><path d="M2 19q2.5 2 5 0t5 0 5 0 5 0"/><path d="M2 5q2.5 2 5 0t5 0 5 0 5 0"/>',
+ 'u-flame':'<path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/>',
+ 'u-bell':'<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
+ 'u-alarm-clock':'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/>',
+ 'u-timer':'<line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>',
+ 'u-bookmark':'<path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z"/>',
+ 'u-shield':'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+ 'u-crown':'<path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/>',
+ 'u-gem':'<path d="M10.5 3 8 9l4 13 4-13-2.5-6"/><path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"/><path d="M2 9h20"/>',
+ 'u-rocket':'<path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09"/><path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05"/>',
+ 'u-award':'<path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/>',
+ 'u-circle-check':'<circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/>'
+});
+const ICAT=[["GTD",[["inbox","受信 インボックス 箱"],["next","次 再生 ネクスト"],["waiting","待つ 砂時計 ウェイティング"],["someday","いつか 雲"],["tickler","ティックラー 戻る"],["calendar","カレンダー 予定"],["today","今日 太陽"],["clip","プロジェクト クリップ"],["review","レビュー ふりかえり"],["log","完了 チェック"],["list","リスト 一覧"],["folder","フォルダ"]]],["仕事・学び",[["brief","仕事 かばん ビジネス"],["building","会社 ビル 職場"],["pc","パソコン PC"],["phone","電話 スマホ"],["mail","メール 手紙"],["cal","カレンダー 日付"],["clock","時計 時間"],["book","本 読書"],["grad","学校 卒業 勉強"],["edit","書く 編集 ペン"],["u-presentation","プレゼン 発表 会議"],["u-clipboard-list","チェックリスト クリップボード"],["u-file-text","書類 ファイル 資料"],["u-notebook-pen","ノート メモ"],["u-calculator","計算 電卓 経理"],["u-chart-column","グラフ 数字 分析"],["u-chart-line","グラフ 推移 成長"],["u-target","目標 ゴール"],["u-lightbulb","アイデア ひらめき 電球"],["u-video","ビデオ 動画 オンライン会議"],["u-handshake","握手 商談 取引"],["u-megaphone","告知 広報 宣伝"],["u-school","学校 校舎"],["u-languages","語学 英語 翻訳"],["u-code","プログラミング コード 開発"]]],["お金・買い物",[["yen","お金 円"],["cart","買い物 カート"],["bag","買い物 袋"],["gift","プレゼント ギフト"],["u-wallet","財布 支払い"],["u-credit-card","カード クレジット"],["u-piggy-bank","貯金 ぶた"],["u-receipt","レシート 領収書 経費"],["u-banknote","お札 現金"],["u-landmark","銀行 役所"],["u-store","お店 ショップ"],["u-package","荷物 配達 宅配"]]],["家・暮らし",[["home","家 自宅"],["u-bed","寝る ベッド 睡眠"],["u-sofa","ソファ くつろぐ"],["u-bath","風呂 お風呂"],["u-shirt","服 洗濯 衣替え"],["u-washing-machine","洗濯機 洗濯"],["u-key-round","鍵 カギ"],["u-trash-2","ゴミ 捨てる"],["u-recycle","リサイクル 資源ごみ"],["u-hammer","修理 DIY 工具"],["wrench","工具 修理 レンチ"],["u-paintbrush","ペンキ 掃除 塗る"],["u-scissors","はさみ 切る"],["u-sparkles","掃除 きれい キラキラ"],["u-flower-2","花 植物"]]],["食",[["food","食事 ごはん"],["coffee","コーヒー カフェ"],["u-utensils","食事 レストラン 外食"],["u-chef-hat","料理 シェフ"],["u-cooking-pot","鍋 料理 自炊"],["u-apple","りんご 果物 健康"],["u-cake","ケーキ 誕生日 お祝い"],["u-wine","ワイン お酒"],["u-beer","ビール 飲み会"],["u-sandwich","サンドイッチ ランチ 弁当"]]],["健康・運動",[["dumbbell","筋トレ 運動 ジム"],["pill","薬 くすり"],["heart","ハート 好き"],["u-activity","運動 心拍 活動"],["u-heart-pulse","健康 心拍 病院"],["u-stethoscope","病院 診察 医者"],["u-bike","自転車 サイクリング"],["u-footprints","散歩 ウォーキング 歩く"],["u-brain","頭 考える 脳"],["u-smile","笑顔 気分"]]],["移動・旅行",[["car","車 ドライブ"],["plane","飛行機 旅行 出張"],["pin","場所 地図 ピン"],["out","外出 出かける"],["u-train-front","電車 通勤"],["u-bus","バス"],["u-map","地図 マップ"],["u-luggage","スーツケース 旅行 荷造り"],["u-tent","キャンプ テント"],["u-mountain","山 登山"],["u-globe","世界 海外 地球"],["u-hotel","ホテル 宿"]]],["趣味・遊び",[["music","音楽"],["palette","絵 デザイン パレット"],["u-camera","カメラ 写真"],["u-gamepad-2","ゲーム"],["u-guitar","ギター 楽器"],["u-headphones","ヘッドホン 音楽 ポッドキャスト"],["u-film","映画 フィルム"],["u-tv","テレビ 動画"],["u-book-open","読書 本"],["u-puzzle","パズル"],["u-dices","サイコロ ボードゲーム"],["u-trophy","トロフィー 優勝 大会"],["u-fishing-hook","釣り"],["u-brush","書道 筆 絵"]]],["人・家族・ペット",[["people","人々 チーム 家族"],["user","人 自分"],["contact","連絡先 名刺"],["u-baby","赤ちゃん 子ども 育児"],["u-hand-heart","支援 ボランティア 寄付"],["u-party-popper","パーティー お祝い イベント"],["u-message-circle","メッセージ チャット 会話"],["u-dog","犬 いぬ ペット"],["u-cat","猫 ねこ ペット"],["u-paw-print","ペット 足あと"],["u-fish","魚 さかな"]]],["自然・天気",[["leaf","葉 植物 自然"],["moon","夜 月"],["sunrise","朝 日の出"],["dusk","夕方 夕暮れ"],["u-sun","晴れ 太陽"],["u-cloud","くもり 雲"],["u-cloud-rain","雨"],["u-snowflake","雪 冬"],["u-tree-pine","木 森 クリスマス"],["u-sprout","芽 成長 家庭菜園"],["u-waves","海 波"],["u-flame","火 やる気 炎"]]],["記号・その他",[["star","星 お気に入り"],["flag","旗 目標"],["bolt","いなずま すばやく"],["tag","タグ ラベル"],["lock","鍵 秘密"],["gear","設定 歯車"],["search","検索 探す"],["u-bell","通知 ベル"],["u-alarm-clock","目覚まし アラーム"],["u-timer","タイマー"],["u-bookmark","しおり ブックマーク"],["u-shield","守る 保険 セキュリティ"],["u-crown","王冠 一番"],["u-gem","宝石 大事"],["u-rocket","ロケット 挑戦 始める"],["u-award","賞 表彰"],["u-circle-check","完了 チェック"]]]];
+const TAB_ICONS=ICAT.flatMap(c=>c[1].map(x=>x[0]));
+const ICKW=Object.fromEntries(ICAT.flatMap(c=>c[1].map(x=>[x[0],c[0]+' '+x[1]])));
 const TABSEC={inbox:['Inbox','inbox'],next:['Next','next'],calendar:['Calendar','calendar'],waiting:['Waiting','waiting'],someday:['Someday','someday'],tickler:['Tickler','tickler'],projects:['プロジェクト','clip'],log:['完了ログ','log'],review:['週次レビュー','review']};
-const tabSlots=()=>Array.isArray(S.ui.tabs)&&S.ui.tabs.length===3?S.ui.tabs:DEF_TABS;
+const tabN=()=>[5,6,7].includes(S.ui.tabN)?S.ui.tabN:5;
+/* 5枠ぶんを保存しておき、表示するのは先頭の（ボタン数−2）枠。減らしても設定は消えない */
+function allSlots(){const t=Array.isArray(S.ui.tabs)?S.ui.tabs.slice(0,5):[];
+  for(let i=0;i<5;i++)if(t[i]===undefined)t[i]=DEF_TABS.find(d=>!t.includes(d))||null;
+  return t}
+const tabSlots=()=>allSlots().slice(0,tabN()-2);
+const tabIcon=(k,ty)=>((S.ui.tabIcons||{})[k])||(ty==='sec'?(TABSEC[k.slice(4)]||[])[1]:ty==='view'?(viewOf(k.slice(5))?.icon||'filter'):ty==='proj'?'clip':'folder');
+const tabName=(k,s)=>((S.ui.tabLbl||{})[k])||s.l;
+const tabNoLbl=k=>!!(S.ui.tabNoLbl||{})[k];
 function slotInfo(k){if(!k)return null;const c=k.indexOf(':'),ty=k.slice(0,c),v=k.slice(c+1);
-  if(ty==='sec'&&TABSEC[v])return {ty,v,l:TABSEC[v][0],ico:ic(TABSEC[v][1]),pico:`<span class="ph-ico g-${v}">${ic(TABSEC[v][1])}</span>`,gc:['log','review'].includes(v)?'more':v};
+  if(ty==='sec'&&TABSEC[v])return {ty,v,l:TABSEC[v][0],ico:ic(tabIcon(k,'sec')),pico:`<span class="ph-ico g-${v}">${ic(TABSEC[v][1])}</span>`,tico:`<span class="ph-ico g-${v}">${ic(tabIcon(k,'sec'))}</span>`,gc:['log','review'].includes(v)?'more':v};
+  if(ty==='view'){const w=viewOf(v);if(w)return {ty,v,l:w.name,ico:ic(tabIcon(k,'view')),pico:`<span class="ph-ico g-view">${ic(w.icon||'filter')}</span>`,tico:`<span class="ph-ico g-view">${ic(tabIcon(k,'view'))}</span>`,gc:'more'}}
   if(ty==='area'){const a=area(v);if(a)return {ty,v,l:a.name,ico:ic(tabIcon(k,'area')),pico:`<span class="ph-dt c-${areaColor(a)}"><i class="dot"></i></span>`,tico:`<span class="ph-ico g-gray">${ic(tabIcon(k,'area'))}</span>`,gc:'more'}}
   if(ty==='proj'){const p=taskById(v);if(isProj(p)&&p.status!=='done')return {ty,v,l:p.title,ico:ic(tabIcon(k,'proj')),pico:`<span class="ph-ico g-projects">${ic('clip')}</span>`,tico:`<span class="ph-ico g-gray">${ic(tabIcon(k,'proj'))}</span>`,gc:'more'}}
   return null}
-const curKey=()=>projMode()?'proj:'+S.ui.proj:F.area?'area:'+F.area:'sec:'+S.ui.section;
+const curKey=()=>projMode()?'proj:'+S.ui.proj:S.ui.section==='sv'?'view:'+S.ui.sv:F.area?'area:'+F.area:'sec:'+S.ui.section;
 function goSlot(k){LSEL=null;if(k==='sec:today'){S.ui.section='today';F.area=null;save();render();return}
   const s=slotInfo(k);if(!s)return;
+  if(s.ty==='view'){openView(s.v);return}
   if(s.ty==='proj'){openProject(s.v);S.ui.fromProjects=false;return}
   F.area=s.ty==='area'?s.v:null;S.ui.section=s.ty==='area'?'next':s.v;if(s.v==='review'&&(S.ui.rvStep||0)>=RV.length-1)S.ui.rvStep=0;save();render()}
 function renderTabs(){
-  const el=$('#tabs');if(!el)return;const ib=S.tasks.filter(t=>t.status==='inbox').length,ck=curKey();
-  const btn=(cls,on,ico,l,bd,attr)=>`<button class="tab ${cls} ${on?'on':''}" ${attr}><span class="sq">${ico}</span><span class="tn">${esc(l)}</span>${bd?`<i class="bd">${bd}</i>`:''}</button>`;
+  const el=$('#tabs');if(!el)return;const ck=curKey();el.dataset.n=tabN();
+  const btn=(cls,on,ico,l,bd,attr,nol)=>`<button class="tab ${cls} ${on?'on':''} ${nol?'nol':''}" ${attr} aria-label="${esc(l)}"><span class="sq">${ico}</span><span class="tn">${esc(l)}</span>${bd?`<i class="bd">${bd}</i>`:''}</button>`;
   let any=ck==='sec:today';
   let h=btn('g-today',ck==='sec:today',ic('today'),'Today','','data-slot="sec:today"');
   tabSlots().forEach((k,i)=>{const s=slotInfo(k);if(!s){h+=btn('g-more',false,ic('plus'),'未設定','',`data-empty="${i}"`);return}
-    const on=ck===k;if(on)any=true;h+=btn('g-'+s.gc,on,s.ico,s.l,'',`data-slot="${k}"`)});
+    const on=ck===k;if(on)any=true;h+=btn('g-'+s.gc,on,s.ico,tabName(k,s),'',`data-slot="${k}"`,tabNoLbl(k))});
   h+=btn('g-more',!any,ic('list'),'リスト','','data-tab="more"');
   el.innerHTML=h;
   $$('[data-slot]',el).forEach(b=>b.onclick=()=>{const k=b.dataset.slot;if(curKey()===k){const sc=$('#view .list-scroll');if(sc)sc.scrollTop=0;return}goSlot(k)});
   $$('[data-empty]',el).forEach(b=>b.onclick=()=>openTabPicker(+b.dataset.empty));
   $('[data-tab="more"]',el).onclick=()=>{if(S.ui.section==='more'){const sc=$('#view .list-scroll');if(sc)sc.scrollTop=0;return}S.ui.section='more';F.area=null;LSEL=null;save();render()};
 }
+/* アイコン選び（カテゴリ＋検索） */
+function iconPickHTML(now){
+  return `<div class="ip"><label class="ip-s">${ic('search')}<input id="ipQ" type="search" placeholder="アイコンを探す（例：犬、勉強、カメラ）" autocomplete="off"></label>
+   ${ICAT.map(([c,l])=>`<div class="ip-c"><div class="ph-sec">${esc(c)}</div><div class="ph-ig"><div class="tp-grid">${l.map(([n,kw])=>`<button class="${n===now?'on':''}" data-ico="${n}" aria-label="${esc(kw.split(' ')[0])}" title="${esc(kw.split(' ')[0])}">${ic(n)}</button>`).join('')}</div></div></div>`).join('')}
+   <div class="ph-none pad ip-0" hidden>見つかりませんでした。別のことばで探してみてください。</div></div>`}
+function bindIconPick(root,onPick){
+  const q=$('#ipQ',root);
+  q.oninput=()=>{const w=q.value.trim().toLowerCase().split(/[\s　]+/).filter(Boolean);let any=0;
+    $$('.ip-c',root).forEach(c=>{let n=0;$$('[data-ico]',c).forEach(b=>{const ok=!w.length||w.every(x=>(ICKW[b.dataset.ico]+' '+b.dataset.ico).toLowerCase().includes(x));b.hidden=!ok;if(ok)n++});c.hidden=!n;any+=n});
+    $('.ip-0',root).hidden=!!any};
+  $$('[data-ico]',root).forEach(b=>b.onclick=()=>{$$('[data-ico].on',root).forEach(x=>x.classList.remove('on'));b.classList.add('on');onPick(b.dataset.ico)})}
 function openTabPicker(i,startIcon){
   const scrim=document.createElement('div');scrim.className='scrim phsheet';let step=startIcon?'icon':'list';
-  const draw=()=>{const T=tabSlots(),cur=T[i],cs=slotInfo(cur);
-    if(step==='icon'&&cs&&cs.ty!=='sec'){const now=tabIcon(cur,cs.ty);
+  const setT=t=>{S.ui.tabs=t;save();renderTabs()};
+  const draw=()=>{const T=allSlots(),cur=T[i],cs=slotInfo(cur),vis=tabN()-2;
+    if(step==='icon'&&cs){const now=tabIcon(cur,cs.ty);
       scrim.innerHTML=`<div class="sheet ph-sh" role="dialog" aria-label="アイコンを選ぶ"><div class="grab"></div>
        <div class="ph-shh"><button id="tpBack">${ic('chev')}戻る</button><b>アイコン</b><button class="b" id="tpOk">完了</button></div>
-       <div class="ph-shb"><div class="tp-prev"><span class="tab on"><span class="sq">${ic(now)}</span><span class="tn">${esc(cs.l)}</span></span></div>
-        <div class="ph-ig"><div class="tp-grid">${TAB_ICONS.map(n=>`<button class="${n===now?'on':''}" data-ico="${n}" aria-label="${n}">${ic(n)}</button>`).join('')}</div></div></div></div>`;
-      $('#tpBack',scrim).onclick=()=>{step='list';draw()};$('#tpOk',scrim).onclick=done;
-      $$('[data-ico]',scrim).forEach(b=>b.onclick=()=>{S.ui.tabIcons=S.ui.tabIcons||{};S.ui.tabIcons[cur]=b.dataset.ico;save();renderTabs();const sb=$('.ph-shb',scrim).scrollTop;draw();$('.ph-shb',scrim).scrollTop=sb});return}
+       <div class="ph-shb"><div class="tp-prev"><span class="tab on ${tabNoLbl(cur)?'nol':''}"><span class="sq">${ic(now)}</span><span class="tn">${esc(tabName(cur,cs))}</span></span></div>${iconPickHTML(now)}</div></div>`;
+      const back=()=>{step='list';draw()};$('#tpBack',scrim).onclick=back;$('#tpOk',scrim).onclick=back;
+      bindIconPick(scrim,n=>{S.ui.tabIcons=S.ui.tabIcons||{};S.ui.tabIcons[cur]=n;save();renderTabs();$('.tp-prev .sq',scrim).innerHTML=ic(n)});return}
     const row=(k,sub)=>{const s=slotInfo(k);if(!s)return '';const j=T.indexOf(k);
-      return `<button class="ph-ir ic ${sub?'sub':''}" data-k="${k}">${s.pico}<span class="l">${esc(s.l)}</span>${k===cur?`<span class="tp-ck">${ic('log')}</span>`:j>=0?`<span class="v">${j+2}番目</span>`:''}</button>`};
+      return `<button class="ph-ir ic ${sub?'sub':''}" data-k="${k}">${s.pico}<span class="l">${esc(s.l)}</span>${k===cur?`<span class="tp-ck">${ic('log')}</span>`:j>=0&&j<vis?`<span class="v">${j+2}番目</span>`:''}</button>`};
+    const vws=(S.views||[]).map(v=>row('view:'+v.id)).join('');
     const secs=Object.keys(TABSEC).map(v=>row('sec:'+v)).join('');
     const ars=orderedAreas().map(a=>row('area:'+a.id,rootOf(a)!==a)).join('');
     const pjs=projects().map(p=>row('proj:'+p.id)).join('');
     scrim.innerHTML=`<div class="sheet ph-sh" role="dialog" aria-label="タブを選ぶ"><div class="grab"></div>
-     <div class="ph-shh"><button id="tpX">キャンセル</button><b>${i+2}番目のタブ</b><button class="b" id="tpReset">初期設定</button></div>
-     <div class="ph-shb">${cs&&cs.ty!=='sec'?`<div class="ph-ig" style="margin-top:6px"><button class="ph-ir ic" id="tpIco"><span class="ph-ico g-gray">${ic(tabIcon(cur,cs.ty))}</span><span class="l">「${esc(cs.l)}」のアイコン</span><span class="cv">${ic('chev')}</span></button></div>`:''}
+     <div class="ph-shh"><button id="tpX">閉じる</button><b>${i+2}番目のタブ</b><button class="b" id="tpDone">完了</button></div>
+     <div class="ph-shb">${cs?`<div class="ph-sec">表示</div><div class="ph-ig">
+       <label class="ph-ir"><span class="l0">表示名</span><input id="tpName" class="ph-in" placeholder="${esc(cs.l)}" maxlength="16" value="${esc((S.ui.tabLbl||{})[cur]||'')}"></label>
+       <button class="ph-ir" id="tpNoL"><span class="l">名前を表示<small>オフにするとアイコンだけになります</small></span><span class="ph-sw ${tabNoLbl(cur)?'':'on'}"><i></i></span></button>
+       <button class="ph-ir ic" id="tpIco">${cs.tico||cs.pico}<span class="l">アイコン</span><span class="cv">${ic('chev')}</span></button>
+       ${cs.ty==='view'?`<button class="ph-ir ic" id="tpEditV"><span class="ph-ico g-view">${ic('filter')}</span><span class="l">条件を編集<small>${esc(viewSum(viewOf(cs.v)))}</small></span><span class="cv">${ic('chev')}</span></button>`:''}</div>`:''}
+      <div class="ph-sec">条件で絞ったリスト</div><div class="ph-ig">${vws}<button class="ph-ir ic" id="tpNewV"><span class="ph-ico g-view">${ic('plus')}</span><span class="l">新しく作る<small>エリア・場所・所要時間などを組み合わせる</small></span></button></div>
       <div class="ph-sec">リスト</div><div class="ph-ig">${secs}</div>
       ${ars?`<div class="ph-sec">エリア</div><div class="ph-ig">${ars}</div>`:''}
       ${pjs?`<div class="ph-sec">プロジェクト</div><div class="ph-ig">${pjs}</div>`:''}
-      <div class="ph-none pad">すでに別の位置にあるものを選ぶと、2つの位置が入れ替わります。エリアとプロジェクトは、選んだあとにアイコンを決められます。</div></div></div>`;
-    $('#tpX',scrim).onclick=close;
+      <div class="ph-none pad">すでに別の位置にあるものを選ぶと、2つの位置が入れ替わります。</div>
+      <div class="ph-ig"><button class="ph-ir act" id="tpReset">下のタブを初期設定に戻す</button></div></div></div>`;
+    $('#tpX',scrim).onclick=done;$('#tpDone',scrim).onclick=done;
+    const nm=$('#tpName',scrim);if(nm)nm.oninput=()=>{S.ui.tabLbl=S.ui.tabLbl||{};const v=nm.value.trim();if(v)S.ui.tabLbl[cur]=v;else delete S.ui.tabLbl[cur];save();renderTabs()};
+    const nl=$('#tpNoL',scrim);if(nl)nl.onclick=()=>{S.ui.tabNoLbl=S.ui.tabNoLbl||{};if(S.ui.tabNoLbl[cur])delete S.ui.tabNoLbl[cur];else S.ui.tabNoLbl[cur]=true;save();renderTabs();$('.ph-sw',nl).classList.toggle('on',!S.ui.tabNoLbl[cur])};
     const ti=$('#tpIco',scrim);if(ti)ti.onclick=()=>{step='icon';draw()};
-    $('#tpReset',scrim).onclick=()=>{S.ui.tabs=[...DEF_TABS];done()};
-    $$('[data-k]',scrim).forEach(b=>b.onclick=()=>{const k=b.dataset.k,t=[...tabSlots()],j=t.indexOf(k);if(j>=0&&j!==i)t[j]=t[i];t[i]=k;S.ui.tabs=t;save();renderTabs();
-      if(k.startsWith('sec:'))done();else{step='icon';draw();$('.ph-shb',scrim).scrollTop=0}})};
-  const close=()=>{scrim.remove();if(S.ui.section==='more')renderMain()};
+    const ev=$('#tpEditV',scrim);if(ev)ev.onclick=()=>openViewEditor(viewOf(cs.v),()=>draw());
+    $('#tpNewV',scrim).onclick=()=>openViewEditor(null,id=>{if(id){const t=allSlots(),j=t.indexOf('view:'+id);if(j>=0&&j!==i)t[j]=t[i];t[i]='view:'+id;setT(t)}draw();$('.ph-shb',scrim).scrollTop=0});
+    $('#tpReset',scrim).onclick=()=>{const tr=$('#tpReset',scrim);if(!tr.classList.contains('armed')){tr.classList.add('armed');tr.textContent='もう一度押すと初期設定に戻します';return}
+      S.ui.tabs=[...DEF_TABS];S.ui.tabLbl={};S.ui.tabNoLbl={};Object.keys(S.ui.tabIcons||{}).forEach(k=>{if(k.startsWith('sec:'))delete S.ui.tabIcons[k]});done()};
+    $$('[data-k]',scrim).forEach(b=>b.onclick=()=>{const k=b.dataset.k,t=allSlots(),j=t.indexOf(k);if(j>=0&&j!==i)t[j]=t[i];t[i]=k;setT(t);draw();$('.ph-shb',scrim).scrollTop=0})};
   const done=()=>{save();scrim.remove();renderTabs();renderBar();if(S.ui.section==='more')renderMain()};
-  scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)close()});
+  scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)done()});
   draw();document.body.appendChild(scrim);
 }
-
+/* ---------- 条件で絞ったリスト ----------
+   違う条件どうしは「すべて満たす」。同じ条件の中で複数選んだら「どれか」（場所とタグは「すべて」も選べる） */
+const VST=[['inbox','Inbox'],['next','Next Action'],['calendar','Calendar'],['waiting','Waiting'],['someday','Someday'],['tickler','Tickler']];
+const viewOf=id=>(S.views||[]).find(v=>v.id===id);
+const curView=()=>S.ui.section==='sv'?viewOf(S.ui.sv):null;
+const vSts=v=>{const s=v&&Array.isArray(v.sts)&&v.sts.length?v.sts:['next'];return VST.map(x=>x[0]).filter(x=>s.includes(x))};
+const anyAll=(have,want,all)=>!want||!want.length||(all?want.every(g=>have.includes(g)):want.some(g=>have.includes(g)));
+function vMatch(t,v){
+  if(!v||!t||isProj(t)||t.status==='done'||queued(t))return false;
+  const ss=vSts(v);if(tickled(t)?!ss.includes('tickler'):!ss.includes(t.status))return false;
+  if(t.status==='calendar'&&t.info&&t.cdate&&t.cdate<todayKey())return false;
+  if(v.areas&&v.areas.length&&!v.areas.some(a=>inArea(t,a)))return false;
+  if(!anyAll(t.tags||[],v.places,v.placesAll))return false;
+  if(!anyAll(t.labels||[],v.labels,v.labelsAll))return false;
+  if(v.energy&&v.energy.length&&!v.energy.includes(t.energy))return false;
+  const tf=v.time&&TIMEF.find(x=>x.id===v.time);if(tf&&!(t.minutes!=null&&tf.f(t.minutes)))return false;
+  const df=v.due&&DUEF.find(x=>x.id===v.due);if(df){const dd=t.status==='calendar'?t.cdate:t.due;if(!dd||!df.f(dayDiff(dd)))return false}
+  return true}
+const vCount=v=>S.tasks.filter(t=>vMatch(t,v)).length;
+function viewSum(v){if(!v)return '';const o=[vSts(v).map(s=>VST.find(x=>x[0]===s)[1].replace(' Action','')).join('・')];
+  if(v.areas&&v.areas.length)o.push(v.areas.map(a=>area(a)?.name).filter(Boolean).join('・'));
+  if(v.places&&v.places.length)o.push(v.places.map(tagName).filter(Boolean).join(v.placesAll?'＋':'・'));
+  const tf=v.time&&TIMEF.find(x=>x.id===v.time);if(tf)o.push(tf.l);
+  if(v.energy&&v.energy.length)o.push(v.energy.map(e=>ENERGY.find(x=>x.id===e)?.l).filter(Boolean).join('・'));
+  if(v.labels&&v.labels.length)o.push(v.labels.map(l=>'#'+labName(l)).join(v.labelsAll?'＋':'・'));
+  const df=v.due&&DUEF.find(x=>x.id===v.due);if(df)o.push('締切 '+df.l.replace('（遅れを含む）',''));
+  return o.filter(Boolean).join(' / ')}
+function openView(id){LSEL=null;F.area=null;S.ui.section='sv';S.ui.sv=id;save();render()}
+function openViewMenu(btn){const vs=S.views||[];
+  miniPop(btn,`<div class="fp-h">条件リスト<span>選ぶと編集できます</span></div>${vs.map(v=>`<button class="fp-item" data-v="${v.id}">${ic(v.icon||'filter')}<span>${esc(v.name)}</span>${v.side?'':'<small class="vm-off">サイドバーに非表示</small>'}</button>`).join('')||'<div class="fp-h"><span>まだありません</span></div>'}<button class="fp-item" data-new>${ic('plus')}<span>新しく作る</span></button>`,(el,close)=>{
+    $$('[data-v]',el).forEach(b=>b.onclick=()=>{close();openViewEditor(viewOf(b.dataset.v))});
+    $('[data-new]',el).onclick=()=>{close();openViewEditor(null,id=>{if(id)openView(id)})}})}
+function openViewEditor(v,onDone){
+  const isNew=!v;const d=v?JSON.parse(JSON.stringify(v)):{id:uid(),name:'',icon:'filter',sts:['next'],areas:[],places:[],labels:[],energy:[],time:null,due:null,side:true};
+  ['sts','areas','places','labels','energy'].forEach(k=>{if(!Array.isArray(d[k]))d[k]=[]});if(!d.sts.length)d.sts=['next'];
+  const scrim=document.createElement('div');scrim.className='scrim phsheet vx';let step='main',msb=0;
+  const ch=(on,k,x,h,cls='')=>`<button class="ph-cp ${cls} ${on?'on':''}" data-k="${k}" data-v="${x}">${h}</button>`;
+  const brk='<i class="ph-br"></i>';
+  const mode=(k,n)=>n>1?`<div class="vx-mode"><span>複数選んだとき</span>${ch(!d[k+'All'],k+'All','0','どれか1つ')}${ch(!!d[k+'All'],k+'All','1','すべて')}</div>`:'';
+  const stL=t=>tickled(t)?'Tickler':(SECT[t.status]||{}).en||'';
+  const draw=()=>{
+    if(step==='icon'){scrim.innerHTML=`<div class="sheet ph-sh" role="dialog" aria-label="アイコンを選ぶ"><div class="grab"></div><div class="ph-shh"><button id="vxBack">${ic('chev')}戻る</button><b>アイコン</b><button class="b" id="vxIOk">完了</button></div><div class="ph-shb">${iconPickHTML(d.icon)}</div></div>`;
+      const back=()=>{step='main';draw()};$('#vxBack',scrim).onclick=back;$('#vxIOk',scrim).onclick=back;
+      bindIconPick(scrim,n=>{d.icon=n;setTimeout(back,150)});return}
+    const items=S.tasks.filter(t=>vMatch(t,d));
+    scrim.innerHTML=`<div class="sheet ph-sh" role="dialog" aria-label="条件で絞ったリスト"><div class="grab"></div>
+    <div class="ph-shh"><button id="vxX">キャンセル</button><b>${isNew?'新しい条件リスト':'条件リスト'}</b><button class="b" id="vxOk">${isNew?'作成':'完了'}</button></div>
+    <div class="ph-shb">
+     <div class="ph-ig" style="margin-top:6px"><label class="ph-ir"><span class="l0">名前</span><input id="vxName" class="ph-in" placeholder="例：職場で30分" maxlength="24" value="${esc(d.name)}"></label>
+      <button class="ph-ir ic" id="vxIco"><span class="ph-ico g-view">${ic(d.icon||'filter')}</span><span class="l">アイコン</span><span class="cv">${ic('chev')}</span></button>
+      <button class="ph-ir" id="vxSide"><span class="l">PC のサイドバーに表示</span><span class="ph-sw ${d.side?'on':''}"><i></i></span></button></div>
+     <div class="ph-sec">リスト<small>複数選べます</small></div><div class="ph-ig"><div class="ph-chips">${VST.map(([s,l])=>ch(d.sts.includes(s),'sts',s,ic(s)+l)).join('')}</div></div>
+     <div class="ph-sec">エリア<small>親エリアを選ぶとサブエリアも含みます</small></div><div class="ph-ig"><div class="ph-chips">${S.areas.length?tops().map(a=>{const g=[a,...kids(a.id)],h=g.map(x=>ch(d.areas.includes(x.id),'areas',x.id,`<i class="dot c-${areaColor(x)}"></i>${esc(x.name)}`,x!==a?'sub':'')).join('');return g.length>1?brk+h+brk:h}).join('').replace(/^(<i class="ph-br"><\/i>)+|(<i class="ph-br"><\/i>)+$/g,'').replace(/(<i class="ph-br"><\/i>){2,}/g,brk):'<span class="ph-none">エリアはまだありません</span>'}</div></div>
+     <div class="ph-sec">場所・時間帯・道具</div><div class="ph-ig"><div class="ph-chips">${sepMap(TAGS,g=>ch(d.places.includes(g.id),'places',g.id,ic(g.icon||'pin')+esc(g.name)),brk)||'<span class="ph-none">まだありません</span>'}</div>${mode('places',d.places.length)}</div>
+     <div class="ph-sec">所要時間</div><div class="ph-ig"><div class="ph-chips">${TIMEF.map(x=>ch(d.time===x.id,'time',x.id,x.l)).join('')}</div></div>
+     <div class="ph-sec">集中度<small>複数選べます</small></div><div class="ph-ig"><div class="ph-chips">${ENERGY.map(x=>ch(d.energy.includes(x.id),'energy',x.id,`<span class="en-dot en-${x.id}"></span>${x.l}`)).join('')}</div></div>
+     <div class="ph-sec">タグ</div><div class="ph-ig"><div class="ph-chips">${S.labels.some(x=>!x.sep)?sepMap(S.labels,g=>ch(d.labels.includes(g.id),'labels',g.id,'#'+esc(g.name)),brk):'<span class="ph-none">タグはまだありません</span>'}</div>${mode('labels',d.labels.length)}</div>
+     <div class="ph-sec">締切・予定日</div><div class="ph-ig"><div class="ph-chips">${DUEF.map(x=>ch(d.due===x.id,'due',x.id,x.l.replace('（遅れを含む）',''))).join('')}</div></div>
+     <div class="ph-sec">いま当てはまるタスク：${items.length}件</div><div class="ph-ig vx-prev">${items.slice(0,5).map(t=>`<div class="ph-ir"><span class="l">${esc(t.title)}</span><span class="v">${stL(t)}</span></div>`).join('')||'<div class="ph-none pad">当てはまるタスクはありません</div>'}${items.length>5?`<div class="ph-none pad">ほか ${items.length-5}件</div>`:''}</div>
+     ${isNew?'':`<div class="ph-ig" style="margin-top:24px"><button class="ph-ir act del" id="vxDel">この条件リストを削除</button></div>`}
+    </div></div>`;
+    const sb=$('.ph-shb',scrim);sb.scrollTop=msb;sb.onscroll=()=>{msb=sb.scrollTop};
+    const nm=$('#vxName',scrim);nm.oninput=()=>{d.name=nm.value};
+    $('#vxIco',scrim).onclick=()=>{step='icon';draw()};
+    $('#vxSide',scrim).onclick=()=>{d.side=!d.side;$('#vxSide .ph-sw',scrim).classList.toggle('on',d.side)};
+    $$('.ph-cp',scrim).forEach(b=>b.onclick=()=>{const k=b.dataset.k,x=b.dataset.v;
+      if(k==='placesAll'||k==='labelsAll')d[k]=x==='1';
+      else if(k==='time'||k==='due')d[k]=d[k]===x?null:x;
+      else{const a=d[k],j=a.indexOf(x);if(j>=0){if(!(k==='sts'&&a.length===1))a.splice(j,1)}else a.push(x)}
+      draw()});
+    $('#vxX',scrim).onclick=close;$('#vxOk',scrim).onclick=commit;
+    const del=$('#vxDel',scrim);if(del)del.onclick=()=>{if(!del.classList.contains('armed')){del.classList.add('armed');del.textContent='もう一度押すと削除します';return}
+      S.views=(S.views||[]).filter(x=>x.id!==d.id);if(Array.isArray(S.ui.tabs))S.ui.tabs=S.ui.tabs.map(k=>k==='view:'+d.id?null:k);
+      if(S.ui.section==='sv'&&S.ui.sv===d.id)S.ui.section=narrow()?'more':'next';save();scrim.remove();render();if(onDone)onDone(null);toast('条件リストを削除しました')};
+  };
+  const close=()=>scrim.remove();
+  const commit=()=>{d.name=(d.name||'').trim()||viewSum(d).split(' / ').slice(0,3).join(' ')||'条件リスト';
+    if(!Array.isArray(S.views))S.views=[];
+    if(isNew)S.views.push(d);else Object.assign(v,d);save();scrim.remove();render();if(onDone)onDone(d.id)};
+  scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)close()});
+  draw();document.body.appendChild(scrim);
+  if(isNew&&!narrow())setTimeout(()=>{const n=$('#vxName',scrim);if(n)n.focus()},60);
+}
 
 function renderProjects(el){
   const groups=tops().map(a=>({a,ps:projects().filter(p=>p.area===a.id||kids(a.id).some(k=>k.id===p.area))})).filter(g=>g.ps.length);
@@ -3990,8 +4324,8 @@ let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(S
 const saveSB=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SB))}catch(e){}};
 const hj=j=>j==null?null:hash(j)+':'+j.length;
 let FB=null;
-const metaJ=()=>JSON.stringify({areas:S.areas,places:S.places,labels:S.labels||[],sample:!!S.sample,lastReview:S.ui.lastReview||null,logKeep:S.ui.logKeep??null});
-function setMeta(j){const m=JSON.parse(j);if(m.logKeep!=null)S.ui.logKeep=m.logKeep;if(Array.isArray(m.areas))S.areas=m.areas;if(Array.isArray(m.places))S.places=m.places;if(Array.isArray(m.labels))S.labels=m.labels;S.sample=!!m.sample;if(m.lastReview)S.ui.lastReview=m.lastReview;TAGS=S.places}
+const metaJ=()=>JSON.stringify({areas:S.areas,places:S.places,labels:S.labels||[],views:S.views||[],sample:!!S.sample,lastReview:S.ui.lastReview||null,logKeep:S.ui.logKeep??null});
+function setMeta(j){const m=JSON.parse(j);if(m.logKeep!=null)S.ui.logKeep=m.logKeep;if(Array.isArray(m.areas))S.areas=m.areas;if(Array.isArray(m.places))S.places=m.places;if(Array.isArray(m.labels))S.labels=m.labels;if(Array.isArray(m.views))S.views=m.views;S.sample=!!m.sample;if(m.lastReview)S.ui.lastReview=m.lastReview;TAGS=S.places}
 const fixTask=t=>{if(!Array.isArray(t.tags))t.tags=[];if(!Array.isArray(t.labels))t.labels=[];return t};
 const tcol=()=>FB.FS.collection(FB.db,'users',SYNC.user.uid,'fusenTasks');
 const mref=()=>FB.FS.doc(FB.db,'users',SYNC.user.uid,'fusen','meta');
@@ -4119,7 +4453,7 @@ function toast(msg,act){
 const PH_MAIN=['today','next','inbox','calendar'];
 const phSub=()=>{const k=curKey();return S.ui.section!=='more'&&k!=='sec:today'&&!tabSlots().includes(k)};
 function phTitle(){const sec=S.ui.section,PJ=projMode()?taskById(S.ui.proj):null;
-  return sec==='more'?'リスト':sec==='log'?'完了ログ':sec==='projects'?'プロジェクト':sec==='review'?'週次レビュー':PJ?PJ.title:F.area?areaLabel(area(F.area)):SECT[sec].en}
+  return sec==='more'?'リスト':sec==='log'?'完了ログ':sec==='projects'?'プロジェクト':sec==='review'?'週次レビュー':sec==='sv'?(curView()?.name||''):PJ?PJ.title:F.area?areaLabel(area(F.area)):SECT[sec].en}
 function phFilterChips(){const o=[];
   if(F.due)o.push(['due','',ic('flag')+DUEF.find(x=>x.id===F.due).l.replace('（遅れを含む）','')]);
   if(F.time)o.push(['time','',ic('clock')+TIMEF.find(x=>x.id===F.time).l]);
@@ -4136,6 +4470,7 @@ function phHead(){
     const ks=pKids(PJ),m=ks.reduce((s,t)=>s+(t.minutes||0),0);
     meta=`<div class="ph-meta"><span>${ks.length}件${m?' · '+fmtMin(m):''}</span>${PJ.due?`<b class="${dayDiff(PJ.due)<0?'late':''}">${dueLabel(PJ.due).l} 締切</b>`:''}</div>`;
     extra=`<div class="ph-ig"><button class="ph-ir" id="phSeq"><span class="l" style="white-space:normal">順番に進める<small>左上から1枚ずつ Next Action に出す</small></span><span class="ph-sw ${PJ.seq?'on':''}"><i></i></span></button></div>`}
+  else if(sec==='sv'&&curView())crumb=`<div class="ph-crumb vcrumb">${ic('filter')}<span>${esc(viewSum(curView()))}</span></div>`;
   else if(F.area){const a=area(F.area);if(a&&rootOf(a)!==a)crumb=`<div class="ph-crumb"><i class="dot c-${areaColor(rootOf(a))}"></i>${esc(rootOf(a).name)}</div>`}
   const title=PJ?esc(PJ.title):F.area?`<i class="dot c-${areaColor(area(F.area))}"></i>${esc(area(F.area)?.name||'')}`:esc(phTitle());
   return `<header class="ph-head">${crumb}<div class="ph-lt"><h1>${title}</h1>${noCnt?'':'<span class="cnt"></span>'}</div>${meta}${extra}${noCnt?'':phFilterChips()}</header>`;
@@ -4149,7 +4484,7 @@ function renderBarPhone(){
   const back=phSub()&&sec!=='more';
   const bar=$('#bar');bar.className='bar pbar'+(sec==='review'?' compact always':'');
   bar.innerHTML=`<div class="pb">${back?`<button class="pb-back" id="pbBack">${ic('chev')}${PJ&&S.ui.fromProjects?'プロジェクト':'リスト'}</button>`:''}<b class="pb-t">${esc(phTitle())}</b><span class="spacer"></span>
-   ${F.area&&!PJ?`<button class="pb-ib" id="editArea" aria-label="エリアを編集">${ic('edit')}</button>`:''}${PJ?`<button class="pb-ib" id="pEdit" aria-label="プロジェクトを編集">${ic('edit')}</button>`:''}
+   ${sec==='sv'?`<button class="pb-ib" id="editView" aria-label="条件を編集">${ic('edit')}</button>`:''}${F.area&&!PJ?`<button class="pb-ib" id="editArea" aria-label="エリアを編集">${ic('edit')}</button>`:''}${PJ?`<button class="pb-ib" id="pEdit" aria-label="プロジェクトを編集">${ic('edit')}</button>`:''}
    ${sec==='projects'?`<button class="pb-ib" id="newProj" aria-label="新しいプロジェクト">${ic('plus')}</button>`:''}
    ${sec!=='more'&&sec!=='review'?`<button class="pb-ib" id="searchBtn" aria-label="検索">${ic('search')}</button>`:''}
    ${listy?`<button class="pb-ib ${lsortOf()!==natSort()?'on':''}" id="arrBtn" aria-label="並び順">${ic('sort')}</button><button class="pb-ib ${filterOn()?'on':''}" id="fAll" aria-label="絞り込み">${ic('filter')}</button>`:''}</div>`;
@@ -4159,6 +4494,7 @@ function renderBarPhone(){
   const fa=$('#fAll');if(fa)fa.onclick=e=>{e.stopPropagation();openFilterSheet()};
   const ea=$('#editArea');if(ea)ea.onclick=()=>openAreaEditor(area(F.area));
   const pe=$('#pEdit');if(pe)pe.onclick=()=>openEditor(PJ);
+  const evb=$('#editView');if(evb)evb.onclick=()=>openViewEditor(curView());
   const np=$('#newProj');if(np)np.onclick=()=>openEditor(null,null,null,{kind:'project'});
 }
 /* スクロールで見出しを上のバーへ */
@@ -4208,10 +4544,12 @@ function renderMore(el){
    <div class="ph-ig">${it('data-msec="waiting"','waiting','g-waiting','Waiting',cnt('waiting'))}${it('data-msec="someday"','someday','g-someday','Someday',cnt('someday'))}${it('data-msec="tickler"','tickler','g-tickler','Tickler',cnt('tickler'))}${it('data-msec="projects"','clip','g-projects','プロジェクト',projects().length)}</div>
    <div class="ph-sec row">エリア<span>${fs.length?`<button id="mFold">${anyOpen?'すべてたたむ':'すべて開く'}</button>`:''}<button id="mAddArea">追加</button></span></div>
    <div class="ph-ig">${areas||'<div class="ph-none pad">エリアはまだありません</div>'}</div>
+   <div class="ph-sec row">条件で絞ったリスト<span><button id="mAddView">追加</button></span></div>
+   <div class="ph-ig">${(S.views||[]).map(v=>`<button class="ph-ir ic" data-mview="${v.id}"><span class="ph-ico g-view">${ic(v.icon||'filter')}</span><span class="l">${esc(v.name)}<small>${esc(viewSum(v))}</small></span><span class="v">${vCount(v)||''}</span><span class="cv">${ic('chev')}</span></button>`).join('')||'<div class="ph-none pad">「仕事エリア・職場・30分以内」のように、条件を組み合わせたリストを作れます。下のタブにも置けます。</div>'}</div>
    <div class="ph-sec">ふりかえり</div>
    <div class="ph-ig">${it('data-msec="review"','review','g-red','週次レビュー',rvAgo==null?'未実施':agoLabel(S.ui.lastReview),rvAgo==null||rvAgo>=7?'warn':'')}${it('data-msec="log"','log','g-gray','完了ログ',doneToday?'今日 '+doneToday:'')}${it('id="mTl"','cal','g-blue','今日のタイムライン','')}</div>
-   <div class="ph-sec">下のタブ<small>Today と リスト のあいだの3つ</small></div>
-   <div class="ph-ig">${tabSlots().map((k,i)=>{const s=slotInfo(k);return `<button class="ph-ir ic" data-tabslot="${i}">${s?(s.tico||s.pico):`<span class="ph-ico g-gray">${ic('plus')}</span>`}<span class="l">${s?esc(s.l):'未設定'}</span><span class="v">${i+2}番目</span><span class="cv">${ic('chev')}</span></button>`}).join('')}</div>
+   <div class="ph-sec">下のタブ<small>Today と リスト のあいだの${tabN()-2}つ</small></div>
+   <div class="ph-ig"><div class="ph-ir"><span class="l">ボタンの数</span><span class="ph-seg">${[5,6,7].map(n=>`<button data-tabn="${n}" class="${tabN()===n?'on':''}">${n}</button>`).join('')}</span></div>${tabSlots().map((k,i)=>{const s=slotInfo(k);return `<button class="ph-ir ic" data-tabslot="${i}">${s?(s.tico||s.pico):`<span class="ph-ico g-gray">${ic('plus')}</span>`}<span class="l">${s?esc(tabName(k,s)):'未設定'}${s&&tabNoLbl(k)?'<small>アイコンのみ</small>':''}</span><span class="v">${i+2}番目</span><span class="cv">${ic('chev')}</span></button>`}).join('')}</div>
    <div class="ph-sec">アプリ</div>
    <div class="ph-ig">${it('id="mSet"','palette','g-gray','デザイン','')}${it('id="mCfg"','gear','g-gray','設定','')}${it('id="mGuide"','book','g-gray','手引き','')}</div>
    ${S.sample?'<div class="ph-ig"><button class="ph-ir act del" id="mSample">サンプルを消去</button></div>':''}
@@ -4222,6 +4560,9 @@ function renderMore(el){
   const mf=$('#mFold',el);if(mf)mf.onclick=()=>{S.ui.fold=S.ui.fold||{};foldables().forEach(t=>{S.ui.fold[t.id]=anyOpen});save();renderMain()};
   $('#mAddArea',el).onclick=()=>{const a={id:uid(),name:'新しいエリア',color:COLORS[(S.areas.length*5)%28]};S.areas.push(a);save();renderMain();openAreaEditor(a)};
   $$('[data-tabslot]',el).forEach(b=>b.onclick=()=>openTabPicker(+b.dataset.tabslot));
+  $$('[data-tabn]',el).forEach(b=>b.onclick=()=>{S.ui.tabN=+b.dataset.tabn;save();renderTabs();renderMain()});
+  $$('[data-mview]',el).forEach(b=>b.onclick=()=>openView(b.dataset.mview));
+  $('#mAddView',el).onclick=()=>openViewEditor(null,id=>{if(id)openView(id)});
   $('#mTl',el).onclick=()=>{if(!S.ui.tl)toggleTL()};
   $('#mSet',el).onclick=e=>{e.stopPropagation();openSettings($('#mSet',el))};
   $('#mCfg',el).onclick=e=>{e.stopPropagation();openConfig($('#mCfg',el))};
@@ -4233,6 +4574,7 @@ function renderMain(){
   const c=$('#content');let el=$('#view');
   if(!el){c.innerHTML='<div id="pads" class="pads" hidden></div><div id="view" class="view"></div>';el=$('#view');padSig=''}
   if(S.ui.section==='proj'&&!projMode()){S.ui.section='next'}
+  if(S.ui.section==='sv'&&!curView())S.ui.section=narrow()?'more':'next';
   if(S.ui.section==='more'&&!narrow())S.ui.section='next';
   if(S.ui.section==='more')renderMore(el);else if(S.ui.section==='log')renderLog(el);else if(S.ui.section==='review')renderReview(el);else if(S.ui.section==='projects')renderProjects(el);else if(isList())renderList(el);else renderBoard(el);
   renderPads();bindPhScroll();document.body.dataset.sec=S.ui.section;
@@ -4255,7 +4597,7 @@ async function setBadgeOn(on){
 const badgeHint=()=>{if(!badgeOK())return 'この端末・ブラウザでは使えません。iPhone では Safari の共有メニューから「ホーム画面に追加」したアプリで使えます。';
   if(S.ui.badge&&'Notification' in window&&Notification.permission==='denied')return '通知が許可されていないため表示できません。iPhone の「設定 → 通知 → Fusen」で許可してください。';
   return '今日の予定と、締切が今日・過ぎているタスクの合計数をアプリのアイコンに表示します。この端末だけの設定です。'};
-function render(){closePop();renderSide();renderBar();renderMain();renderTabs();if(S.ui.tl)renderTL();$('#tl').classList.toggle('open',S.ui.tl);updBadge()}
+function render(){closePop();if(S.ui.section==='sv'&&!curView())S.ui.section=narrow()?'more':'next';renderSide();renderBar();renderMain();renderTabs();if(S.ui.tl)renderTL();$('#tl').classList.toggle('open',S.ui.tl);updBadge()}
 
 document.addEventListener('keydown',e=>{
   if((MAC?e.metaKey:e.ctrlKey)&&!e.altKey&&!e.shiftKey&&e.key.toLowerCase()==='k'){e.preventDefault();if($('#quick')){$('#quick .qk-t').focus();return}if($('.scrim')||$('#guide'))return;openQuick();return}
