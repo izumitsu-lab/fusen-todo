@@ -1926,7 +1926,7 @@ function normalize(){
 function rollover(){const t=todayKey();let n=0;S.tasks.forEach(k=>{if(k.sched&&k.sched.date!==t&&k.status!=='done'){k.sched=null;n++}});return n}
 let saveT;const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};function save(){clearTimeout(saveT);saveT=setTimeout(()=>{saveT=0;saveLocal();pushNow()},150)}
 const flushSave=()=>{if(!saveT)return;clearTimeout(saveT);saveT=0;saveLocal();pushNow()};
-addEventListener('pagehide',flushSave);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S&&purgeOld()){save();render()}});document.addEventListener('visibilitychange',()=>{if(document.hidden)flushSave()});
+addEventListener('pagehide',flushSave);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S){if(purgeOld()){save();render()}else updBadge(true)}});if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});document.addEventListener('visibilitychange',()=>{if(document.hidden)flushSave()});
 const F={tags:new Set(),labels:new Set(),area:null,time:null,due:null,energy:null};
 const DUEF=[{id:'d0',l:'今日まで（遅れを含む）',f:n=>n<=0},{id:'d3',l:'3日以内',f:n=>n<=3},{id:'d7',l:'1週間以内',f:n=>n<=7},{id:'d14',l:'2週間以内',f:n=>n<=14},{id:'dany',l:'締切があるもの',f:n=>true}];
 const TIMEF=[{id:'le15',l:'15分以内',f:m=>m<=15},{id:'le30',l:'30分以内',f:m=>m<=30},{id:'le60',l:'60分以内',f:m=>m<=60},{id:'gt60',l:'60分以上',f:m=>m>=60}];
@@ -3452,12 +3452,16 @@ function openConfig(btn){
     el.innerHTML=`<h3>設定<button class="ph-close" data-phx>完了</button></h3>
      ${syncRow()}
      <div class="setrow"><span>完了したタスクを残す期間</span><div class="seg">${KEEP.map(([v,l])=>`<button data-keep="${v}" class="${keepDays()===v?'on':''}">${l}</button>`).join('')}</div><div class="hint">${keepDays()?'これより前に完了したタスクは自動で削除されます。':'完了ログはずっと残ります。'}同期している端末すべてに適用されます。</div></div>
+     <div class="setrow"><span>アイコンのバッジ</span><div class="seg"><button data-badge="1" class="${S.ui.badge?'on':''}">表示する</button><button data-badge="0" class="${S.ui.badge?'':'on'}">表示しない</button></div><div class="hint">${badgeHint()}</div></div>
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow desk-only"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
      <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く<span class="desk-only">（?）</span></button></div>
      ${VHINFO.st?`<div class="setrow"><span>画面下端の位置（ホーム画面アプリ）</span><div class="vhadj"><button class="btn" data-vh="-5">上へ</button><b>${(VHINFO.adj||0)>0?'+':''}${VHINFO.adj||0}${VHINFO.auto?'（自動）':''}</b><button class="btn" data-vh="5">下へ</button><button class="btn" data-vh="0">自動</button></div><div class="hint">タブバーが浮く・めり込むときに調整します。診断：画面 ${VHINFO.sh} ／ 表示領域 ${VHINFO.ih} ／ 補正 ${VHINFO.gap}${VHINFO.adj?(VHINFO.adj>0?'+':'')+VHINFO.adj:''}px</div></div>`:''}`;
     {const a=$('#sgIn',el);if(a)a.onclick=signIn;const b=$('#sgOut',el);if(b)b.onclick=async()=>{await signOutSync();toast('ログアウトしました（この端末のデータはそのまま残ります）')}}
     const kb=$('#kbT',el);if(kb)kb.onclick=()=>{kbOpen=!kbOpen;draw()};$$('[data-phx]',el).forEach(b=>b.onclick=closeConfig);
+    $$('[data-badge]',el).forEach(b=>b.onclick=async()=>{const r=await setBadgeOn(b.dataset.badge==='1');draw();
+      if(r==='on')toast(`バッジを表示します（いま ${badgeCount()}件）`);else if(r==='unsupported')toast('この端末ではバッジを使えません');
+      else if(r==='denied')toast('通知が許可されていません。iPhone の設定 → 通知 → Fusen で許可してください');else if(r==='dismissed')toast('通知の許可が必要です')});
     $$('[data-keep]',el).forEach(b=>b.onclick=()=>{const prev=S.ui.logKeep;S.ui.logKeep=+b.dataset.keep;const r=purgeOld();save();render();draw();
       if(r)toast(`完了から${keepLabel()}を過ぎた ${r.gone.length}件 を削除しました`,{label:'元に戻す',fn:()=>{S.ui.logKeep=prev;S.tasks=[...S.tasks,...r.gone];r.links.forEach(([t,p])=>{t.project=p});save();render();if(CFGP&&CFGP._draw)CFGP._draw()}})});
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
@@ -4210,7 +4214,25 @@ function renderMain(){
   if(S.ui.section==='more')renderMore(el);else if(S.ui.section==='log')renderLog(el);else if(S.ui.section==='review')renderReview(el);else if(S.ui.section==='projects')renderProjects(el);else if(isList())renderList(el);else renderBoard(el);
   renderPads();bindPhScroll();document.body.dataset.sec=S.ui.section;
 }
-function render(){closePop();renderSide();renderBar();renderMain();renderTabs();if(S.ui.tl)renderTL();$('#tl').classList.toggle('open',S.ui.tl)}
+/* ---------- アイコンのバッジ（ホーム画面に追加したアプリ） ----------
+   数 = 今日（と過ぎた未完了）のカレンダー予定 ＋ 締切が今日または過ぎている未完了タスク。
+   設定は端末ごと（S.ui.badge）。iPhone ではホーム画面に追加し、通知を許可したときだけ表示される */
+const badgeOK=()=>'setAppBadge' in navigator;
+const badgeCount=()=>{const tk=todayKey();return S.tasks.filter(t=>!isProj(t)&&t.status!=='done'&&(t.status==='calendar'?calNow(t):!!t.due&&t.due<=tk)).length};
+let lastBadge=-1;
+function updBadge(force){if(!badgeOK())return;const n=S.ui.badge?badgeCount():0;if(n===lastBadge&&!force)return;lastBadge=n;
+  try{(n?navigator.setAppBadge(n):navigator.clearAppBadge()).catch(()=>{})}catch(e){}}
+async function setBadgeOn(on){
+  if(!on){S.ui.badge=false;saveLocal();updBadge(true);return 'off'}
+  if(!badgeOK())return 'unsupported';
+  if('Notification' in window&&Notification.permission!=='granted'){
+    let r='default';try{r=await Notification.requestPermission()}catch(e){}
+    if(r!=='granted')return r==='denied'?'denied':'dismissed'}
+  S.ui.badge=true;saveLocal();updBadge(true);return 'on'}
+const badgeHint=()=>{if(!badgeOK())return 'この端末・ブラウザでは使えません。iPhone では Safari の共有メニューから「ホーム画面に追加」したアプリで使えます。';
+  if(S.ui.badge&&'Notification' in window&&Notification.permission==='denied')return '通知が許可されていないため表示できません。iPhone の「設定 → 通知 → Fusen」で許可してください。';
+  return '今日の予定と、締切が今日・過ぎているタスクの合計数をアプリのアイコンに表示します。この端末だけの設定です。'};
+function render(){closePop();renderSide();renderBar();renderMain();renderTabs();if(S.ui.tl)renderTL();$('#tl').classList.toggle('open',S.ui.tl);updBadge()}
 
 document.addEventListener('keydown',e=>{
   if((MAC?e.metaKey:e.ctrlKey)&&!e.altKey&&!e.shiftKey&&e.key.toLowerCase()==='k'){e.preventDefault();if($('#quick')){$('#quick .qk-t').focus();return}if($('.scrim')||$('#guide'))return;openQuick();return}
