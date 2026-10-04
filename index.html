@@ -1776,6 +1776,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .cvr{display:flex;align-items:center;gap:8px}.cvr label{flex:1;min-width:0;display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer}
 .cvr label span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cvr label.off{opacity:.45}
 .cvr .btn,#cvNew{font-size:12px;height:28px;padding:0 10px;gap:4px}#cvNew{align-self:flex-start}
+.ph-lt h1 svg.vti{width:28px;height:28px;flex:none;stroke-width:1.8;color:var(--ink2)}
 /* ---------- quick add card ---------- */
 .scrim.qk-scrim{display:block;padding:0}
 .qk{position:fixed;left:0;right:0;bottom:0;box-sizing:border-box;background:var(--pop);border-radius:16px 16px 0 0;padding:8px 14px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -12px rgba(0,0,0,.3);animation:qkUp .26s cubic-bezier(.2,.8,.2,1)}
@@ -2242,7 +2243,7 @@ function renderBar(){
   $('#bar').classList.toggle('pj',!!PJ);
   $('#bar').innerHTML=`
    <button class="iconbtn menu-btn" id="menuBtn" aria-label="メニュー">${ic('menu')}</button>
-   <h1><span class="ttl">${title}</span><span class="cnt">${noBoard?'':list.length+'枚'}</span>${sec==='sv'?`<button class="iconbtn edit-area" id="editView" title="条件を編集">${ic('edit')}<span class="lb">条件を編集</span></button><span class="vsum" title="${esc(viewSum(curView()))}">${esc(viewSum(curView()))}</span>`:''}${F.area&&!isLog?`<button class="iconbtn edit-area" id="editArea" title="エリアを編集">${ic('edit')}<span class="lb">編集</span></button>`:''}${PJ?`<button class="iconbtn edit-area" id="pEdit" title="プロジェクトを編集">${ic('edit')}<span class="lb">編集</span></button><button class="fbtn seqbtn ${PJ.seq?'on':''}" id="pSeq" title="オンにすると、先頭の1枚だけが Next Action に出ます">${ic('next')}<span>順番に進める${PJ.seq?'：オン':''}</span></button>`:''}${sec==='projects'?`<button class="btn" id="newProj">${ic('plus')}新しいプロジェクト</button>`:''}</h1>
+   <h1><span class="ttl">${title}</span><span class="cnt">${noBoard?'':list.length+'枚'}</span>${sec==='sv'?`<button class="iconbtn edit-area" id="editView" title="条件を編集">${ic('edit')}<span class="lb">条件を編集</span></button>`:''}${F.area&&!isLog?`<button class="iconbtn edit-area" id="editArea" title="エリアを編集">${ic('edit')}<span class="lb">編集</span></button>`:''}${PJ?`<button class="iconbtn edit-area" id="pEdit" title="プロジェクトを編集">${ic('edit')}<span class="lb">編集</span></button><button class="fbtn seqbtn ${PJ.seq?'on':''}" id="pSeq" title="オンにすると、先頭の1枚だけが Next Action に出ます">${ic('next')}<span>順番に進める${PJ.seq?'：オン':''}</span></button>`:''}${sec==='projects'?`<button class="btn" id="newProj">${ic('plus')}新しいプロジェクト</button>`:''}</h1>
    ${noBoard?'':`${sec==='sv'?'':`<div class="seg" role="group" aria-label="表示">
      <button class="${isList()?'on':''}" data-view="list" title="リスト (L)">${ic('list')}<span class="lb">リスト</span></button>
      <button class="${!isList()?'on':''}" data-view="board" title="ボード (B)">${ic('board')}<span class="lb">ボード</span></button></div>`}
@@ -2945,11 +2946,16 @@ function allSlots(){const t=Array.isArray(S.ui.tabs)?S.ui.tabs.slice(0,5):[];
   for(let i=0;i<5;i++)if(t[i]===undefined)t[i]=DEF_TABS.find(d=>!t.includes(d))||null;
   return t}
 const tabSlots=()=>allSlots().slice(0,tabN()-2);
-const tabIcon=(k,ty)=>((S.ui.tabIcons||{})[k])||(ty==='sec'?(TABSEC[k.slice(4)]||[])[1]:ty==='view'?(viewOf(k.slice(5))?.icon||'filter'):ty==='proj'?'clip':'folder');
+const tabIcon=(k,ty)=>((S.ui.tabIcons||{})[k])||(ty==='sec'?(TABSEC[k.slice(4)]||[])[1]:ty==='view'?(viewOf(k.slice(5))?.icon||'filter'):ty==='menu'?(SMENU[k.slice(5)]||[])[1]:ty==='proj'?'clip':'folder');
+const SMENU={lists:['GTD','u-clipboard-list','Inbox・Next・Someday などから選ぶ'],areas:['エリア','folder','エリア・サブエリアから選ぶ'],views:['条件','filter','条件で絞ったリストから選ぶ'],projects:['プロジェクト','clip','プロジェクトから選ぶ']};
+const MLISTS=['inbox','next','calendar','waiting','someday','tickler','projects'];
+const menuCovers=(m,ck)=>m==='lists'?MLISTS.some(x=>ck==='sec:'+x):m==='areas'?ck.startsWith('area:'):m==='views'?ck.startsWith('view:'):m==='projects'?ck.startsWith('proj:')||ck==='sec:projects':false;
+const coveredByMenu=ck=>tabSlots().some(x=>x&&x.startsWith('menu:')&&menuCovers(x.slice(5),ck));
 const tabName=(k,s)=>((S.ui.tabLbl||{})[k])||s.l;
 const tabNoLbl=k=>!!(S.ui.tabNoLbl||{})[k];
 function slotInfo(k){if(!k)return null;const c=k.indexOf(':'),ty=k.slice(0,c),v=k.slice(c+1);
   if(ty==='sec'&&TABSEC[v])return {ty,v,l:TABSEC[v][0],ico:ic(tabIcon(k,'sec')),pico:`<span class="ph-ico g-${v}">${ic(TABSEC[v][1])}</span>`,tico:`<span class="ph-ico g-${v}">${ic(tabIcon(k,'sec'))}</span>`,gc:['log','review'].includes(v)?'more':v};
+  if(ty==='menu'&&SMENU[v])return {ty,v,l:SMENU[v][0],ico:ic(tabIcon(k,'menu')),pico:`<span class="ph-ico g-gray">${ic(SMENU[v][1])}</span>`,tico:`<span class="ph-ico g-gray">${ic(tabIcon(k,'menu'))}</span>`,gc:'more',menu:1};
   if(ty==='view'){const w=viewOf(v);if(w)return {ty,v,l:w.name,ico:ic(tabIcon(k,'view')),pico:`<span class="ph-ico g-view">${ic(w.icon||'filter')}</span>`,tico:`<span class="ph-ico g-view">${ic(tabIcon(k,'view'))}</span>`,gc:'more'}}
   if(ty==='area'){const a=area(v);if(a)return {ty,v,l:a.name,ico:ic(tabIcon(k,'area')),pico:`<span class="ph-dt c-${areaColor(a)}"><i class="dot"></i></span>`,tico:`<span class="ph-ico g-gray">${ic(tabIcon(k,'area'))}</span>`,gc:'more'}}
   if(ty==='proj'){const p=taskById(v);if(isProj(p)&&p.status!=='done')return {ty,v,l:p.title,ico:ic(tabIcon(k,'proj')),pico:`<span class="ph-ico g-projects">${ic('clip')}</span>`,tico:`<span class="ph-ico g-gray">${ic(tabIcon(k,'proj'))}</span>`,gc:'more'}}
@@ -2957,16 +2963,17 @@ function slotInfo(k){if(!k)return null;const c=k.indexOf(':'),ty=k.slice(0,c),v=
 const curKey=()=>projMode()?'proj:'+S.ui.proj:S.ui.section==='sv'?'view:'+S.ui.sv:F.area?'area:'+F.area:'sec:'+S.ui.section;
 function goSlot(k){LSEL=null;if(k==='sec:today'){S.ui.section='today';F.area=null;save();render();return}
   const s=slotInfo(k);if(!s)return;
+  if(s.ty==='menu'){openSlotMenu(s.v);return}
   if(s.ty==='view'){openView(s.v);return}
   if(s.ty==='proj'){openProject(s.v);S.ui.fromProjects=false;return}
   F.area=s.ty==='area'?s.v:null;S.ui.section=s.ty==='area'?'next':s.v;if(s.v==='review'&&(S.ui.rvStep||0)>=RV.length-1)S.ui.rvStep=0;save();render()}
 function renderTabs(){
   const el=$('#tabs');if(!el)return;const ck=curKey();el.dataset.n=tabN();
   const btn=(cls,on,ico,l,bd,attr,nol)=>`<button class="tab ${cls} ${on?'on':''} ${nol?'nol':''}" ${attr} aria-label="${esc(l)}"><span class="sq">${ico}</span><span class="tn">${esc(l)}</span>${bd?`<i class="bd">${bd}</i>`:''}</button>`;
-  let any=ck==='sec:today';
+  let any=ck==='sec:today';const direct=any||tabSlots().includes(ck);
   let h=btn('g-today',ck==='sec:today',ic('today'),'Today','','data-slot="sec:today"');
   tabSlots().forEach((k,i)=>{const s=slotInfo(k);if(!s){h+=btn('g-more',false,ic('plus'),'未設定','',`data-empty="${i}"`);return}
-    const on=ck===k;if(on)any=true;h+=btn('g-'+s.gc,on,s.ico,tabName(k,s),'',`data-slot="${k}"`,tabNoLbl(k))});
+    const on=s.menu?!direct&&menuCovers(s.v,ck):ck===k;if(on)any=true;h+=btn('g-'+s.gc,on,s.ico,tabName(k,s),'',`data-slot="${k}"`,tabNoLbl(k))});
   h+=btn('g-more',!any,ic('list'),'リスト','','data-tab="more"');
   el.innerHTML=h;
   $$('[data-slot]',el).forEach(b=>b.onclick=()=>{const k=b.dataset.slot;if(curKey()===k){const sc=$('#view .list-scroll');if(sc)sc.scrollTop=0;return}goSlot(k)});
@@ -3008,6 +3015,7 @@ function openTabPicker(i,startIcon){
        <button class="ph-ir ic" id="tpIco">${cs.tico||cs.pico}<span class="l">アイコン</span><span class="cv">${ic('chev')}</span></button>
        ${cs.ty==='view'?`<button class="ph-ir ic" id="tpEditV"><span class="ph-ico g-view">${ic('filter')}</span><span class="l">条件を編集<small>${esc(viewSum(viewOf(cs.v)))}</small></span><span class="cv">${ic('chev')}</span></button>`:''}</div>`:''}
       <div class="ph-sec">条件で絞ったリスト</div><div class="ph-ig">${vws}<button class="ph-ir ic" id="tpNewV"><span class="ph-ico g-view">${ic('plus')}</span><span class="l">新しく作る<small>エリア・場所・所要時間などを組み合わせる</small></span></button></div>
+      <div class="ph-sec">押すとメニューが開くボタン</div><div class="ph-ig">${Object.keys(SMENU).map(m=>{const k='menu:'+m,j=T.indexOf(k);return `<button class="ph-ir ic" data-k="${k}"><span class="ph-ico g-gray">${ic(SMENU[m][1])}</span><span class="l">${SMENU[m][0]}<small>${SMENU[m][2]}</small></span>${k===cur?`<span class="tp-ck">${ic('log')}</span>`:j>=0&&j<vis?`<span class="v">${j+2}番目</span>`:''}</button>`}).join('')}</div>
       <div class="ph-sec">リスト</div><div class="ph-ig">${secs}</div>
       ${ars?`<div class="ph-sec">エリア</div><div class="ph-ig">${ars}</div>`:''}
       ${pjs?`<div class="ph-sec">プロジェクト</div><div class="ph-ig">${pjs}</div>`:''}
@@ -3026,6 +3034,19 @@ function openTabPicker(i,startIcon){
   scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)done()});
   draw();document.body.appendChild(scrim);
 }
+/* 下タブの「メニュー」ボタン：押すと一覧が開いて選べる */
+function openSlotMenu(m){const ck=curKey(),M=SMENU[m];if(!M)return;
+  const ck1=k=>k===ck?`<span class="tp-ck">${ic('log')}</span>`:'';
+  const secN=x=>x==='calendar'?S.tasks.filter(t=>t.status==='calendar'&&!(t.info&&t.cdate<todayKey())).length:x==='tickler'?S.tasks.filter(tickled).length:x==='projects'?projects().length:S.tasks.filter(t=>t.status===x&&!isProj(t)&&!tickled(t)&&!queued(t)).length;
+  let html='';
+  if(m==='lists')html=`<div class="ph-ig">${MLISTS.map(x=>{const L=x==='projects'?['プロジェクト','clip']:[SECT[x].en,x];return `<button class="ph-ir ic" data-go="sec:${x}"><span class="ph-ico g-${x}">${ic(L[1])}</span><span class="l">${L[0]}</span><span class="v">${secN(x)||''}</span>${ck1('sec:'+x)}</button>`}).join('')}</div>`;
+  else if(m==='areas')html=`<div class="ph-ig">${orderedAreas().map(a=>{const sub=rootOf(a)!==a,n=S.tasks.filter(t=>inArea(t,a.id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length;return `<button class="ph-ir ic ${sub?'sub':''}" data-go="area:${a.id}"><span class="ph-dt c-${areaColor(a)}"><i class="dot"></i></span><span class="l">${esc(a.name)}</span><span class="v">${n||''}</span>${ck1('area:'+a.id)}</button>`}).join('')||'<div class="ph-none ppad">エリアはまだありません</div>'}</div>`;
+  else if(m==='views')html=`<div class="ph-ig">${(S.views||[]).map(v=>`<button class="ph-ir ic" data-go="view:${v.id}"><span class="ph-ico g-view">${ic(v.icon||'filter')}</span><span class="l">${esc(v.name)}</span><span class="v">${vCount(v)||''}</span>${ck1('view:'+v.id)}</button>`).join('')||'<div class="ph-none ppad">条件で絞ったリストはまだありません</div>'}</div><div class="ph-ig"><button class="ph-ir act" data-new>新しく作る</button></div>`;
+  else html=`<div class="ph-ig">${projects().map(p=>`<button class="ph-ir ic" data-go="proj:${p.id}"><span class="ph-ico g-projects">${ic('clip')}</span><span class="l">${esc(p.title)}</span><span class="v">${pKids(p).length||''}</span>${ck1('proj:'+p.id)}</button>`).join('')||'<div class="ph-none ppad">プロジェクトはまだありません</div>'}</div>`;
+  phSheet(M[0],'',html,(el,close)=>{
+    $$('[data-go]',el).forEach(b=>b.onclick=()=>{close();const k=b.dataset.go;if(k===ck)return;
+      if(k.startsWith('area:')){LSEL=null;F.area=k.slice(5);S.ui.section='next';save();render()}else goSlot(k)});
+    const nb=$('[data-new]',el);if(nb)nb.onclick=()=>{close();openViewEditor(null,id=>{if(id)openView(id)})}})}
 /* ---------- 条件で絞ったリスト ----------
    違う条件どうしは「すべて満たす」。同じ条件の中で複数選んだら「どれか」（場所とタグは「すべて」も選べる） */
 const VST=[['inbox','Inbox'],['next','Next Action'],['calendar','Calendar'],['waiting','Waiting'],['someday','Someday'],['tickler','Tickler']];
@@ -4542,7 +4563,7 @@ function toast(msg,act){
 /* ---------- render ---------- */
 /* ======================= iPhone 専用：上のバー・大きな見出し・その他・絞り込み ======================= */
 const PH_MAIN=['today','next','inbox','calendar'];
-const phSub=()=>{const k=curKey();return S.ui.section!=='more'&&k!=='sec:today'&&!tabSlots().includes(k)};
+const phSub=()=>{const k=curKey();return S.ui.section!=='more'&&k!=='sec:today'&&!tabSlots().includes(k)&&!coveredByMenu(k)};
 function phTitle(){const sec=S.ui.section,PJ=projMode()?taskById(S.ui.proj):null;
   return sec==='more'?'リスト':sec==='log'?'完了ログ':sec==='projects'?'プロジェクト':sec==='review'?'週次レビュー':sec==='sv'?(curView()?.name||''):PJ?PJ.title:F.area?areaLabel(area(F.area)):SECT[sec].en}
 function phFilterChips(){const o=[];
@@ -4561,9 +4582,8 @@ function phHead(){
     const ks=pKids(PJ),m=ks.reduce((s,t)=>s+(t.minutes||0),0);
     meta=`<div class="ph-meta"><span>${ks.length}件${m?' · '+fmtMin(m):''}</span>${PJ.due?`<b class="${dayDiff(PJ.due)<0?'late':''}">${dueLabel(PJ.due).l} 締切</b>`:''}</div>`;
     extra=`<div class="ph-ig"><button class="ph-ir" id="phSeq"><span class="l" style="white-space:normal">順番に進める<small>左上から1枚ずつ Next Action に出す</small></span><span class="ph-sw ${PJ.seq?'on':''}"><i></i></span></button></div>`}
-  else if(sec==='sv'&&curView())crumb=`<div class="ph-crumb vcrumb">${ic('filter')}<span>${esc(viewSum(curView()))}</span></div>`;
   else if(F.area){const a=area(F.area);if(a&&rootOf(a)!==a)crumb=`<div class="ph-crumb"><i class="dot c-${areaColor(rootOf(a))}"></i>${esc(rootOf(a).name)}</div>`}
-  const title=PJ?esc(PJ.title):F.area?`<i class="dot c-${areaColor(area(F.area))}"></i>${esc(area(F.area)?.name||'')}`:esc(phTitle());
+  const title=PJ?esc(PJ.title):sec==='sv'&&curView()?`${ic(curView().icon||'filter','i vti')}${esc(curView().name)}`:F.area?`<i class="dot c-${areaColor(area(F.area))}"></i>${esc(area(F.area)?.name||'')}`:esc(phTitle());
   return `<header class="ph-head">${crumb}<div class="ph-lt"><h1>${title}</h1>${noCnt?'':'<span class="cnt"></span>'}</div>${meta}${extra}${noCnt?'':phFilterChips()}</header>`;
 }
 function bindPhHead(root){
@@ -4636,7 +4656,7 @@ function renderMore(el){
    <div class="ph-sec row">エリア<span>${fs.length?`<button id="mFold">${anyOpen?'すべてたたむ':'すべて開く'}</button>`:''}<button id="mAddArea">追加</button></span></div>
    <div class="ph-ig">${areas||'<div class="ph-none ppad">エリアはまだありません</div>'}</div>
    <div class="ph-sec row">条件で絞ったリスト<span><button id="mAddView">追加</button></span></div>
-   <div class="ph-ig">${(S.views||[]).map(v=>`<button class="ph-ir ic" data-mview="${v.id}"><span class="ph-ico g-view">${ic(v.icon||'filter')}</span><span class="l">${esc(v.name)}<small>${esc(viewSum(v))}</small></span><span class="v">${vCount(v)||''}</span><span class="cv">${ic('chev')}</span></button>`).join('')||'<div class="ph-none ppad">「仕事エリア・職場・30分以内」のように、条件を組み合わせたリストを作れます。下のタブにも置けます。</div>'}</div>
+   <div class="ph-ig">${(S.views||[]).map(v=>`<button class="ph-ir ic" data-mview="${v.id}"><span class="ph-ico g-view">${ic(v.icon||'filter')}</span><span class="l">${esc(v.name)}</span><span class="v">${vCount(v)||''}</span><span class="cv">${ic('chev')}</span></button>`).join('')||'<div class="ph-none ppad">「仕事エリア・職場・30分以内」のように、条件を組み合わせたリストを作れます。下のタブにも置けます。</div>'}</div>
    <div class="ph-sec">ふりかえり</div>
    <div class="ph-ig">${it('data-msec="review"','review','g-red','週次レビュー',rvAgo==null?'未実施':agoLabel(S.ui.lastReview),rvAgo==null||rvAgo>=7?'warn':'')}${it('data-msec="log"','log','g-gray','完了ログ',doneToday?'今日 '+doneToday:'')}${it('id="mTl"','cal','g-blue','今日のタイムライン','')}</div>
    <div class="ph-sec">下のタブ<small>Today と リスト のあいだの${tabN()-2}つ</small></div>
