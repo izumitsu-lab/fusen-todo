@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Fusen</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#F8F7F4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#222120" media="(prefers-color-scheme: dark)">
-<style>html{color-scheme:light}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<style>html{color-scheme:light;touch-action:manipulation}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Klee+One:wght@400;600&family=M+PLUS+1+Code:wght@400;500;700&family=Shippori+Mincho:wght@600;700&display=swap">
@@ -297,7 +297,8 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;-webkit-user-selec
 .stk.soft{filter:var(--stk-filter) saturate(.62) brightness(1.03)}
 .bar h1 .dot{width:12px;height:12px;align-self:center}
 .nav.area.reorder{background:var(--pop);box-shadow:var(--shadow-pop);z-index:5;transition:none}
-#side [data-area]{transition:transform .15s,background .15s}
+#side [data-area],#side [data-proj]{transition:transform .15s,background .15s}
+.nav.projn.reorder{background:var(--pop);box-shadow:var(--shadow-pop);z-index:5;transition:none}
 #side [data-area].reorder{transition:none}
 .edit-area{height:24px;font-size:11.5px;font-weight:500;margin-left:2px;color:var(--ink3);align-self:center}
 .swatches{display:grid;grid-template-columns:repeat(10,1fr);gap:7px}
@@ -1988,7 +1989,7 @@ function projState(p){
   if(tk||cal||wt){const parts=[];if(wt)parts.push(wt.waitingFor?`${wt.waitingFor}の返事待ち`:'Waitingで待機中');if(tk)parts.push(`${md(tk.start)}まで待機中`);if(cal)parts.push(`${md(cal.cdate)}の予定待ち`);return {k:'wait',l:parts.join(' · ')}}
   return {k:'stuck',l:ks.length?'次の一手がありません（Somedayのみ）':'次の一手がありません'};
 }
-const projects=()=>S.tasks.filter(t=>isProj(t)&&t.status!=='done');
+const projects=()=>S.tasks.filter(t=>isProj(t)&&t.status!=='done').sort((a,b)=>(a.po??1e9)-(b.po??1e9));
 const tMin=t=>isProj(t)?pKids(t).reduce((a,x)=>a+(x.minutes||0),0):t.minutes;
 const calNow=t=>t.status==='calendar'&&!!t.cdate&&(t.cdate===todayKey()||(t.cdate<todayKey()&&!t.info));
 const tickled=t=>!!(t&&!isProj(t)&&t.start&&t.start>todayKey()&&t.status!=='done');
@@ -2027,7 +2028,7 @@ function renderSide(){
    <div id="areaAddSlot"></div>
    <div class="sgrp sareas">${orderedAreas().map(a=>{const sub=rootOf(a)!==a;const n=S.tasks.filter(t=>inArea(t,a.id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length;const ps=projects().filter(p=>p.area===a.id);const R=rootOf(a);const fold=!!(S.ui.fold||{})[R.id];if(sub&&fold)return '';const hid=sub?0:kids(a.id).length+projects().filter(p=>p.area===a.id||kids(a.id).some(k=>k.id===p.area)).length;const open=!fold;
      return `<button class="nav area ${sub?'sub':''} c-${areaColor(a)} ${F.area===a.id?'on':''} ${sub&&F.area===a.parent?'in':''}" data-area="${a.id}" data-parent="${sub?a.parent:''}" data-drop="area:${a.id}"><span class="dot"></span><span class="lbl">${esc(a.name)}</span>${!sub&&hid?`<span class="caret ${open?'open':''}" data-toggle="${a.id}" role="button" aria-label="${open?'折りたたむ':'広げる'}">${ic('chev')}${open?'':`<em>${hid}</em>`}</span>`:''}<span class="n">${n||''}</span></button>
-     ${open?ps.map(p=>{const na=nextAction(p);return `<button class="nav projn ${sub?'deep':''} ${projMode()&&S.ui.proj===p.id?'on':''}" data-proj="${p.id}" data-drop="proj:${p.id}">${ic('clip')}<span class="lbl">${esc(p.title)}</span>${(st=>st.k==='ok'?'':`<i class="warn-dot ${st.k}" title="${esc(st.l)}"></i>`)(projState(p))}<span class="n">${pKids(p).length||''}</span></button>`}).join(''):''}`}).join('')}</div>
+     ${open?ps.map(p=>{const na=nextAction(p);return `<button class="nav projn ${sub?'deep':''} ${projMode()&&S.ui.proj===p.id?'on':''}" data-proj="${p.id}" data-pa="${p.area||''}" data-drop="proj:${p.id}">${ic('clip')}<span class="lbl">${esc(p.title)}</span>${(st=>st.k==='ok'?'':`<i class="warn-dot ${st.k}" title="${esc(st.l)}"></i>`)(projState(p))}<span class="n">${pKids(p).length||''}</span></button>`}).join(''):''}`}).join('')}</div>
    <div class="side-foot">
      <button class="loglink ${sec==='review'?'on':''}" data-sec="review">${ic('review')}週次レビュー<span class="${rvAgo==null||rvAgo>=7?'due':''}">${rvAgo==null?'未実施':agoLabel(S.ui.lastReview)}</span></button>
      ${SYNC.on?`<button class="loglink sy-${syncState()}" id="syncLink">${ic('sync')}<em class="sy">${syncShort()}</em></button>`:''}
@@ -2037,7 +2038,7 @@ function renderSide(){
    </div>`;
   $$('#side [data-sec]').forEach(b=>b.onclick=()=>{S.ui.section=b.dataset.sec;F.area=null;if(b.dataset.sec==='review'&&(S.ui.rvStep||0)>=RV.length-1)S.ui.rvStep=0;save();render();closeSide()});
   $$('#side [data-area]').forEach(b=>{b.oncontextmenu=e=>{e.preventDefault();openAreaEditor(area(b.dataset.area))};b.addEventListener('pointerdown',e=>areaReorderDown(e,b))});
-  $$('#side [data-proj]').forEach(b=>b.onclick=()=>{openProject(b.dataset.proj);closeSide()});
+  $$('#side [data-proj]').forEach(b=>{b.onclick=()=>{if(b._dragged){b._dragged=false;return}openProject(b.dataset.proj);closeSide()};b.addEventListener('pointerdown',e=>projReorderDown(e,b))});
   $$('#side [data-area]').forEach(b=>b.onclick=e=>{
     if(b._dragged){b._dragged=false;return}
     const tg=e.target.closest('[data-toggle]');if(tg){e.stopPropagation();S.ui.fold=S.ui.fold||{};S.ui.fold[tg.dataset.toggle]=!S.ui.fold[tg.dataset.toggle];save();renderSide();return}
@@ -2057,6 +2058,28 @@ function renderSide(){
     save();render();
     toast(kept.length?`サンプル ${gone.length}件を消去しました（あなたのタスク ${kept.length}件はそのままです）`:`サンプル ${gone.length}件を消去しました`,{label:'元に戻す',fn:()=>{S.tasks=[...S.tasks,...gone];unl.forEach(([t,p])=>{t.project=p});S.sample=true;Object.assign(S.ui,was);save();render()}})};
 }
+function projReorderDown(e,b){
+  if(e.button!==0)return;const sy=e.clientY,pa=b.dataset.pa;
+  const sibs=$$('#side [data-proj]').filter(x=>x.dataset.pa===pa);if(sibs.length<2)return;
+  const idx=sibs.indexOf(b);let on=false,to=idx,line=null;
+  const rects=sibs.map(x=>x.getBoundingClientRect());const sideR=$('#side').getBoundingClientRect();
+  const mv=ev=>{const dy=ev.clientY-sy;
+    if(!on&&Math.abs(dy)>6){on=true;b.classList.add('reorder');document.body.classList.add('is-dragging');line=document.createElement('div');line.className='area-ins';$('#side').appendChild(line)}
+    if(!on)return;b.style.transform=`translateY(${dy}px)`;
+    to=0;rects.forEach((r,i)=>{if(i!==idx&&ev.clientY>(r.top+r.bottom)/2)to++});
+    const others=rects.filter((_,i)=>i!==idx);const y=to<others.length?others[to].top-1:others[others.length-1].bottom+1;
+    line.style.top=(y-sideR.top+$('#side').scrollTop)+'px';line.style.left='26px'};
+  const up=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);document.body.classList.remove('is-dragging');
+    if(!on)return;b._dragged=true;b.style.transform='';b.classList.remove('reorder');line&&line.remove();
+    if(to===idx)return;
+    const ids=sibs.map(x=>x.dataset.proj);const [m]=ids.splice(idx,1);ids.splice(to,0,m);
+    ids.forEach((id,i)=>{const P=taskById(id);if(P)P.po=i});save();render()};
+  window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
+}
+/* プロジェクトのエリアを変えたら、中のタスクも新しいエリアへ移す */
+function moveProjKids(pid,oldA,newA){const nr=rootOf(area(newA));
+  S.tasks.filter(x=>x.project===pid&&!isProj(x)).forEach(x=>{const r=rootOf(area(x.area));
+    if(x.area===oldA||!r||(nr&&r!==nr)){x.area=newA||null;addAreaPlaces(x)}})}
 function areaReorderDown(e,b){
   if(e.button!==0||e.target.closest('[data-toggle]'))return;const sy=e.clientY;const par=b.dataset.parent;
   const sibs=$$('#side [data-area]').filter(x=>x.dataset.parent===par);const idx=sibs.indexOf(b);let on=false,to=idx,line=null;
@@ -2997,8 +3020,8 @@ function openEditor(t,pos,msg,opts={}){
   const sheet=$('.sheet',scrim),grpEl=$('#edGroups',scrim),ti=$('#edTitle',scrim),nt=$('#edNote',scrim);
   const grow=x=>{x.style.height='auto';x.style.height=x.scrollHeight+'px'};
   /* 既存のタスクは、変えたそばから保存する（保存ボタンは不要） */
-  const orig=t?JSON.parse(JSON.stringify(t)):null;let live=false,lt=0;
-  const applyLive=()=>{if(isNew||!live)return;keep();const ti2=d.title.trim();Object.assign(t,d,{title:ti2||t.title});save();render()};
+  const orig=t?JSON.parse(JSON.stringify(t)):null;const kidsOrig=t&&isProj(t)?S.tasks.filter(x=>x.project===t.id).map(x=>[x,x.area,[...(x.tags||[])]]):[];let live=false,lt=0;
+  const applyLive=()=>{if(isNew||!live)return;keep();if(proj&&t.area!==d.area)moveProjKids(t.id,t.area,d.area);const ti2=d.title.trim();Object.assign(t,d,{title:ti2||t.title});save();render()};
   const liveSoon=()=>{if(isNew||!live)return;clearTimeout(lt);lt=setTimeout(applyLive,400)};
   ti.oninput=()=>{d.title=ti.value.replace(/\n/g,' ');grow(ti);liveSoon()};nt.oninput=()=>{d.note=nt.value;grow(nt);liveSoon()};
   ti.onkeydown=e=>{if(e.key==='Enter'&&!isIME(e)){e.preventDefault();if(e.metaKey||e.ctrlKey)return;isNew?commit():close()}};
@@ -3128,13 +3151,13 @@ function openEditor(t,pos,msg,opts={}){
     if(d.status==='calendar'&&!d.cdate)d.cdate=todayKey();
     if(d.status!=='inbox'&&d.minutes==null&&!isProj(d))d.minutes=30;
     if(isNew){if(!pos){const p=findSpot(d.status);d.x=p.x;d.y=p.y}S.tasks.push(d);justAdded=d.id;if(isProj(d)){save();close();openProject(d.id,true);return}}
-    else Object.assign(t,d);
+    else{if(isProj(d)&&t.area!==d.area)moveProjKids(t.id,t.area,d.area);Object.assign(t,d)}
     save();close();render();
   };
   const doDel=b=>{if(!b.classList.contains('armed')){b.classList.add('armed');b.textContent='もう一度押すと削除';return}const i=S.tasks.findIndex(x=>x.id===d.id);const old=S.tasks[i];if(i>=0)S.tasks.splice(i,1);save();close();render();if(old)toast('削除しました',{label:'元に戻す',fn:()=>{S.tasks.splice(Math.min(i,S.tasks.length),0,old);save();render()}})};
   const close=()=>{closePick(true);document.removeEventListener('pointerdown',popOut,true);document.removeEventListener('keydown',onKey,true);window.removeEventListener('resize',onRs);
     if(!isNew&&live&&taskById(t.id)){clearTimeout(lt);applyLive();live=false;
-      if(JSON.stringify(t)!==JSON.stringify(orig))toast('変更を保存しました',{label:'元に戻す',fn:()=>{Object.keys(t).forEach(k=>{if(!(k in orig))delete t[k]});Object.assign(t,JSON.parse(JSON.stringify(orig)));save();render()}})}
+      if(JSON.stringify(t)!==JSON.stringify(orig))toast('変更を保存しました',{label:'元に戻す',fn:()=>{Object.keys(t).forEach(k=>{if(!(k in orig))delete t[k]});Object.assign(t,JSON.parse(JSON.stringify(orig)));kidsOrig.forEach(([x,a,g])=>{x.area=a;x.tags=g});save();render()}})}
     live=false;scrim.remove()};
   const onKey=e=>{const tops_=$$('.scrim');if(tops_[tops_.length-1]!==scrim||$('#guide'))return;
     if(e.key==='Escape'){e.preventDefault();e.stopPropagation();if(pick)closePick();else close();return}
