@@ -570,9 +570,8 @@ body.sty-pola .pc-r1,body.sty-pola .pc-r2{display:flex;align-items:center;gap:5p
 body.sty-pola .pcap .stk-where{min-width:0;flex:0 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px}
 body.sty-pola .pcap .stk-where svg.i{width:10px;height:10px;flex:none}
 body.sty-pola .pcap .stk-min{margin-left:auto;font-family:var(--f-num);font-weight:500;flex:none;opacity:1}
-body.sty-pola .pc-chip{display:inline-flex;align-items:center;gap:3px;height:17px;border-radius:9px;padding:0 6px 0 1px;font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto;background:color-mix(in srgb,var(--c) 15%,#fff);color:color-mix(in srgb,var(--c) 72%,#000)}
-body.sty-pola .pc-chip i{width:15px;height:15px;border-radius:50%;background:var(--c);color:#fff;font-style:normal;font-size:8.5px;display:flex;align-items:center;justify-content:center;flex:none}
-body.sty-pola .pc-chip i svg.i{width:9px;height:9px}
+body.sty-pola .pc-chip{display:inline-flex;align-items:center;gap:2px;height:17px;border-radius:99px;padding:0 6px 0 4px;font-size:9.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto;background:#F1F0EC;color:#6A655C}
+body.sty-pola .pc-chip svg.i{width:10px;height:10px;flex:none;opacity:.8}
 body.sty-pola .pc-more{font-size:9.5px;color:#9A958B;flex:none}
 body.sty-pola .pc-ic{display:flex;flex:none}body.sty-pola .pc-ic svg.i{width:11px;height:11px}
 body.sty-pola .pc-lab{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:64px;background:#F1F0EC;border-radius:99px;padding:1px 6px;font-size:9.5px;flex:0 8 auto;min-width:24px}
@@ -2438,8 +2437,8 @@ function stickyInner(t){
   if(S.ui.style==='pola'){
     /* ポラロイド：高さ一定。上の色の部分＝タイトル（上そろえ）＋メモ（入るだけ）、下の白い帯＝1行 */
     const who=(t.agenda||[]).map(g=>(S.people||[]).find(x=>x.id===g)).filter(Boolean),labs=(t.labels||[]).map(labName).filter(Boolean),wt=t.status==='waiting';
-    const chip=(g,txt)=>`<span class="pc-chip" style="--c:${agColor(g)}" title="${esc(g.name)}"><i>${wt?ic('waiting'):esc(g.name.slice(0,1))}</i>${esc(txt)}</span>`;
-    const chips=wt&&who.length?chip(who[0],who.map(g=>g.name).join('・')+'を待つ'):who.slice(0,2).map(g=>chip(g,g.name)).join('')+(who.length>2?`<span class="pc-more">+${who.length-2}人</span>`:'');
+    const chip=g=>`<span class="pc-chip ${wt?'wt':''}" title="${wt?'待っている相手：':'Agenda：'}${esc(g.name)}">${ic(wt?'waiting':'user')}${esc(g.name)}</span>`;
+    const chips=who.slice(0,2).map(chip).join('')+(who.length>2?`<span class="pc-more">+${who.length-2}</span>`:'');
     return `${dueB(t)}<div class="stk-ph"><div class="stk-title"><span>${esc(t.title)}</span></div>${t.note?`<div class="stk-note">${esc(t.note)}</div>`:''}</div>
      <div class="stk-foot pcap"><div class="pc-r1"><span class="stk-where">${where}</span><span class="stk-min">${t.minutes!=null?fmtShort(t.minutes):''}</span></div>
       <div class="pc-r2">${chips}${t.rep?`<span class="pc-ic" title="${esc(repLabel(t.rep))}">${ic('repeat')}</span>`:''}${labs.length?`<span class="pc-lab" title="${esc(labs.map(x=>'#'+x).join(' '))}">#${esc(labs[0])}${labs.length>1?' +'+(labs.length-1):''}</span>`:''}<span class="pc-sp"></span><button class="chk" aria-label="完了">${ic('log')}</button></div></div>
@@ -3235,6 +3234,10 @@ function openAgendaPop(anchor,kind){const PL=kind==='pl';let edit=false,q='',cur
       const rows=P.map((g,i)=>`<div class="agp-er ${g.sep?'sep':''}">${g.sep?`<span class="agp-sepl">区切り</span>`:`${PL?ico(g):`<button class="agp-col" data-col="${i}" title="色を変える" style="background:${agColor(g)}">${esc((g.name||'?').slice(0,1))}</button>`}<input data-nm="${i}" value="${esc(g.name)}" maxlength="20">`}<span class="agp-mv"><button data-up="${i}" ${i?'':'disabled'} aria-label="上へ">${ic('chev')}</button><button data-dn="${i}" ${i<P.length-1?'':'disabled'} aria-label="下へ">${ic('chev')}</button></span><button class="agp-del" data-del="${i}" aria-label="削除">${ic('x')}</button></div>`).join('');
       return head+`<div class="agp-body"><div class="agp-card">${rows||'<div class="agp-none">まだありません</div>'}</div><div class="agp-hint">${PL?'アイコンは「場所・道具を編集」で変えられます。':'丸を押すと色が変わります。'}× を2回押すと削除（すべてのタスクから外れます）。</div></div>
         <div class="agp-ft"><button class="agp-btn" data-sep>${ic('plus')}区切りを追加</button>${PL?`<button class="agp-btn" data-pled>${ic('edit')}アイコンなど</button>`:''}</div>`}
+    return head+`<label class="agp-s">${ic('search')}<input id="agQ" placeholder="${PL?'場所・道具を探す':'人・会議を探す'}" value="${esc(q)}" autocomplete="off"><kbd>↑↓ ⏎</kbd></label>
+      <div class="agp-body">${listH(P)}</div>
+      <div class="agp-ft">${adding?`<label class="agp-addin">${ic('plus')}<input id="agNew" placeholder="${PL?'新しい場所・道具':'新しい人・会議'}" maxlength="20" autocomplete="off"></label>`:`<button class="agp-btn agp-pri" data-new style="color:${hcol}">${ic('plus')}${PL?'場所・道具を追加':'人・会議を追加'}</button>`}</div>`};
+  const listH=P=>{
     const w=q.trim().toLowerCase();let k=0;
     const rowH=g=>{const n=cnt(g.id),me=k++;return `<button class="agp-it ag-it ${n?'':'zero'} ${me===cur&&w?'hl':''} ${isOn(g.id)?'on':''}" data-p="${g.id}">${ico(g)}<span class="agp-nm">${esc(g.name)}${isOn(g.id)?'<em>表示中</em>':''}</span><span class="agp-c">${n||'—'}</span></button>`};
     let body;
@@ -3242,12 +3245,11 @@ function openAgendaPop(anchor,kind){const PL=kind==='pl';let edit=false,q='',cur
     else body=groups(P).map(gr=>`<div class="agp-card">${gr.map(rowH).join('')}</div>`).join('');
     const exact=P.some(g=>!g.sep&&g.name===q.trim());
     const addRow=q.trim()&&!exact?`<div class="agp-card"><button class="agp-it ag-it agp-add ${k===0?'hl':''}" data-add><span class="agp-plus">${ic('plus')}</span><span class="agp-nm">「${esc(q.trim())}」を追加</span></button></div>`:'';
-    return head+`<label class="agp-s">${ic('search')}<input id="agQ" placeholder="${PL?'場所・道具を探す':'人・会議を探す'}" value="${esc(q)}" autocomplete="off"><kbd>↑↓ ⏎</kbd></label>
-      <div class="agp-body">${body||(w?'':`<div class="agp-none">${PL?'場所・道具はまだありません':'まだ誰もいません。下のボタンか上の欄から追加できます。'}</div>`)}${addRow}</div>
-      <div class="agp-ft">${adding?`<label class="agp-addin">${ic('plus')}<input id="agNew" placeholder="${PL?'新しい場所・道具':'新しい人・会議'}" maxlength="20" autocomplete="off"></label>`:`<button class="agp-btn agp-pri" data-new style="color:${hcol}">${ic('plus')}${PL?'場所・道具を追加':'人・会議を追加'}</button>`}</div>`};
+    return (body||(w?'':`<div class="agp-none">${PL?'場所・道具はまだありません':'まだ誰もいません。下のボタンか上の欄から追加できます。'}</div>`))+addRow};
   const add=n=>{n=n.trim().replace(/^[+#]/,'');if(!n)return;
     if(PL){let g=S.places.find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n,icon:'pin'};S.places.push(g);TAGS=S.places;save()}closePop();openPlace(g.id);return}
     let g=list().find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n};S.people.push(g);save()}closePop();openAgenda(g.id)};
+  const bindList=el=>{$$('[data-p]',el).forEach(b=>b.onclick=()=>{closePop();(PL?openPlace:openAgenda)(b.dataset.p)});const ad=$('[data-add]',el);if(ad)ad.onclick=()=>add(q)};
   const draw=el=>{const sb=$('.agp-body',el);const st=sb?sb.scrollTop:0;el.innerHTML=H();bind(el);const nb=$('.agp-body',el);if(nb)nb.scrollTop=st};
   const bind=el=>{const P=list();
     const dn=$('[data-done]',el);if(dn)dn.onclick=()=>{edit=false;draw(el);render()};
@@ -3266,12 +3268,12 @@ function openAgendaPop(anchor,kind){const PL=kind==='pl';let edit=false,q='',cur
       const pe=$('[data-pled]',el);if(pe)pe.onclick=()=>{closePop();openPlacesEditor(()=>render())};
       return}
     const qi=$('#agQ',el);
-    qi.oninput=()=>{q=qi.value;cur=0;const pos=qi.selectionStart;draw(el);const n=$('#agQ',el);n.focus();n.setSelectionRange(pos,pos)};
+    /* 一覧だけ作り直す（入力欄はそのまま＝日本語の変換が途切れない） */
+    qi.oninput=()=>{q=qi.value;cur=0;$('.agp-body',el).innerHTML=listH(list());bindList(el)};
     qi.onkeydown=e=>{if(isIME(e))return;const its=$$('.ag-it',el);
       if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();cur=Math.max(0,Math.min(its.length-1,cur+(e.key==='ArrowDown'?1:-1)));its.forEach((b,i)=>b.classList.toggle('hl',i===cur));its[cur]&&its[cur].scrollIntoView({block:'nearest'})}
       else if(e.key==='Enter'){e.preventDefault();const b=q.trim()?its[cur]:$('.ag-it.on',el)||its[0];if(b)b.click()}};
-    $$('[data-p]',el).forEach(b=>b.onclick=()=>{closePop();(PL?openPlace:openAgenda)(b.dataset.p)});
-    const ad=$('[data-add]',el);if(ad)ad.onclick=()=>add(q);
+    bindList(el);
     const nb=$('[data-new]',el);if(nb)nb.onclick=()=>{adding=true;draw(el);const n=$('#agNew',el);n&&n.focus()};
     const ni=$('#agNew',el);if(ni){ni.onkeydown=e=>{if(isIME(e))return;if(e.key==='Enter'){e.preventDefault();add(ni.value)}else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();adding=false;draw(el)}}}
     if(!narrow()&&!ni)setTimeout(()=>{if(qi.isConnected&&document.activeElement!==qi&&!$('#agNew',el))qi.focus()},20)};
@@ -4683,7 +4685,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-06 ポラロイド案X版';
+const APPV='2026-10-06 日本語入力修正版';
 const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
 const SKEY='fusen.sync';
 let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
