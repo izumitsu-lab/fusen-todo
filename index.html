@@ -1809,6 +1809,44 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .bar h1 .ag-nm{color:var(--ink)}
 .g-place{--gc:#C76A1C}
 .agpop .fp-item.ag-it>svg.i{width:18px;height:18px;flex:none;color:var(--ink2)}
+.agpop{width:320px!important;padding:0!important;background:var(--win)!important;border-radius:16px!important;overflow:hidden;box-shadow:var(--shadow-pop),0 0 0 .5px rgba(40,30,10,.14)!important;animation:agpIn .16s cubic-bezier(.2,.9,.3,1.1);transform-origin:top left}
+@keyframes agpIn{from{opacity:0;transform:scale(.96) translateY(-4px)}}
+.agp-h{display:flex;align-items:center;gap:10px;padding:14px 14px 10px;flex:none}
+.agp-h b{font-size:15px;color:var(--ink)}.agp-tot{font-size:12px;color:var(--ink3)}
+.agp-hi{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex:none}.agp-hi svg.i{width:16px;height:16px}
+.agp-ed{margin-left:auto;font-size:12.5px;color:var(--accent);display:inline-flex;align-items:center;gap:4px;padding:4px 6px;border-radius:7px}.agp-ed:hover{background:var(--sel)}.agp-ed svg.i{width:13px;height:13px}
+.agp-s{margin:0 12px 10px;height:34px;border-radius:10px;background:var(--pop);box-shadow:inset 0 0 0 1px var(--line);display:flex;align-items:center;gap:8px;padding:0 11px;color:var(--ink3);flex:none}
+.agp-s input{flex:1;min-width:0;border:0;background:none;outline:none;font:inherit;font-size:13.5px;color:var(--ink)}
+.agp-s kbd{font:11px -apple-system,system-ui;color:var(--ink3);border:1px solid var(--line);border-radius:5px;padding:0 5px;background:var(--win)}
+.agp-s:focus-within{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.agp-body{padding:0 10px 4px;overflow-y:auto;min-height:0;flex:1}
+.agp-card{background:var(--pop);border-radius:12px;padding:3px;box-shadow:0 1px 2px rgba(40,30,10,.06);margin-bottom:8px}
+.agp-it{display:flex;align-items:center;gap:10px;width:100%;padding:7px 8px;border-radius:9px;font-size:14px;color:var(--ink);text-align:left;position:relative;box-sizing:border-box}
+.agp-it+.agp-it::before{content:"";position:absolute;left:46px;right:8px;top:0;border-top:.5px solid var(--line)}
+.agp-it:hover{background:var(--sel)}.agp-it:hover::before,.agp-it:hover+.agp-it::before{opacity:0}
+.agp-it.hl,.agp-it.on{background:#EEEAFB}.agp-it.on::before,.agp-it.on+.agp-it::before,.agp-it.hl::before,.agp-it.hl+.agp-it::before{opacity:0}
+.agp-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.agp-nm em{font-style:normal;font-size:10.5px;color:#6A55C9;font-weight:700;margin-left:6px}
+.agp-c{margin-left:auto;font-size:12px;color:var(--ink2);background:var(--sel);border-radius:9px;padding:1px 7px;min-width:22px;text-align:center;flex:none}
+.agp-it.zero .agp-nm{color:var(--ink3)}.agp-it.zero .agp-c{background:none;color:var(--ink3);opacity:.6}
+.agp-av{width:26px;height:26px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
+.agp-it.zero .agp-av,.agp-it.zero .agp-sq{opacity:.55}
+.agp-sq{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex:none}.agp-sq svg.i{width:15px;height:15px}
+.agp-plus{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--sel);color:var(--accent);flex:none}
+.agp-none{padding:14px 10px;font-size:13px;color:var(--ink3);line-height:1.6}
+.agp-ft{display:flex;gap:8px;padding:8px 12px 12px;border-top:.5px solid var(--line);flex:none}
+.agp-btn{height:30px;border-radius:9px;background:var(--pop);box-shadow:inset 0 0 0 1px var(--line);font-size:12.5px;display:inline-flex;align-items:center;gap:5px;padding:0 10px;color:var(--ink2)}.agp-btn:hover{background:var(--sel)}.agp-btn svg.i{width:13px;height:13px}
+.agp-addin{flex:1;height:32px;border-radius:9px;background:var(--pop);box-shadow:inset 0 0 0 1.5px var(--accent);display:flex;align-items:center;gap:6px;padding:0 10px;color:var(--ink3)}
+.agp-addin input{flex:1;min-width:0;border:0;outline:none;background:none;font:inherit;font-size:13.5px;color:var(--ink)}
+.agp-er{display:flex;align-items:center;gap:8px;padding:5px 6px;position:relative}.agp-er+.agp-er::before{content:"";position:absolute;left:44px;right:6px;top:0;border-top:.5px solid var(--line)}
+.agp-er input{flex:1;min-width:0;height:28px;border:1px solid var(--line);border-radius:7px;padding:0 8px;font:inherit;font-size:13.5px;background:var(--win);color:var(--ink)}
+.agp-er.sep .agp-sepl{flex:1;font-size:11.5px;color:var(--ink3);text-align:center;border-top:1px dashed var(--line2,rgba(0,0,0,.18));padding-top:3px;margin-left:34px}
+.agp-col{width:26px;height:26px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;flex:none}
+.agp-mv{display:flex}.agp-mv button{width:22px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--ink3)}.agp-mv button:hover{background:var(--sel)}
+.agp-mv button[data-up] svg.i{transform:rotate(180deg)}.agp-mv button:disabled{opacity:.25}
+.agp-del{min-width:26px;height:26px;padding:0 6px;border-radius:6px;color:var(--ink3);font-size:12px;display:flex;align-items:center;justify-content:center}.agp-del:hover{background:var(--sel)}.agp-del.armed{background:#E5534B;color:#fff}
+.agp-hint{font-size:11.5px;color:var(--ink3);padding:0 6px 6px;line-height:1.6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .agp-it.hl,:root:not([data-theme="light"]) .agp-it.on{background:rgba(140,122,230,.22)}}
+@media (max-width:760px){.agpop{width:auto!important;border-radius:14px 14px 0 0!important;max-height:80vh!important}.agp-s input,.agp-addin input,.agp-er input{font-size:16px}.agp-it{min-height:46px;font-size:16px}}
 /* ---------- quick add card ---------- */
 .scrim.qk-scrim{display:block;padding:0}
 .qk{position:fixed;left:0;right:0;bottom:0;box-sizing:border-box;background:var(--pop);border-radius:16px 16px 0 0;padding:8px 14px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -12px rgba(0,0,0,.3);animation:qkUp .26s cubic-bezier(.2,.8,.2,1)}
@@ -2194,7 +2232,7 @@ function renderSide(){
    <div class="sgrp">${['today','next','calendar'].map(nav).join('')}</div>
    <div class="sgrp">${['waiting','someday','tickler'].map(nav).join('')}
    <button class="nav gtd g-projects ${sec==='projects'&&!F.area?'on':''}" data-sec="projects"><span class="sq">${ic('clip')}</span><span class="lbl">プロジェクト</span><span class="n">${projects().length||''}</span></button></div>
-   <div class="sgrp"><button class="nav gtd g-agenda ${sec==='ag'?'on':''}" id="agBtn" title="Agenda（人・会議）"><span class="sq">${ic('user')}</span><span class="lbl">Agenda</span><span class="n">${agTotal()||''}</span></button><button class="nav gtd g-place ${sec==='pl'?'on':''}" id="plBtn" title="場所・道具"><span class="sq">${ic('pin')}</span><span class="lbl">場所・道具</span><span class="n"></span></button></div>
+   <div class="sgrp"><button class="nav gtd g-place ${sec==='pl'?'on':''}" id="plBtn" title="場所・道具"><span class="sq">${ic('pin')}</span><span class="lbl">場所・道具</span><span class="n"></span></button><button class="nav gtd g-agenda ${sec==='ag'?'on':''}" id="agBtn" title="Agenda（人・会議）"><span class="sq">${ic('user')}</span><span class="lbl">Agenda</span><span class="n">${agTotal()||''}</span></button></div>
    ${(n=>`<button class="ibx-card ${n?'':'empty'} ${sec==='inbox'&&!F.area?'on':''}" data-sec="inbox" data-drop="inbox" title="Inbox (1)"><span class="sq">${ic('inbox')}</span><span class="tt"><b>Inbox</b><small>${n?n+'件が仕分け待ち':'空っぽです。頭もすっきり'}</small></span>${n?`<span class="pile" aria-hidden="true"><i></i><i></i><i>${n>99?'99+':n}</i></span>`:''}</button>`)(S.tasks.filter(t=>t.status==='inbox').length)}
    ${S.sideViews===false?'':`<div class="cap">条件リスト<span class="cap-b"><button id="viewMenu" aria-label="条件リストを管理" title="表示する条件リストを選ぶ">${ic('more')}</button><button id="addView" aria-label="条件リストを追加" title="条件で絞ったリストを追加">${ic('plus')}</button></span></div>
    ${(vs=>vs.length?`<div class="sgrp sviews">${vs.map(v=>`<button class="nav gtd g-view ${sec==='sv'&&S.ui.sv===v.id?'on':''}" data-vw="${v.id}" title="${esc(viewSum(v))}"><span class="sq">${ic(v.icon||'filter')}</span><span class="lbl">${esc(v.name)}</span><span class="n">${vCount(v)||''}</span></button>`).join('')}</div>`:'')((S.views||[]).filter(v=>v.side))}`}
@@ -3147,39 +3185,62 @@ const agTotal=()=>S.tasks.filter(t=>!isProj(t)&&t.status!=='done'&&(t.agenda||[]
 function openAgenda(id){LSEL=null;F.area=null;S.ui.section='ag';S.ui.ag=id;save();render()}
 function openPlace(id){LSEL=null;F.area=null;S.ui.section='pl';S.ui.pl=id;save();render()}
 const plCount=id=>S.tasks.filter(t=>onCtxBoard(t)&&(t.tags||[]).includes(id)).length;
-function openAgendaPop(anchor,kind){const PL=kind==='pl';let edit=false,q='',cur=0;
-  const H=()=>{const P=PL?S.places:(S.people||[]);
-    if(edit)return `<div class="fp-h">人・会議を編集<span>↑↓で並べ替え</span></div><div class="ag-list">${P.map((g,i)=>`<div class="ag-ed ${g.sep?'sep':''}" data-i="${i}"><button data-up="${i}" ${i?'':'disabled'}>${ic('chev')}</button><button data-dn="${i}" ${i<P.length-1?'':'disabled'}>${ic('chev')}</button>${g.sep?'<span class="ag-sepl">区切り</span>':`<input data-nm="${i}" value="${esc(g.name)}" maxlength="20">`}<button class="ag-del" data-del="${i}">${ic('x')}</button></div>`).join('')||'<div class="fp-none">まだありません</div>'}</div>
-      <div class="ag-ft"><button data-sep>${ic('plus')}区切りを追加</button><button data-done class="b">完了</button></div>`;
-    const w=q.trim().toLowerCase(),rows=[];
-    if(w){P.filter(g=>!g.sep&&g.name.toLowerCase().includes(w)).forEach(g=>rows.push(g))}else P.forEach(g=>rows.push(g));
-    const items=rows.filter(g=>!g.sep);const exact=P.some(g=>!g.sep&&g.name===q.trim());
-    let k=0;const h=rows.map(g=>{if(g.sep)return '<div class="fp-sep"></div>';const n=PL?plCount(g.id):agCount(g.id),me=k++;return `<button class="fp-item ag-it ${n?'':'zero'} ${me===cur?'hl':''} ${(PL?S.ui.section==='pl'&&S.ui.pl===g.id:S.ui.section==='ag'&&S.ui.ag===g.id)?'on':''}" data-p="${g.id}">${PL?ic(g.icon||'pin'):`<span class="ag-av sm">${esc(g.name.slice(0,1))}</span>`}<span>${esc(g.name)}</span><em>${n||''}</em></button>`}).join('').replace(/^(<div class="fp-sep"><\/div>)+|(<div class="fp-sep"><\/div>)+$/g,'').replace(/(<div class="fp-sep"><\/div>){2,}/g,'<div class="fp-sep"></div>');
-    return `<label class="ag-s">${ic('search')}<input id="agQ" placeholder="${PL?'場所・道具を探す':'人・会議を探す'}" value="${esc(q)}" autocomplete="off"></label>
-      <div class="ag-list">${h||(w?'':'<div class="fp-none">まだありません。下の欄に名前を入れて追加できます。</div>')}${q.trim()&&!exact?`<button class="fp-item ag-add ${items.length===0&&cur===0?'hl':''}" data-add>${ic('plus')}<span>「${esc(q.trim())}」を追加</span></button>`:''}</div>
-      <div class="ag-ft">${P.length?`<button data-edit>${ic('edit')}並べ替え・区切りを編集</button>`:''}</div>`};
-  const add=n=>{n=n.trim().replace(/^[+#]/,'');if(!n)return;if(PL){let g=S.places.find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n,icon:'pin'};S.places.push(g);TAGS=S.places;save()}closePop();openPlace(g.id);return}let g=(S.people||[]).find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n};S.people.push(g);save()}closePop();openAgenda(g.id)};
-  const bind=el=>{
-    if(edit){const P=S.people;
+/* 小窓：サイドバーと同じ質感（生成りの地＋区切りごとの白いカード＋灰色の件数バッジ） */
+const AGC=['#4A86E8','#5E7FB8','#2FA38A','#3FA0A8','#C98A1B','#E5534B','#8C7AE6','#D06A9C','#6E8B3D','#C76A1C'];
+const agColor=g=>g.color||AGC[hash(g.id||g.name||'')%AGC.length];
+function openAgendaPop(anchor,kind){const PL=kind==='pl';let edit=false,q='',cur=0,adding=false;
+  const list=()=>PL?S.places:(S.people||(S.people=[]));
+  const cnt=id=>PL?plCount(id):agCount(id);
+  const isOn=id=>PL?S.ui.section==='pl'&&S.ui.pl===id:S.ui.section==='ag'&&S.ui.ag===id;
+  const ico=g=>PL?`<span class="agp-sq" style="background:${agColor(g)}">${ic(g.icon||'pin')}</span>`:`<span class="agp-av" style="background:${agColor(g)}">${esc((g.name||'?').slice(0,1))}</span>`;
+  const groups=rows=>{const out=[[]];rows.forEach(g=>{if(g.sep){if(out[out.length-1].length)out.push([])}else out[out.length-1].push(g)});return out.filter(x=>x.length)};
+  const H=()=>{const P=list(),title=PL?'場所・道具':'Agenda',hico=PL?'pin':'user',hcol=PL?'#C76A1C':'#6A55C9';
+    const total=P.filter(g=>!g.sep).reduce((a,g)=>a+cnt(g.id),0);
+    const head=`<div class="agp-h"><span class="agp-hi" style="background:${hcol}">${ic(hico)}</span><b>${title}</b><span class="agp-tot">${total?total+'件':''}</span>${edit?`<button class="agp-ed" data-done>完了</button>`:P.length?`<button class="agp-ed" data-edit>${ic('edit')}編集</button>`:''}</div>`;
+    if(edit){
+      const rows=P.map((g,i)=>`<div class="agp-er ${g.sep?'sep':''}">${g.sep?`<span class="agp-sepl">区切り</span>`:`${PL?ico(g):`<button class="agp-col" data-col="${i}" title="色を変える" style="background:${agColor(g)}">${esc((g.name||'?').slice(0,1))}</button>`}<input data-nm="${i}" value="${esc(g.name)}" maxlength="20">`}<span class="agp-mv"><button data-up="${i}" ${i?'':'disabled'} aria-label="上へ">${ic('chev')}</button><button data-dn="${i}" ${i<P.length-1?'':'disabled'} aria-label="下へ">${ic('chev')}</button></span><button class="agp-del" data-del="${i}" aria-label="削除">${ic('x')}</button></div>`).join('');
+      return head+`<div class="agp-body"><div class="agp-card">${rows||'<div class="agp-none">まだありません</div>'}</div><div class="agp-hint">${PL?'アイコンは「場所・道具を編集」で変えられます。':'丸を押すと色が変わります。'}× を2回押すと削除（すべてのタスクから外れます）。</div></div>
+        <div class="agp-ft"><button class="agp-btn" data-sep>${ic('plus')}区切りを追加</button>${PL?`<button class="agp-btn" data-pled>${ic('edit')}アイコンなど</button>`:''}</div>`}
+    const w=q.trim().toLowerCase();let k=0;
+    const rowH=g=>{const n=cnt(g.id),me=k++;return `<button class="agp-it ag-it ${n?'':'zero'} ${me===cur&&w?'hl':''} ${isOn(g.id)?'on':''}" data-p="${g.id}">${ico(g)}<span class="agp-nm">${esc(g.name)}${isOn(g.id)?'<em>表示中</em>':''}</span><span class="agp-c">${n||'—'}</span></button>`};
+    let body;
+    if(w){const hit=P.filter(g=>!g.sep&&g.name.toLowerCase().includes(w));body=hit.length?`<div class="agp-card">${hit.map(rowH).join('')}</div>`:''}
+    else body=groups(P).map(gr=>`<div class="agp-card">${gr.map(rowH).join('')}</div>`).join('');
+    const exact=P.some(g=>!g.sep&&g.name===q.trim());
+    const addRow=q.trim()&&!exact?`<div class="agp-card"><button class="agp-it ag-it agp-add ${k===0?'hl':''}" data-add><span class="agp-plus">${ic('plus')}</span><span class="agp-nm">「${esc(q.trim())}」を追加</span></button></div>`:'';
+    return head+`<label class="agp-s">${ic('search')}<input id="agQ" placeholder="${PL?'場所・道具を探す':'人・会議を探す'}" value="${esc(q)}" autocomplete="off"><kbd>↑↓ ⏎</kbd></label>
+      <div class="agp-body">${body||(w?'':`<div class="agp-none">${PL?'場所・道具はまだありません':'まだ誰もいません。下のボタンか上の欄から追加できます。'}</div>`)}${addRow}</div>
+      <div class="agp-ft">${adding?`<label class="agp-addin">${ic('plus')}<input id="agNew" placeholder="${PL?'新しい場所・道具':'新しい人・会議'}" maxlength="20" autocomplete="off"></label>`:`<button class="agp-btn agp-pri" data-new style="color:${hcol}">${ic('plus')}${PL?'場所・道具を追加':'人・会議を追加'}</button>`}</div>`};
+  const add=n=>{n=n.trim().replace(/^[+#]/,'');if(!n)return;
+    if(PL){let g=S.places.find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n,icon:'pin'};S.places.push(g);TAGS=S.places;save()}closePop();openPlace(g.id);return}
+    let g=list().find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n};S.people.push(g);save()}closePop();openAgenda(g.id)};
+  const draw=el=>{const sb=$('.agp-body',el);const st=sb?sb.scrollTop:0;el.innerHTML=H();bind(el);const nb=$('.agp-body',el);if(nb)nb.scrollTop=st};
+  const bind=el=>{const P=list();
+    const dn=$('[data-done]',el);if(dn)dn.onclick=()=>{edit=false;draw(el);render()};
+    const ed=$('[data-edit]',el);if(ed)ed.onclick=()=>{edit=true;draw(el)};
+    if(edit){
       $$('[data-up]',el).forEach(b=>b.onclick=()=>{const i=+b.dataset.up;if(i>0){[P[i-1],P[i]]=[P[i],P[i-1]];save();draw(el)}});
       $$('[data-dn]',el).forEach(b=>b.onclick=()=>{const i=+b.dataset.dn;if(i<P.length-1){[P[i+1],P[i]]=[P[i],P[i+1]];save();draw(el)}});
       $$('[data-nm]',el).forEach(inp=>inp.onchange=()=>{const v=inp.value.trim();if(v){P[+inp.dataset.nm].name=v;save();renderSide()}});
+      $$('[data-col]',el).forEach(b=>b.onclick=()=>{const g=P[+b.dataset.col];const i=AGC.indexOf(agColor(g));g.color=AGC[(i+1)%AGC.length];save();draw(el)});
       $$('[data-del]',el).forEach(b=>b.onclick=()=>{const i=+b.dataset.del,g=P[i];if(!g)return;
         if(!g.sep&&!b.classList.contains('armed')){b.classList.add('armed');b.textContent='削除';return}
-        P.splice(i,1);if(!g.sep){S.tasks.forEach(x=>{if(x.agenda)x.agenda=x.agenda.filter(y=>y!==g.id)});(S.views||[]).forEach(v=>{if(v.people)v.people=v.people.filter(y=>y!==g.id)});F.people.delete(g.id);if(S.ui.ag===g.id&&S.ui.section==='ag')S.ui.section='next'}
+        P.splice(i,1);if(!g.sep){if(PL){S.tasks.forEach(x=>{if(x.tags)x.tags=x.tags.filter(y=>y!==g.id)});F.tags.delete(g.id);TAGS=S.places;if(S.ui.pl===g.id&&S.ui.section==='pl')S.ui.section='next'}
+          else{S.tasks.forEach(x=>{if(x.agenda)x.agenda=x.agenda.filter(y=>y!==g.id)});(S.views||[]).forEach(v=>{if(v.people)v.people=v.people.filter(y=>y!==g.id)});F.people.delete(g.id);if(S.ui.ag===g.id&&S.ui.section==='ag')S.ui.section='next'}}
         save();draw(el);renderSide();renderMain();renderBar()});
       $('[data-sep]',el).onclick=()=>{P.push({id:uid(),sep:true});save();draw(el)};
-      $('[data-done]',el).onclick=()=>{edit=false;draw(el);render()};return}
+      const pe=$('[data-pled]',el);if(pe)pe.onclick=()=>{closePop();openPlacesEditor(()=>render())};
+      return}
     const qi=$('#agQ',el);
     qi.oninput=()=>{q=qi.value;cur=0;const pos=qi.selectionStart;draw(el);const n=$('#agQ',el);n.focus();n.setSelectionRange(pos,pos)};
-    qi.onkeydown=e=>{if(isIME(e))return;const its=$$('.ag-it,.ag-add',el);
+    qi.onkeydown=e=>{if(isIME(e))return;const its=$$('.ag-it',el);
       if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();cur=Math.max(0,Math.min(its.length-1,cur+(e.key==='ArrowDown'?1:-1)));its.forEach((b,i)=>b.classList.toggle('hl',i===cur));its[cur]&&its[cur].scrollIntoView({block:'nearest'})}
-      else if(e.key==='Enter'){e.preventDefault();const b=its[cur];if(b)b.click()}};
+      else if(e.key==='Enter'){e.preventDefault();const b=q.trim()?its[cur]:$('.ag-it.on',el)||its[0];if(b)b.click()}};
     $$('[data-p]',el).forEach(b=>b.onclick=()=>{closePop();(PL?openPlace:openAgenda)(b.dataset.p)});
     const ad=$('[data-add]',el);if(ad)ad.onclick=()=>add(q);
-    const ed=$('[data-edit]',el);if(ed)ed.onclick=()=>{if(PL){closePop();openPlacesEditor(()=>render());return}edit=true;draw(el)};
-    if(!narrow())setTimeout(()=>{if(qi.isConnected&&document.activeElement!==qi)qi.focus()},20)};
-  const draw=el=>{el.innerHTML=H();bind(el)};
+    const nb=$('[data-new]',el);if(nb)nb.onclick=()=>{adding=true;draw(el);const n=$('#agNew',el);n&&n.focus()};
+    const ni=$('#agNew',el);if(ni){ni.onkeydown=e=>{if(isIME(e))return;if(e.key==='Enter'){e.preventDefault();add(ni.value)}else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();adding=false;draw(el)}}}
+    if(!narrow()&&!ni)setTimeout(()=>{if(qi.isConnected&&document.activeElement!==qi&&!$('#agNew',el))qi.focus()},20)};
   miniPop(anchor,H(),el=>{el.classList.add('agpop');bind(el)})}
 /* ---------- 条件で絞ったリスト ----------
    違う条件どうしは「すべて満たす」。同じ条件の中で複数選んだら「どれか」（場所とタグは「すべて」も選べる） */
@@ -4588,7 +4649,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-05 同期修正版';
+const APPV='2026-10-05 小窓デザイン版';
 const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
 const SKEY='fusen.sync';
 let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
