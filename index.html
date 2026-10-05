@@ -560,6 +560,20 @@ body.sty-pola .stk .stk-title,body.sty-pola .stk .draft-title{order:-1;backgroun
 body.sty-pola .stk .draft-title{display:block}
 body.sty-pola .stk .stk-top{opacity:.75;color:#555}
 body.sty-pola .stk .stk-tags span{background:#F1F0EC}
+body.sty-pola .stk:not(.as-block){height:150px;min-height:0!important;padding:9px 9px 0;gap:0}
+body.sty-pola .stk .stk-ph{height:107px;flex:none;background:var(--s);color:var(--si);padding:9px 10px 8px;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden}
+body.sty-pola .stk .stk-ph .stk-title{order:0;background:none;min-height:0;padding:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.35;flex:none}
+body.sty-pola .stk .stk-ph .stk-note{font-family:var(--f-ui);font-size:11px;font-weight:500;line-height:16px;opacity:.74;margin-top:4px;-webkit-line-clamp:var(--nl,3);flex:none}
+body.sty-pola .stk .pcap{height:34px;flex:none;margin:0;padding:0 1px;display:flex;align-items:center;gap:6px;font-family:var(--f-ui);font-size:10.5px;color:#7A756B;font-weight:600}
+body.sty-pola .pcap .stk-where{min-width:0;flex:0 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72px;display:flex;align-items:center;gap:3px}
+body.sty-pola .pcap .stk-where svg.i{width:10px;height:10px;flex:none}
+body.sty-pola .pc-avs{display:flex;align-items:center;flex:none}body.sty-pola .pc-avs>svg.i{width:10px;height:10px;margin-right:2px;color:#8C7AE6}
+body.sty-pola .pc-av{width:17px;height:17px;border-radius:50%;color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1.5px #FFFFFD;margin-left:-4px}
+body.sty-pola .pc-avs .pc-av:first-of-type{margin-left:0}body.sty-pola .pc-more{font-size:9.5px;margin-left:2px}
+body.sty-pola .pc-ic{display:flex}body.sty-pola .pc-ic svg.i{width:11px;height:11px}
+body.sty-pola .pc-lab{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60px;background:#F1F0EC;border-radius:99px;padding:1px 6px;font-size:9.5px;flex:0 1 auto;min-width:0}
+body.sty-pola .pcap .stk-min{margin-left:auto;font-family:var(--f-num);font-weight:500;flex:none}
+body.sty-pola .pcap .chk{width:17px;height:17px;flex:none}
 
 /* receipt */
 body.sty-receipt .stk:not(.as-block){background:#FBFAF6;color:#2A2A2A;font-family:var(--f-code);border-radius:0;padding-bottom:20px;box-shadow:0 12px 18px -12px rgba(0,0,0,.45);filter:var(--stk-filter)}
@@ -582,6 +596,8 @@ body.cm-full:not(.sty-classic):not(.sty-glass):not(.sty-ticket):not(.sty-flag) .
 body.cm-full.sty-flag .stk:not(.as-block){background:linear-gradient(90deg,color-mix(in srgb,var(--sd) 65%,transparent) 0 48px,color-mix(in srgb,var(--s) 65%,var(--fl-bg)) 48px)!important}
 body.cm-full.sty-glass .stk:not(.as-block){background:color-mix(in srgb,var(--s) 60%,var(--gl-card))!important}
 body.cm-accent.sty-classic .stk:not(.as-block),body.cm-accent.sty-ticket .stk:not(.as-block){background-color:color-mix(in srgb,var(--s) 22%,#FFFDF8)!important;border-top:5px solid var(--sd)}
+body.cm-accent.sty-pola .stk .stk-ph{background:color-mix(in srgb,var(--s) 25%,#FFFDF8)!important;box-shadow:inset 0 -3px 0 var(--sd)}
+body.cm-accent.sty-pola .stk .stk-ph .stk-title{background:none!important;box-shadow:none}
 body.cm-accent.sty-pola .stk .stk-title,body.cm-accent.sty-pola .stk .draft-title{background:color-mix(in srgb,var(--s) 25%,#FFFDF8)!important;box-shadow:inset 0 -3px 0 var(--sd)}
 body.cm-accent.sty-glass .stk:not(.as-block){background:color-mix(in srgb,var(--s) 10%,var(--gl-card))!important}
 
@@ -2414,8 +2430,15 @@ function findSpot(sec,noScroll){
 /* ---------- sticky ---------- */
 const STK_H=150,stkH=()=>STK_H;
 function stickyInner(t){
-  const a=area(t.area);
-  return `${dueB(t)}<div class="stk-top"><span class="stk-where">${isChild(t)&&!projMode()?`${ic('clip')}${esc(projOf(t).title)}`:a?esc(a.name):t.status==='inbox'?'INBOX':''}</span><span class="stk-min">${t.minutes!=null?ic('clock')+fmtShort(t.minutes):''}</span></div>
+  const a=area(t.area),where=isChild(t)&&!projMode()?`${ic('clip')}${esc(projOf(t).title)}`:a?esc(a.name):t.status==='inbox'?'INBOX':'';
+  if(S.ui.style==='pola'){
+    /* ポラロイド：高さ一定。上の色の部分＝タイトル（上そろえ）＋メモ（入るだけ）、下の白い帯＝1行 */
+    const who=(t.agenda||[]).map(g=>(S.people||[]).find(x=>x.id===g)).filter(Boolean),labs=(t.labels||[]).map(labName).filter(Boolean);
+    const av=who.slice(0,3).map(g=>`<span class="pc-av" style="background:${agColor(g)}" title="${esc(g.name)}">${esc(g.name.slice(0,1))}</span>`).join('')+(who.length>3?`<span class="pc-more">+${who.length-3}</span>`:'');
+    return `${dueB(t)}<div class="stk-ph"><div class="stk-title"><span>${esc(t.title)}</span></div>${t.note?`<div class="stk-note">${esc(t.note)}</div>`:''}</div>
+     <div class="stk-foot pcap"><span class="stk-where">${where}</span>${av?`<span class="pc-avs" title="${t.status==='waiting'?'待っている相手':'Agenda'}">${t.status==='waiting'?ic('waiting'):''}${av}</span>`:''}${t.rep?`<span class="pc-ic" title="${esc(repLabel(t.rep))}">${ic('repeat')}</span>`:''}${labs.length?`<span class="pc-lab" title="${esc(labs.map(x=>'#'+x).join(' '))}">#${esc(labs[0])}${labs.length>1?' +'+(labs.length-1):''}</span>`:''}<span class="stk-min">${t.minutes!=null?fmtShort(t.minutes):''}</span><button class="chk" aria-label="完了">${ic('log')}</button></div>
+     <div class="g-time"></div>`}
+  return `${dueB(t)}<div class="stk-top"><span class="stk-where">${where}</span><span class="stk-min">${t.minutes!=null?ic('clock')+fmtShort(t.minutes):''}</span></div>
    <div class="stk-title"><span>${esc(t.title)}</span></div>
    ${t.note?`<div class="stk-note">${esc(t.note)}</div>`:''}
    ${t.status==='waiting'&&whoTxt(t)?`<div class="stk-wait">${ic('waiting')}${esc(whoTxt(t))}</div>`:''}
@@ -2551,10 +2574,15 @@ function renderBoard(el){
   applyFilter();
 }
 const boardScrollMem={};
+/* ポラロイド：タイトルの行数に応じて、メモを残りの余白に収まる行数だけ出す */
+function fitPola(root){if(S.ui.style!=='pola')return;$$('.stk .stk-ph',root||document).forEach(ph=>{const n=$('.stk-note',ph),t=$('.stk-title',ph);if(!n||!t)return;
+  const cs=getComputedStyle(ph),lh=parseFloat(getComputedStyle(n).lineHeight)||16;const avail=ph.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-t.offsetHeight-4;
+  const l=Math.max(0,Math.floor(avail/lh));n.style.setProperty('--nl',l);n.style.display=l?'':'none'})}
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{try{fitPola()}catch(e){}});
 function applyFilter(){
   $$('.plane .stk[data-id]').forEach(s=>{const t=S.tasks.find(x=>x.id===s.dataset.id);s.classList.toggle('gone',!!t&&!passes(t))});
   $$('#listEl .row[data-id]').forEach(r=>{const t=S.tasks.find(x=>x.id===r.dataset.id);r.hidden=!!t&&!passes(t)});
-  const fo=filterOn();$$('#listEl .lgroup').forEach(g=>{g.hidden=fo&&!$$('.row',g).some(r=>!r.hidden)});
+  const fo=filterOn();$$('#listEl .lgroup').forEach(g=>{g.hidden=fo&&!$$('.row',g).some(r=>!r.hidden)});;fitPola()
 }
 let wheelAcc=0,wheelT=0;
 function wheelZoom(e){if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();wheelAcc+=e.deltaY;const now=Date.now();
@@ -4649,7 +4677,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-05 小窓デザイン版';
+const APPV='2026-10-05 ポラロイド改良版';
 const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
 const SKEY='fusen.sync';
 let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
