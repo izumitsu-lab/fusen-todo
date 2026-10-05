@@ -1866,6 +1866,26 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .agp-hint{font-size:11.5px;color:var(--ink3);padding:0 6px 6px;line-height:1.6}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .agp-it.hl,:root:not([data-theme="light"]) .agp-it.on{background:rgba(140,122,230,.22)}}
 @media (max-width:760px){.agpop{width:auto!important;border-radius:14px 14px 0 0!important;max-height:80vh!important}.agp-s input,.agp-addin input,.agp-er input{font-size:16px}.agp-it{min-height:46px;font-size:16px}}
+.agp-x{width:28px;height:28px;border-radius:50%;background:var(--sel);color:var(--ink2);display:flex;align-items:center;justify-content:center;margin-left:6px;flex:none}.agp-x svg.i{width:13px;height:13px}
+.agp-dt{width:26px;display:flex;justify-content:center;flex:none}.agp-dt .dot{width:11px;height:11px;border-radius:3px}
+.agp-it.sub{padding-left:26px}.agp-it.sub .agp-dt .dot{width:7px;height:7px;border-radius:50%}.agp-it.sub+.agp-it::before,.agp-it+.agp-it.sub::before{left:70px}
+.agp-hid{font-size:11.5px;color:var(--ink3);text-align:center;padding:2px 0 8px}
+.agp-er.off input{opacity:.5}.agp-er.off .agp-sq,.agp-er.off .agp-col{opacity:.45}
+.agp-eye{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--ink3);flex:none}.agp-eye.on{color:var(--accent)}.agp-eye:hover{background:var(--sel)}.agp-eye svg.i{width:15px;height:15px}
+.agp-sqb{border:0;cursor:pointer}.agp-sqb:hover{filter:brightness(1.08);box-shadow:0 0 0 2px var(--accent-bg,rgba(58,107,214,.2))}
+.agp-cdot{width:12px;height:12px;border-radius:50%;flex:none;margin-left:-4px;box-shadow:0 0 0 2px var(--pop)}
+.agp-hint svg.i{width:12px;height:12px;vertical-align:-2px}
+.icpick{z-index:1100!important}
+.sbopt{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}.sbopt>span{font-size:12.5px;color:var(--ink2)}
+.agp-dim{position:fixed;inset:0;background:rgba(20,16,10,.28);z-index:975;animation:fade .18s}
+@media (max-width:760px){
+  .agpop.agp-float{left:8px!important;right:8px!important;top:auto!important;bottom:calc(62px + env(safe-area-inset-bottom,0px))!important;width:auto!important;border-radius:22px!important;max-height:min(68vh,calc(100% - 140px))!important;padding:0!important;box-shadow:0 18px 44px -10px rgba(40,30,10,.38),0 0 0 .5px rgba(40,30,10,.12)!important;animation:agpUp .22s cubic-bezier(.2,.8,.2,1)!important}
+  html.vh-fix .agpop.agp-float{bottom:calc(62px + var(--bpad))!important}
+  .agpop.agp-float::before{margin:7px auto 0!important}
+  @keyframes agpUp{from{transform:translateY(24px);opacity:0}}
+  .agpop .agp-h{padding-top:8px}
+}
+.agp-h .agp-tot{flex:1}.agp-h .agp-ed{margin-left:0}
 /* ---------- quick add card ---------- */
 .scrim.qk-scrim{display:block;padding:0}
 .qk{position:fixed;left:0;right:0;bottom:0;box-sizing:border-box;background:var(--pop);border-radius:16px 16px 0 0;padding:8px 14px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -12px rgba(0,0,0,.3);animation:qkUp .26s cubic-bezier(.2,.8,.2,1)}
@@ -2251,9 +2271,12 @@ function renderSide(){
    <div class="sgrp">${['today','next','calendar'].map(nav).join('')}</div>
    <div class="sgrp">${['waiting','someday','tickler'].map(nav).join('')}
    <button class="nav gtd g-projects ${sec==='projects'&&!F.area?'on':''}" data-sec="projects"><span class="sq">${ic('clip')}</span><span class="lbl">プロジェクト</span><span class="n">${projects().length||''}</span></button></div>
-   <div class="sgrp"><button class="nav gtd g-place ${sec==='pl'?'on':''}" id="plBtn" title="場所・道具"><span class="sq">${ic('pin')}</span><span class="lbl">場所・道具</span><span class="n"></span></button><button class="nav gtd g-agenda ${sec==='ag'?'on':''}" id="agBtn" title="Agenda（人・会議）"><span class="sq">${ic('user')}</span><span class="lbl">Agenda</span><span class="n">${agTotal()||''}</span></button></div>
+   ${(c=>{const h=(c.pl?`<button class="nav gtd g-place ${sec==='pl'?'on':''}" id="plBtn" title="場所・道具"><span class="sq">${ic('pin')}</span><span class="lbl">場所・道具</span><span class="n"></span></button>`:'')
+     +(c.ag?`<button class="nav gtd g-agenda ${sec==='ag'?'on':''}" id="agBtn" title="Agenda（人・会議）"><span class="sq">${ic('user')}</span><span class="lbl">Agenda</span><span class="n">${agTotal()||''}</span></button>`:'')
+     +(c.vw==='row'?`<button class="nav gtd g-view ${sec==='sv'?'on':''}" id="vwBtn" title="条件で絞ったリスト"><span class="sq">${ic('filter')}</span><span class="lbl">条件リスト</span><span class="n">${(S.views||[]).filter(v=>v.side!==false).length||''}</span></button>`:'');
+     return h?`<div class="sgrp">${h}</div>`:''})(sbCfg())}
    ${(n=>`<button class="ibx-card ${n?'':'empty'} ${sec==='inbox'&&!F.area?'on':''}" data-sec="inbox" data-drop="inbox" title="Inbox (1)"><span class="sq">${ic('inbox')}</span><span class="tt"><b>Inbox</b><small>${n?n+'件が仕分け待ち':'空っぽです。頭もすっきり'}</small></span>${n?`<span class="pile" aria-hidden="true"><i></i><i></i><i>${n>99?'99+':n}</i></span>`:''}</button>`)(S.tasks.filter(t=>t.status==='inbox').length)}
-   ${S.sideViews===false?'':`<div class="cap">条件リスト<span class="cap-b"><button id="viewMenu" aria-label="条件リストを管理" title="表示する条件リストを選ぶ">${ic('more')}</button><button id="addView" aria-label="条件リストを追加" title="条件で絞ったリストを追加">${ic('plus')}</button></span></div>
+   ${sbCfg().vw!=='list'?'':`<div class="cap">条件リスト<span class="cap-b"><button id="viewMenu" aria-label="条件リストを管理" title="表示する条件リストを選ぶ">${ic('more')}</button><button id="addView" aria-label="条件リストを追加" title="条件で絞ったリストを追加">${ic('plus')}</button></span></div>
    ${(vs=>vs.length?`<div class="sgrp sviews">${vs.map(v=>`<button class="nav gtd g-view ${sec==='sv'&&S.ui.sv===v.id?'on':''}" data-vw="${v.id}" title="${esc(viewSum(v))}"><span class="sq">${ic(v.icon||'filter')}</span><span class="lbl">${esc(v.name)}</span><span class="n">${vCount(v)||''}</span></button>`).join('')}</div>`:'')((S.views||[]).filter(v=>v.side))}`}
    <div class="cap">エリア<span class="cap-b">${(fs=>fs.length?(op=>`<button id="foldAll" data-open="${op?1:''}" title="${op?'すべてたたむ':'すべて開く'}" aria-label="${op?'すべてたたむ':'すべて開く'}">${ic(op?'foldall':'unfoldall')}</button>`)(fs.some(t=>!(S.ui.fold||{})[t.id])):'')(foldables())}<button id="addArea" aria-label="エリアを追加" title="エリアを追加">${ic('plus')}</button></span></div>
    <div id="areaAddSlot"></div>
@@ -2275,8 +2298,9 @@ function renderSide(){
     const tg=e.target.closest('[data-toggle]');if(tg){e.stopPropagation();S.ui.fold=S.ui.fold||{};S.ui.fold[tg.dataset.toggle]=!S.ui.fold[tg.dataset.toggle];save();renderSide();return}
     F.area=F.area===b.dataset.area?null:b.dataset.area;S.ui.section='next';render();closeSide()});
   $('#addArea').onclick=showAreaAdd;
-  $('#agBtn').onclick=e=>{e.stopPropagation();openAgendaPop($('#agBtn'))};
-  $('#plBtn').onclick=e=>{e.stopPropagation();openAgendaPop($('#plBtn'),'pl')};
+  const agB=$('#agBtn');if(agB)agB.onclick=e=>{e.stopPropagation();openPickPop(agB,'ag')};
+  const plB=$('#plBtn');if(plB)plB.onclick=e=>{e.stopPropagation();openPickPop(plB,'pl')};
+  const vwB=$('#vwBtn');if(vwB)vwB.onclick=e=>{e.stopPropagation();openPickPop(vwB,'vw')};
   $$('#side [data-vw]').forEach(b=>{b.addEventListener('pointerdown',e=>viewReorderDown(e,b));b.onclick=()=>{if(b._dragged){b._dragged=false;return}openView(b.dataset.vw);closeSide()};b.oncontextmenu=e=>{e.preventDefault();openViewEditor(viewOf(b.dataset.vw))}});
   const avb=$('#addView');if(avb)avb.onclick=()=>{closeSide();openViewEditor(null,id=>{if(id)openView(id)})};
   const vmb=$('#viewMenu');if(vmb)vmb.onclick=e=>{e.stopPropagation();openViewMenu(vmb)};
@@ -2464,6 +2488,7 @@ const todayMode=()=>!F.area&&S.ui.section==='today';
 const tickMode=()=>!F.area&&S.ui.section==='tickler';
 const calMode=()=>!F.area&&S.ui.section==='calendar';
 const projMode=()=>!F.area&&S.ui.section==='proj'&&isProj(taskById(S.ui.proj))&&taskById(S.ui.proj).status!=='done';
+const sbCfg=()=>{const c=S.ui.sb||(S.ui.sb={});if(c.pl==null)c.pl=true;if(c.ag==null)c.ag=true;if(!c.vw)c.vw=S.sideViews===false?'off':'list';return c};
 const agMode=()=>!F.area&&S.ui.section==='ag'&&!!pName(S.ui.ag);
 const plMode=()=>!F.area&&S.ui.section==='pl'&&!!tagName(S.ui.pl);
 const ctxMode=()=>agMode()||plMode();
@@ -3100,6 +3125,7 @@ Object.assign(I,{
  'u-award':'<path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/>',
  'u-circle-check':'<circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/>'
 });
+Object.assign(I,{'u-eye':'<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>','u-eye-off':'<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>'});
 const ICAT=[["GTD",[["inbox","受信 インボックス 箱"],["next","次 再生 ネクスト"],["waiting","待つ 砂時計 ウェイティング"],["someday","いつか 雲"],["tickler","ティックラー 戻る"],["calendar","カレンダー 予定"],["today","今日 太陽"],["clip","プロジェクト クリップ"],["review","レビュー ふりかえり"],["log","完了 チェック"],["list","リスト 一覧"],["folder","フォルダ"]]],["仕事・学び",[["brief","仕事 かばん ビジネス"],["building","会社 ビル 職場"],["pc","パソコン PC"],["phone","電話 スマホ"],["mail","メール 手紙"],["cal","カレンダー 日付"],["clock","時計 時間"],["book","本 読書"],["grad","学校 卒業 勉強"],["edit","書く 編集 ペン"],["u-presentation","プレゼン 発表 会議"],["u-clipboard-list","チェックリスト クリップボード"],["u-file-text","書類 ファイル 資料"],["u-notebook-pen","ノート メモ"],["u-calculator","計算 電卓 経理"],["u-chart-column","グラフ 数字 分析"],["u-chart-line","グラフ 推移 成長"],["u-target","目標 ゴール"],["u-lightbulb","アイデア ひらめき 電球"],["u-video","ビデオ 動画 オンライン会議"],["u-handshake","握手 商談 取引"],["u-megaphone","告知 広報 宣伝"],["u-school","学校 校舎"],["u-languages","語学 英語 翻訳"],["u-code","プログラミング コード 開発"]]],["科学・研究",[["u-flask-conical","フラスコ 実験 化学"],["u-flask-round","丸底フラスコ 化学 合成"],["u-test-tube","試験管 実験"],["u-test-tubes","試験管 サンプル 検体"],["u-pipette","ピペット 実験 分注"],["u-microscope","顕微鏡 観察 イメージング"],["u-dna","DNA 遺伝子 ゲノム 分子生物学"],["u-atom","原子 物理 化学"],["u-virus","ウイルス 微生物 感染"],["u-biohazard","バイオハザード 安全 P2"],["u-radiation","放射線 RI 安全"],["u-magnet","磁石 物理 磁場"],["u-thermometer","温度 インキュベーター 体温"],["u-telescope","望遠鏡 天文"],["u-orbit","軌道 宇宙 天体"],["u-satellite","衛星 宇宙 観測"],["u-earth","地球 環境 地学"],["u-brain-circuit","神経科学 脳 AI"],["u-scale","天秤 秤量 はかり"],["u-ruler","定規 測る 計測"],["u-chart-scatter","散布図 データ 統計"],["u-chart-network","ネットワーク 解析 相関"],["u-chart-pie","円グラフ 割合 集計"],["u-sigma","シグマ 統計 数学 合計"],["u-pi","円周率 数学"],["u-square-function","関数 数式 解析"],["u-square-radical","ルート 平方根 数学"],["u-variable","変数 数式 モデル"],["u-binary","二進数 計算 情報"],["u-database","データベース データ"],["u-cpu","計算機 CPU シミュレーション"],["u-server","サーバー 計算 クラスタ"],["u-bot","ロボット AI 自動化"]]],["生物",[["u-bug","虫 昆虫 ショウジョウバエ"],["u-worm","線虫 ミミズ"],["u-rat","ラット マウス 動物実験"],["u-rabbit","うさぎ 抗体"],["u-turtle","カメ 爬虫類"],["u-snail","カタツムリ 貝"],["u-squirrel","リス 動物"],["u-shell","貝 海洋生物"],["u-egg","卵 発生 胚"],["u-bone","骨 解剖"],["u-skull","頭蓋骨 解剖 形態"],["u-leafy-green","植物 葉 光合成"],["u-flower","花 植物学"],["u-tree-deciduous","木 生態"],["u-trees","森 生態系 フィールド"],["u-wheat","作物 農学 イネ"]]],["大学・学術",[["u-university","大学 キャンパス"],["u-library","図書館 文献"],["u-library-big","図書館 蔵書 本棚"],["u-book-open-text","論文 文献 読む"],["u-book-marked","教科書 しおり"],["u-notebook","実験ノート ノート"],["u-notebook-tabs","ラボノート 記録 研究ノート"],["u-scroll-text","原稿 規程 書類"],["u-quote","引用 文献 参考"],["u-file-search","文献検索 調査 サーベイ"],["u-search-check","査読 確認 チェック"],["u-file-pen","原稿 執筆 投稿 申請書"],["u-pen-line","執筆 書く 添削"],["u-file-chart-column-increasing","報告書 成果 実績"],["u-speech","発表 講演 質疑 学会"],["u-backpack","学生 通学"],["u-pencil-ruler","授業準備 製図"],["u-id-card","学生証 身分証"],["u-file-badge","証明書 修了"],["u-stamp","押印 事務 申請"],["u-signature","署名 契約"],["u-medal","受賞 メダル 表彰"],["u-badge-check","採択 承認 合格"]]],["お金・買い物",[["yen","お金 円"],["cart","買い物 カート"],["bag","買い物 袋"],["gift","プレゼント ギフト"],["u-wallet","財布 支払い"],["u-credit-card","カード クレジット"],["u-piggy-bank","貯金 ぶた"],["u-receipt","レシート 領収書 経費"],["u-banknote","お札 現金"],["u-landmark","銀行 役所"],["u-store","お店 ショップ"],["u-package","荷物 配達 宅配"]]],["家・暮らし",[["home","家 自宅"],["u-bed","寝る ベッド 睡眠"],["u-sofa","ソファ くつろぐ"],["u-bath","風呂 お風呂"],["u-shirt","服 洗濯 衣替え"],["u-washing-machine","洗濯機 洗濯"],["u-key-round","鍵 カギ"],["u-trash-2","ゴミ 捨てる"],["u-recycle","リサイクル 資源ごみ"],["u-hammer","修理 DIY 工具"],["wrench","工具 修理 レンチ"],["u-paintbrush","ペンキ 掃除 塗る"],["u-scissors","はさみ 切る"],["u-sparkles","掃除 きれい キラキラ"],["u-flower-2","花 植物"]]],["食",[["food","食事 ごはん"],["coffee","コーヒー カフェ"],["u-utensils","食事 レストラン 外食"],["u-chef-hat","料理 シェフ"],["u-cooking-pot","鍋 料理 自炊"],["u-apple","りんご 果物 健康"],["u-cake","ケーキ 誕生日 お祝い"],["u-wine","ワイン お酒"],["u-beer","ビール 飲み会"],["u-sandwich","サンドイッチ ランチ 弁当"]]],["健康・運動",[["dumbbell","筋トレ 運動 ジム"],["pill","薬 くすり"],["heart","ハート 好き"],["u-activity","運動 心拍 活動"],["u-heart-pulse","健康 心拍 病院"],["u-stethoscope","病院 診察 医者"],["u-bike","自転車 サイクリング"],["u-footprints","散歩 ウォーキング 歩く"],["u-brain","頭 考える 脳"],["u-smile","笑顔 気分"]]],["移動・旅行",[["car","車 ドライブ"],["plane","飛行機 旅行 出張"],["pin","場所 地図 ピン"],["out","外出 出かける"],["u-train-front","電車 通勤"],["u-bus","バス"],["u-map","地図 マップ"],["u-luggage","スーツケース 旅行 荷造り"],["u-tent","キャンプ テント"],["u-mountain","山 登山"],["u-globe","世界 海外 地球"],["u-hotel","ホテル 宿"]]],["趣味・遊び",[["music","音楽"],["palette","絵 デザイン パレット"],["u-camera","カメラ 写真"],["u-gamepad-2","ゲーム"],["u-guitar","ギター 楽器"],["u-headphones","ヘッドホン 音楽 ポッドキャスト"],["u-film","映画 フィルム"],["u-tv","テレビ 動画"],["u-book-open","読書 本"],["u-puzzle","パズル"],["u-dices","サイコロ ボードゲーム"],["u-trophy","トロフィー 優勝 大会"],["u-fishing-hook","釣り"],["u-brush","書道 筆 絵"]]],["人・家族・ペット",[["people","人々 チーム 家族"],["user","人 自分"],["contact","連絡先 名刺"],["u-baby","赤ちゃん 子ども 育児"],["u-hand-heart","支援 ボランティア 寄付"],["u-party-popper","パーティー お祝い イベント"],["u-message-circle","メッセージ チャット 会話"],["u-dog","犬 いぬ ペット"],["u-cat","猫 ねこ ペット"],["u-paw-print","ペット 足あと"],["u-fish","魚 さかな"]]],["自然・天気",[["leaf","葉 植物 自然"],["moon","夜 月"],["sunrise","朝 日の出"],["dusk","夕方 夕暮れ"],["u-sun","晴れ 太陽"],["u-cloud","くもり 雲"],["u-cloud-rain","雨"],["u-snowflake","雪 冬"],["u-tree-pine","木 森 クリスマス"],["u-sprout","芽 成長 家庭菜園"],["u-waves","海 波"],["u-flame","火 やる気 炎"]]],["記号・その他",[["star","星 お気に入り"],["flag","旗 目標"],["bolt","いなずま すばやく"],["tag","タグ ラベル"],["lock","鍵 秘密"],["gear","設定 歯車"],["search","検索 探す"],["u-bell","通知 ベル"],["u-alarm-clock","目覚まし アラーム"],["u-timer","タイマー"],["u-bookmark","しおり ブックマーク"],["u-shield","守る 保険 セキュリティ"],["u-crown","王冠 一番"],["u-gem","宝石 大事"],["u-rocket","ロケット 挑戦 始める"],["u-award","賞 表彰"],["u-circle-check","完了 チェック"]]]];
 const TAB_ICONS=ICAT.flatMap(c=>c[1].map(x=>x[0]));
 const ICKW=Object.fromEntries(ICAT.flatMap(c=>c[1].map(x=>[x[0],c[0]+' '+x[1]])));
@@ -3199,18 +3225,9 @@ function openTabPicker(i,startIcon){
   draw();document.body.appendChild(scrim);
 }
 /* 下タブの「メニュー」ボタン：押すと一覧が開いて選べる */
-function openSlotMenu(m){if(m==='search'){openSearch();return}if(m==='agenda'){openAgendaPop($('#tabs [data-slot="menu:agenda"]')||document.body);return}if(m==='places'){openAgendaPop($('#tabs [data-slot="menu:places"]')||document.body,'pl');return}const ck=curKey(),M=SMENU[m];if(!M)return;
-  const ck1=k=>k===ck?`<span class="tp-ck">${ic('log')}</span>`:'';
-  const secN=x=>x==='calendar'?S.tasks.filter(t=>t.status==='calendar'&&!(t.info&&t.cdate<todayKey())).length:x==='tickler'?S.tasks.filter(tickled).length:x==='projects'?projects().length:S.tasks.filter(t=>t.status===x&&!isProj(t)&&!tickled(t)&&!queued(t)).length;
-  let html='';
-  if(m==='lists')html=`<div class="ph-ig">${MLISTS.map(x=>{const L=x==='projects'?['プロジェクト','clip']:[SECT[x].en,x];return `<button class="ph-ir ic" data-go="sec:${x}"><span class="ph-ico g-${x}">${ic(L[1])}</span><span class="l">${L[0]}</span><span class="v">${secN(x)||''}</span>${ck1('sec:'+x)}</button>`}).join('')}</div>`;
-  else if(m==='areas')html=`<div class="ph-ig">${orderedAreas().map(a=>{const sub=rootOf(a)!==a,n=S.tasks.filter(t=>inArea(t,a.id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length;return `<button class="ph-ir ic ${sub?'sub':''}" data-go="area:${a.id}"><span class="ph-dt c-${areaColor(a)}"><i class="dot"></i></span><span class="l">${esc(a.name)}</span><span class="v">${n||''}</span>${ck1('area:'+a.id)}</button>`}).join('')||'<div class="ph-none ppad">エリアはまだありません</div>'}</div>`;
-  else if(m==='views')html=`<div class="ph-ig">${(S.views||[]).map(v=>`<button class="ph-ir ic" data-go="view:${v.id}"><span class="ph-ico g-view">${ic(v.icon||'filter')}</span><span class="l">${esc(v.name)}</span><span class="v">${vCount(v)||''}</span>${ck1('view:'+v.id)}</button>`).join('')||'<div class="ph-none ppad">条件で絞ったリストはまだありません</div>'}</div><div class="ph-ig"><button class="ph-ir act" data-new>新しく作る</button></div>`;
-  else html=`<div class="ph-ig">${projects().map(p=>`<button class="ph-ir ic" data-go="proj:${p.id}"><span class="ph-ico g-projects">${ic('clip')}</span><span class="l">${esc(p.title)}</span><span class="v">${pKids(p).length||''}</span>${ck1('proj:'+p.id)}</button>`).join('')||'<div class="ph-none ppad">プロジェクトはまだありません</div>'}</div>`;
-  phSheet(M[0],'',html,(el,close)=>{
-    $$('[data-go]',el).forEach(b=>b.onclick=()=>{close();const k=b.dataset.go;if(k===ck)return;
-      if(k.startsWith('area:')){LSEL=null;F.area=k.slice(5);S.ui.section='next';save();render()}else goSlot(k)});
-    const nb=$('[data-new]',el);if(nb)nb.onclick=()=>{close();openViewEditor(null,id=>{if(id)openView(id)})}})}
+function openSlotMenu(m){if(m==='search'){openSearch();return}
+  const map={agenda:'ag',places:'pl',views:'vw',areas:'ar',lists:'gtd',projects:'pj'},k=map[m];if(!k)return;
+  openPickPop($(`#tabs [data-slot="menu:${m}"]`)||document.body,k)}
 /* ---------- Agenda（人・会議）：サイドバー1行 → 小窓で全員（順番・区切りどおり） ---------- */
 const onCtxBoard=t=>!isProj(t)&&['next','waiting','someday','calendar'].includes(t.status)&&!queued(t)&&!(t.status==='calendar'&&t.info&&t.cdate<todayKey());
 const agCount=id=>S.tasks.filter(t=>onCtxBoard(t)&&(t.agenda||[]).includes(id)).length;
@@ -3221,63 +3238,94 @@ const plCount=id=>S.tasks.filter(t=>onCtxBoard(t)&&(t.tags||[]).includes(id)).le
 /* 小窓：サイドバーと同じ質感（生成りの地＋区切りごとの白いカード＋灰色の件数バッジ） */
 const AGC=['#4A86E8','#5E7FB8','#2FA38A','#3FA0A8','#C98A1B','#E5534B','#8C7AE6','#D06A9C','#6E8B3D','#C76A1C'];
 const agColor=g=>g.color||AGC[hash(g.id||g.name||'')%AGC.length];
-function openAgendaPop(anchor,kind){const PL=kind==='pl';let edit=false,q='',cur=0,adding=false;
-  const list=()=>PL?S.places:(S.people||(S.people=[]));
-  const cnt=id=>PL?plCount(id):agCount(id);
-  const isOn=id=>PL?S.ui.section==='pl'&&S.ui.pl===id:S.ui.section==='ag'&&S.ui.ag===id;
-  const ico=g=>PL?`<span class="agp-sq" style="background:${agColor(g)}">${ic(g.icon||'pin')}</span>`:`<span class="agp-av" style="background:${agColor(g)}">${esc((g.name||'?').slice(0,1))}</span>`;
+/* ---------- 共通の小窓：Agenda・場所・条件リスト・エリア・GTD・プロジェクト ----------
+   Mac：サイドバーやタブの近くに出る小窓／iPhone：下タブの上に浮かぶシート（案2） */
+const secCount=x=>x==='calendar'?S.tasks.filter(t=>t.status==='calendar'&&!(t.info&&t.cdate<todayKey())).length:x==='tickler'?S.tasks.filter(tickled).length:x==='projects'?projects().length:S.tasks.filter(t=>t.status===x&&!isProj(t)&&!tickled(t)&&!queued(t)).length;
+const hideVis={vis:g=>!g.hide,setVis:(g,v)=>{if(v)delete g.hide;else g.hide=true}};
+function popKinds(){return {
+  ag:{title:'Agenda',hico:'user',hcol:'#6A55C9',items:()=>S.people||(S.people=[]),cnt:agCount,on:id=>S.ui.section==='ag'&&S.ui.ag===id,open:openAgenda,
+    ico:g=>`<span class="agp-av" style="background:${agColor(g)}">${esc((g.name||'?').slice(0,1))}</span>`,ph:'人・会議を探す',edit:true,add:true,addLabel:'人・会議を追加',empty:'まだ誰もいません。下のボタンか上の欄から追加できます。',...hideVis},
+  pl:{title:'場所・道具',hico:'pin',hcol:'#C76A1C',items:()=>S.places,cnt:plCount,on:id=>S.ui.section==='pl'&&S.ui.pl===id,open:openPlace,
+    ico:g=>`<span class="agp-sq" style="background:${agColor(g)}">${ic(g.icon||'pin')}</span>`,ph:'場所・道具を探す',edit:true,add:true,addLabel:'場所・道具を追加',empty:'場所・道具はまだありません',...hideVis},
+  vw:{title:'条件リスト',hico:'filter',hcol:'#5B6CC9',items:()=>S.views||(S.views=[]),cnt:vCount,on:id=>S.ui.section==='sv'&&S.ui.sv===id,open:openView,
+    ico:g=>`<span class="agp-sq" style="background:#5B6CC9">${ic(g.icon||'filter')}</span>`,ph:'条件リストを探す',edit:true,newFn:()=>openViewEditor(null,id=>{if(id)openView(id)}),addLabel:'新しく作る',empty:'条件で絞ったリストはまだありません',
+    vis:g=>g.side!==false,setVis:(g,v)=>{g.side=v}},
+  ar:{title:'エリア',hico:'folder',hcol:'#7A746A',items:()=>{const o=[];tops().forEach((a,i)=>{if(i&&kids(a.id).length)o.push({sep:true});o.push(a,...kids(a.id));if(kids(a.id).length)o.push({sep:true})});return o},
+    cnt:id=>S.tasks.filter(t=>inArea(t,id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length,on:id=>F.area===id&&!['ag','pl','sv'].includes(S.ui.section),
+    open:id=>{LSEL=null;F.area=id;S.ui.section='next';save();render()},ico:g=>`<span class="agp-dt"><i class="dot c-${areaColor(g)}"></i></span>`,sub:g=>rootOf(g)!==g,ph:'エリアを探す',empty:'エリアはまだありません',vis:()=>true},
+  gtd:{title:'GTD',hico:'u-clipboard-list',hcol:'#4A86E8',items:()=>['inbox','next','calendar',{sep:true},'waiting','someday','tickler','projects'].map(x=>x.sep?x:{id:x,name:x==='projects'?'プロジェクト':SECT[x].en}),
+    cnt:secCount,on:id=>curKey()==='sec:'+id,open:id=>goSlot('sec:'+id),ico:g=>`<span class="agp-sq g-${g.id}" style="background:var(--gc,#8A877F)">${ic(g.id==='projects'?'clip':g.id)}</span>`,nosearch:true,vis:()=>true},
+  pj:{title:'プロジェクト',hico:'clip',hcol:'#8A877F',items:()=>projects().map(p=>({id:p.id,name:p.title})),cnt:id=>pKids(taskById(id)).length,on:id=>projMode()&&S.ui.proj===id,
+    open:id=>{openProject(id);S.ui.fromProjects=false},ico:()=>`<span class="agp-sq" style="background:#8A877F">${ic('clip')}</span>`,ph:'プロジェクトを探す',empty:'進行中のプロジェクトはありません',vis:()=>true}
+}}
+function openAgendaPop(anchor,kind){openPickPop(anchor,kind||'ag')}
+function openPickPop(anchor,kind){const K=popKinds()[kind];if(!K)return;let edit=false,q='',cur=0,adding=false;
   const groups=rows=>{const out=[[]];rows.forEach(g=>{if(g.sep){if(out[out.length-1].length)out.push([])}else out[out.length-1].push(g)});return out.filter(x=>x.length)};
-  const H=()=>{const P=list(),title=PL?'場所・道具':'Agenda',hico=PL?'pin':'user',hcol=PL?'#C76A1C':'#6A55C9';
-    const total=P.filter(g=>!g.sep).reduce((a,g)=>a+cnt(g.id),0);
-    const head=`<div class="agp-h"><span class="agp-hi" style="background:${hcol}">${ic(hico)}</span><b>${title}</b><span class="agp-tot">${total?total+'件':''}</span>${edit?`<button class="agp-ed" data-done>完了</button>`:P.length?`<button class="agp-ed" data-edit>${ic('edit')}編集</button>`:''}</div>`;
+  const head=()=>{const P=K.items(),total=P.filter(g=>!g.sep&&K.vis(g)).reduce((a,g)=>a+K.cnt(g.id),0);
+    return `<div class="agp-h"><span class="agp-hi" style="background:${K.hcol}">${ic(K.hico)}</span><b>${K.title}</b><span class="agp-tot">${total&&kind==='ag'?'話すこと '+total+'件':''}</span>${edit?`<button class="agp-ed" data-done>完了</button>`:K.edit&&P.length?`<button class="agp-ed" data-edit>${ic('edit')}編集</button>`:''}${narrow()?`<button class="agp-x" data-close aria-label="閉じる">${ic('x')}</button>`:''}</div>`};
+  const H=()=>{const P=K.items();
     if(edit){
-      const rows=P.map((g,i)=>`<div class="agp-er ${g.sep?'sep':''}">${g.sep?`<span class="agp-sepl">区切り</span>`:`${PL?ico(g):`<button class="agp-col" data-col="${i}" title="色を変える" style="background:${agColor(g)}">${esc((g.name||'?').slice(0,1))}</button>`}<input data-nm="${i}" value="${esc(g.name)}" maxlength="20">`}<span class="agp-mv"><button data-up="${i}" ${i?'':'disabled'} aria-label="上へ">${ic('chev')}</button><button data-dn="${i}" ${i<P.length-1?'':'disabled'} aria-label="下へ">${ic('chev')}</button></span><button class="agp-del" data-del="${i}" aria-label="削除">${ic('x')}</button></div>`).join('');
-      return head+`<div class="agp-body"><div class="agp-card">${rows||'<div class="agp-none">まだありません</div>'}</div><div class="agp-hint">${PL?'アイコンは「場所・道具を編集」で変えられます。':'丸を押すと色が変わります。'}× を2回押すと削除（すべてのタスクから外れます）。</div></div>
-        <div class="agp-ft"><button class="agp-btn" data-sep>${ic('plus')}区切りを追加</button>${PL?`<button class="agp-btn" data-pled>${ic('edit')}アイコンなど</button>`:''}</div>`}
-    return head+`<label class="agp-s">${ic('search')}<input id="agQ" placeholder="${PL?'場所・道具を探す':'人・会議を探す'}" value="${esc(q)}" autocomplete="off"><kbd>↑↓ ⏎</kbd></label>
-      <div class="agp-body">${listH(P)}</div>
-      <div class="agp-ft">${adding?`<label class="agp-addin">${ic('plus')}<input id="agNew" placeholder="${PL?'新しい場所・道具':'新しい人・会議'}" maxlength="20" autocomplete="off"></label>`:`<button class="agp-btn agp-pri" data-new style="color:${hcol}">${ic('plus')}${PL?'場所・道具を追加':'人・会議を追加'}</button>`}</div>`};
-  const listH=P=>{
-    const w=q.trim().toLowerCase();let k=0;
-    const rowH=g=>{const n=cnt(g.id),me=k++;return `<button class="agp-it ag-it ${n?'':'zero'} ${me===cur&&w?'hl':''} ${isOn(g.id)?'on':''}" data-p="${g.id}">${ico(g)}<span class="agp-nm">${esc(g.name)}${isOn(g.id)?'<em>表示中</em>':''}</span><span class="agp-c">${n||'—'}</span></button>`};
+      const rows=P.map((g,i)=>{if(g.sep)return `<div class="agp-er sep"><span class="agp-sepl">区切り</span><span class="agp-mv"><button data-up="${i}" ${i?'':'disabled'}>${ic('chev')}</button><button data-dn="${i}" ${i<P.length-1?'':'disabled'}>${ic('chev')}</button></span><button class="agp-del" data-del="${i}" aria-label="削除">${ic('x')}</button></div>`;
+        const v=K.vis(g);
+        const lead=kind==='ag'?`<button class="agp-col" data-col="${i}" title="色を変える" style="background:${agColor(g)}">${esc((g.name||'?').slice(0,1))}</button>`
+          :kind==='pl'?`<button class="agp-sq agp-sqb" data-pic="${i}" title="アイコンを変える" style="background:${agColor(g)}">${ic(g.icon||'pin')}</button><button class="agp-cdot" data-col="${i}" title="色を変える" style="background:${agColor(g)}"></button>`
+          :`<button class="agp-sq agp-sqb" data-pic="${i}" title="アイコンを変える" style="background:#5B6CC9">${ic(g.icon||'filter')}</button>`;
+        return `<div class="agp-er ${v?'':'off'}">${lead}<input data-nm="${i}" value="${esc(g.name)}" maxlength="24"><button class="agp-eye ${v?'on':''}" data-vis="${i}" title="${v?'小窓に表示中（押すと隠す）':'隠しています（押すと表示）'}">${ic(v?'u-eye':'u-eye-off')}</button><span class="agp-mv"><button data-up="${i}" ${i?'':'disabled'} aria-label="上へ">${ic('chev')}</button><button data-dn="${i}" ${i<P.length-1?'':'disabled'} aria-label="下へ">${ic('chev')}</button></span>${kind==='vw'?`<button class="agp-del" data-vedit="${i}" title="条件を編集">${ic('edit')}</button>`:`<button class="agp-del" data-del="${i}" aria-label="削除">${ic('x')}</button>`}</div>`}).join('');
+      return head()+`<div class="agp-body"><div class="agp-card">${rows||'<div class="agp-none">まだありません</div>'}</div><div class="agp-hint">${ic('u-eye')} を外すと、この小窓（とサイドバー）に出なくなります。${kind==='vw'?'✎で条件を編集。':'× を2回押すと削除（すべてのタスクから外れます）。'}${kind==='ag'?'丸を押すと色が変わります。':kind==='pl'?'アイコンを押すと選べます。':''}</div></div>
+        ${kind==='vw'?'':`<div class="agp-ft"><button class="agp-btn" data-sep>${ic('plus')}区切りを追加</button></div>`}`}
+    const ft=K.add?(adding?`<label class="agp-addin">${ic('plus')}<input id="agNew" placeholder="${K.addLabel.replace('を追加','')}" maxlength="20" autocomplete="off"></label>`:`<button class="agp-btn agp-pri" data-new style="color:${K.hcol}">${ic('plus')}${K.addLabel}</button>`):K.newFn?`<button class="agp-btn agp-pri" data-newfn style="color:${K.hcol}">${ic('plus')}${K.addLabel}</button>`:'';
+    return head()+(K.nosearch?'':`<label class="agp-s">${ic('search')}<input id="agQ" placeholder="${K.ph}" value="${esc(q)}" autocomplete="off"><kbd>↑↓ ⏎</kbd></label>`)+`<div class="agp-body">${listH()}</div>${ft?`<div class="agp-ft">${ft}</div>`:''}`};
+  const listH=()=>{const P=K.items(),w=q.trim().toLowerCase();let k=0;
+    const rowH=g=>{const n=K.cnt(g.id),me=k++,on=K.on(g.id);return `<button class="agp-it ag-it ${K.sub&&K.sub(g)?'sub':''} ${n?'':'zero'} ${me===cur&&w?'hl':''} ${on?'on':''}" data-p="${g.id}">${K.ico(g)}<span class="agp-nm">${esc(g.name)}${on?'<em>表示中</em>':''}</span><span class="agp-c">${n||'—'}</span></button>`};
     let body;
-    if(w){const hit=P.filter(g=>!g.sep&&g.name.toLowerCase().includes(w));body=hit.length?`<div class="agp-card">${hit.map(rowH).join('')}</div>`:''}
-    else body=groups(P).map(gr=>`<div class="agp-card">${gr.map(rowH).join('')}</div>`).join('');
+    if(w){const hit=P.filter(g=>!g.sep&&(g.name||'').toLowerCase().includes(w));body=hit.length?`<div class="agp-card">${hit.map(rowH).join('')}</div>`:''}
+    else body=groups(P.filter(g=>g.sep||K.vis(g))).map(gr=>`<div class="agp-card">${gr.map(rowH).join('')}</div>`).join('');
     const exact=P.some(g=>!g.sep&&g.name===q.trim());
-    const addRow=q.trim()&&!exact?`<div class="agp-card"><button class="agp-it ag-it agp-add ${k===0?'hl':''}" data-add><span class="agp-plus">${ic('plus')}</span><span class="agp-nm">「${esc(q.trim())}」を追加</span></button></div>`:'';
-    return (body||(w?'':`<div class="agp-none">${PL?'場所・道具はまだありません':'まだ誰もいません。下のボタンか上の欄から追加できます。'}</div>`))+addRow};
+    const addRow=K.add&&q.trim()&&!exact?`<div class="agp-card"><button class="agp-it ag-it agp-add ${k===0?'hl':''}" data-add><span class="agp-plus">${ic('plus')}</span><span class="agp-nm">「${esc(q.trim())}」を追加</span></button></div>`:'';
+    const hid=w?0:P.filter(g=>!g.sep&&!K.vis(g)).length;
+    return (body||(w?'':`<div class="agp-none">${K.empty||''}</div>`))+addRow+(hid?`<div class="agp-hid">ほかに ${hid}件を隠しています（編集で表示）</div>`:'')};
   const add=n=>{n=n.trim().replace(/^[+#]/,'');if(!n)return;
-    if(PL){let g=S.places.find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n,icon:'pin'};S.places.push(g);TAGS=S.places;save()}closePop();openPlace(g.id);return}
-    let g=list().find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n};S.people.push(g);save()}closePop();openAgenda(g.id)};
-  const bindList=el=>{$$('[data-p]',el).forEach(b=>b.onclick=()=>{closePop();(PL?openPlace:openAgenda)(b.dataset.p)});const ad=$('[data-add]',el);if(ad)ad.onclick=()=>add(q)};
+    if(kind==='pl'){let g=S.places.find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n,icon:'pin'};S.places.push(g);TAGS=S.places;save()}closePop();openPlace(g.id);return}
+    let g=K.items().find(x=>!x.sep&&x.name===n);if(!g){g={id:uid(),name:n};S.people.push(g);save()}closePop();openAgenda(g.id)};
+  const bindList=el=>{$$('[data-p]',el).forEach(b=>b.onclick=()=>{closePop();K.open(b.dataset.p)});const ad=$('[data-add]',el);if(ad)ad.onclick=()=>add(q)};
   const draw=el=>{const sb=$('.agp-body',el);const st=sb?sb.scrollTop:0;el.innerHTML=H();bind(el);const nb=$('.agp-body',el);if(nb)nb.scrollTop=st};
-  const bind=el=>{const P=list();
+  const bind=el=>{const P=K.items();
+    const cl=$('[data-close]',el);if(cl)cl.onclick=()=>closePop();
     const dn=$('[data-done]',el);if(dn)dn.onclick=()=>{edit=false;draw(el);render()};
     const ed=$('[data-edit]',el);if(ed)ed.onclick=()=>{edit=true;draw(el)};
     if(edit){
       $$('[data-up]',el).forEach(b=>b.onclick=()=>{const i=+b.dataset.up;if(i>0){[P[i-1],P[i]]=[P[i],P[i-1]];save();draw(el)}});
       $$('[data-dn]',el).forEach(b=>b.onclick=()=>{const i=+b.dataset.dn;if(i<P.length-1){[P[i+1],P[i]]=[P[i],P[i+1]];save();draw(el)}});
       $$('[data-nm]',el).forEach(inp=>inp.onchange=()=>{const v=inp.value.trim();if(v){P[+inp.dataset.nm].name=v;save();renderSide()}});
+      $$('[data-vis]',el).forEach(b=>b.onclick=()=>{const g=P[+b.dataset.vis];K.setVis(g,!K.vis(g));save();draw(el);renderSide()});
       $$('[data-col]',el).forEach(b=>b.onclick=()=>{const g=P[+b.dataset.col];const i=AGC.indexOf(agColor(g));g.color=AGC[(i+1)%AGC.length];save();draw(el)});
+      $$('[data-pic]',el).forEach(b=>b.onclick=()=>{const g=P[+b.dataset.pic];pickIcon(g.icon||(kind==='vw'?'filter':'pin'),n=>{g.icon=n;save();draw(el);renderSide();renderMain()})});
+      $$('[data-vedit]',el).forEach(b=>b.onclick=()=>{const g=P[+b.dataset.vedit];closePop();openViewEditor(g)});
       $$('[data-del]',el).forEach(b=>b.onclick=()=>{const i=+b.dataset.del,g=P[i];if(!g)return;
         if(!g.sep&&!b.classList.contains('armed')){b.classList.add('armed');b.textContent='削除';return}
-        P.splice(i,1);if(!g.sep){if(PL){S.tasks.forEach(x=>{if(x.tags)x.tags=x.tags.filter(y=>y!==g.id)});F.tags.delete(g.id);TAGS=S.places;if(S.ui.pl===g.id&&S.ui.section==='pl')S.ui.section='next'}
+        P.splice(i,1);if(!g.sep){if(kind==='pl'){S.tasks.forEach(x=>{if(x.tags)x.tags=x.tags.filter(y=>y!==g.id)});F.tags.delete(g.id);TAGS=S.places;if(S.ui.pl===g.id&&S.ui.section==='pl')S.ui.section='next'}
           else{S.tasks.forEach(x=>{if(x.agenda)x.agenda=x.agenda.filter(y=>y!==g.id)});(S.views||[]).forEach(v=>{if(v.people)v.people=v.people.filter(y=>y!==g.id)});F.people.delete(g.id);if(S.ui.ag===g.id&&S.ui.section==='ag')S.ui.section='next'}}
         save();draw(el);renderSide();renderMain();renderBar()});
-      $('[data-sep]',el).onclick=()=>{P.push({id:uid(),sep:true});save();draw(el)};
-      const pe=$('[data-pled]',el);if(pe)pe.onclick=()=>{closePop();openPlacesEditor(()=>render())};
+      const sp=$('[data-sep]',el);if(sp)sp.onclick=()=>{P.push({id:uid(),sep:true});save();draw(el)};
       return}
     const qi=$('#agQ',el);
-    /* 一覧だけ作り直す（入力欄はそのまま＝日本語の変換が途切れない） */
-    qi.oninput=()=>{q=qi.value;cur=0;$('.agp-body',el).innerHTML=listH(list());bindList(el)};
-    qi.onkeydown=e=>{if(isIME(e))return;const its=$$('.ag-it',el);
-      if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();cur=Math.max(0,Math.min(its.length-1,cur+(e.key==='ArrowDown'?1:-1)));its.forEach((b,i)=>b.classList.toggle('hl',i===cur));its[cur]&&its[cur].scrollIntoView({block:'nearest'})}
-      else if(e.key==='Enter'){e.preventDefault();const b=q.trim()?its[cur]:$('.ag-it.on',el)||its[0];if(b)b.click()}};
+    if(qi){/* 一覧だけ作り直す（入力欄はそのまま＝日本語の変換が途切れない） */
+      qi.oninput=()=>{q=qi.value;cur=0;$('.agp-body',el).innerHTML=listH();bindList(el)};
+      qi.onkeydown=e=>{if(isIME(e))return;const its=$$('.ag-it',el);
+        if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();cur=Math.max(0,Math.min(its.length-1,cur+(e.key==='ArrowDown'?1:-1)));its.forEach((b,i)=>b.classList.toggle('hl',i===cur));its[cur]&&its[cur].scrollIntoView({block:'nearest'})}
+        else if(e.key==='Enter'){e.preventDefault();const b=q.trim()?its[cur]:$('.ag-it.on',el)||its[0];if(b)b.click()}}}
     bindList(el);
     const nb=$('[data-new]',el);if(nb)nb.onclick=()=>{adding=true;draw(el);const n=$('#agNew',el);n&&n.focus()};
+    const nf=$('[data-newfn]',el);if(nf)nf.onclick=()=>{closePop();K.newFn()};
     const ni=$('#agNew',el);if(ni){ni.onkeydown=e=>{if(isIME(e))return;if(e.key==='Enter'){e.preventDefault();add(ni.value)}else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();adding=false;draw(el)}}}
-    if(!narrow()&&!ni)setTimeout(()=>{if(qi.isConnected&&document.activeElement!==qi&&!$('#agNew',el))qi.focus()},20)};
-  miniPop(anchor,H(),el=>{el.classList.add('agpop');bind(el)})}
+    if(qi&&!narrow()&&!ni)setTimeout(()=>{if(qi.isConnected&&document.activeElement!==qi&&!$('#agNew',el))qi.focus()},20)};
+  miniPop(anchor,H(),el=>{el.classList.add('agpop');if(narrow()){el.classList.add('agp-float');const dim=document.createElement('div');dim.className='agp-dim';el.parentNode.insertBefore(dim,el)}bind(el)})}
+/* アイコン選び（場所・道具、条件リスト） */
+function pickIcon(cur,onPick){const scrim=document.createElement('div');scrim.className='scrim phsheet vx icpick';
+  scrim.innerHTML=`<div class="sheet ph-sh" role="dialog" aria-label="アイコンを選ぶ"><div class="grab"></div><div class="ph-shh"><button data-x>キャンセル</button><b>アイコン</b><button class="b" data-x>完了</button></div><div class="ph-shb">${iconPickHTML(cur)}</div></div>`;
+  const close=()=>scrim.remove();scrim.addEventListener('pointerdown',e=>{if(e.target===scrim)close()});
+  $$('[data-x]',scrim).forEach(b=>b.onclick=close);
+  bindIconPick(scrim,n=>{close();onPick(n)});document.body.appendChild(scrim);if(!narrow())setTimeout(()=>{const q=$('#ipQ',scrim);q&&q.focus()},30)}
 /* ---------- 条件で絞ったリスト ----------
    違う条件どうしは「すべて満たす」。同じ条件の中で複数選んだら「どれか」（場所とタグは「すべて」も選べる） */
 const VST=[['inbox','Inbox'],['next','Next Action'],['calendar','Calendar'],['waiting','Waiting'],['someday','Someday'],['tickler','Tickler']];
@@ -3316,7 +3364,7 @@ function openViewMenu(btn){
     $$('[data-tg]',el).forEach(b=>b.onclick=()=>{const v=viewOf(b.dataset.tg);v.side=!v.side;save();renderSide();draw(el)});
     $$('[data-ed]',el).forEach(b=>b.onclick=()=>{closePop();openViewEditor(viewOf(b.dataset.ed))});
     $('[data-new]',el).onclick=()=>{closePop();openViewEditor(null,id=>{if(id)openView(id)})};
-    $('[data-hide]',el).onclick=()=>{closePop();S.sideViews=false;save();renderSide();toast('条件リストの欄を隠しました。設定からいつでも戻せます',{label:'元に戻す',fn:()=>{S.sideViews=true;save();renderSide()}})}};
+    $('[data-hide]',el).onclick=()=>{closePop();const c=sbCfg(),was=c.vw;c.vw='off';save();renderSide();toast('条件リストの欄を隠しました。設定からいつでも戻せます',{label:'元に戻す',fn:()=>{c.vw=was;save();renderSide()}})}};
   miniPop(btn,H(),el=>bind(el))}
 function openViewEditor(v,onDone){
   const isNew=!v;const d=v?JSON.parse(JSON.stringify(v)):{id:uid(),name:'',icon:'filter',sts:['next'],areas:[],places:[],labels:[],energy:[],time:null,due:null,side:true};
@@ -3336,7 +3384,7 @@ function openViewEditor(v,onDone){
     <div class="ph-shb">
      <div class="ph-ig" style="margin-top:6px"><label class="ph-ir"><span class="l0">名前</span><input id="vxName" class="ph-in" placeholder="例：職場で30分" maxlength="24" value="${esc(d.name)}"></label>
       <button class="ph-ir ic" id="vxIco"><span class="ph-ico g-view">${ic(d.icon||'filter')}</span><span class="l">アイコン</span><span class="cv">${ic('chev')}</span></button>
-      <button class="ph-ir" id="vxSide"><span class="l">PC のサイドバーに表示${S.sideViews===false?'<small>いまは設定でサイドバーの欄ごと隠しています</small>':''}</span><span class="ph-sw ${d.side?'on':''}"><i></i></span></button></div>
+      <button class="ph-ir" id="vxSide"><span class="l">サイドバー・小窓に表示</span><span class="ph-sw ${d.side?'on':''}"><i></i></span></button></div>
      <div class="ph-sec">リスト<small>複数選べます</small></div><div class="ph-ig"><div class="ph-chips">${VST.map(([s,l])=>ch(d.sts.includes(s),'sts',s,ic(s)+l)).join('')}</div></div>
      <div class="ph-sec">エリア<small>親エリアを選ぶとサブエリアも含みます</small></div><div class="ph-ig"><div class="ph-chips">${S.areas.length?tops().map(a=>{const g=[a,...kids(a.id)],h=g.map(x=>ch(d.areas.includes(x.id),'areas',x.id,`<i class="dot c-${areaColor(x)}"></i>${esc(x.name)}`,x!==a?'sub':'')).join('');return g.length>1?brk+h+brk:h}).join('').replace(/^(<i class="ph-br"><\/i>)+|(<i class="ph-br"><\/i>)+$/g,'').replace(/(<i class="ph-br"><\/i>){2,}/g,brk):'<span class="ph-none">エリアはまだありません</span>'}</div></div>
      <div class="ph-sec">場所・道具</div><div class="ph-ig"><div class="ph-chips">${sepMap(TAGS,g=>ch(d.places.includes(g.id),'places',g.id,ic(g.icon||'pin')+esc(g.name)),brk)||'<span class="ph-none">まだありません</span>'}</div>${mode('places',d.places.length)}</div>
@@ -4022,8 +4070,8 @@ function flyToPad(dr){
 
 /* ---------- filter popovers ---------- */
 let POP=null;
-function closePop(){if(POP){POP.el.remove();POP.btn.classList.remove('open');document.removeEventListener('pointerdown',popOutside,true);document.removeEventListener('keydown',popKey,true);POP=null}}
-function popOutside(e){if(POP&&!e.target.closest('.fpop')&&e.target!==POP.btn&&!POP.btn.contains(e.target))closePop()}
+function closePop(){$$('.agp-dim').forEach(x=>x.remove());if(POP){POP.el.remove();POP.btn.classList.remove('open');document.removeEventListener('pointerdown',popOutside,true);document.removeEventListener('keydown',popKey,true);POP=null}}
+function popOutside(e){if(e.target.closest&&e.target.closest('.icpick'))return;if(POP&&!e.target.closest('.fpop')&&e.target!==POP.btn&&!POP.btn.contains(e.target))closePop()}
 function popKey(e){if(e.key==='Escape'){e.stopPropagation();closePop()}}
 function openFilterPop(btn,kind){
   if(POP&&POP.kind===kind){closePop();return}closePop();
@@ -4167,9 +4215,11 @@ function openConfig(btn){
      ${syncRow()}
      <div class="setrow"><span>完了したタスクを残す期間</span><div class="seg">${KEEP.map(([v,l])=>`<button data-keep="${v}" class="${keepDays()===v?'on':''}">${l}</button>`).join('')}</div><div class="hint">${keepDays()?'これより前に完了したタスクは自動で削除されます。':'完了ログはずっと残ります。'}同期している端末すべてに適用されます。</div></div>
      <div class="setrow"><span>アイコンのバッジ</span><div class="seg"><button data-badge="1" class="${S.ui.badge?'on':''}">表示する</button><button data-badge="0" class="${S.ui.badge?'':'on'}">表示しない</button></div><div class="hint">${badgeHint()}</div></div>
-     <div class="setrow"><span>条件で絞ったリスト</span><div class="seg"><button data-sv="1" class="${S.sideViews!==false?'on':''}">PC のサイドバーに出す</button><button data-sv="0" class="${S.sideViews===false?'on':''}">出さない</button></div>
-      <div class="cvl">${(S.views||[]).map(v=>`<div class="cvr"><label class="${S.sideViews===false?'off':''}"><input type="checkbox" data-cvs="${v.id}" ${v.side?'checked':''} ${S.sideViews===false?'disabled':''}>${ic(v.icon||'filter')}<span>${esc(v.name)}</span></label><button class="btn" data-cve="${v.id}">${ic('edit')}編集</button></div>`).join('')}<button class="btn" id="cvNew">${ic('plus')}新しく作る</button></div>
-      <div class="hint">名前・アイコン・条件は同期され、iPhone でも Mac でも同じものが使えます。チェックを入れたものだけが PC の左サイドバーに出ます。iPhone の下のタブに置くかどうかは、「リスト」画面の「下のタブ」で選べます。</div></div>
+     <div class="setrow desk-only"><span>サイドバー</span>
+      <div class="sbopt"><span>場所・道具</span><div class="seg"><button data-sbk="pl" data-sbv="1" class="${sbCfg().pl?'on':''}">表示</button><button data-sbk="pl" data-sbv="0" class="${sbCfg().pl?'':'on'}">隠す</button></div></div>
+      <div class="sbopt"><span>Agenda</span><div class="seg"><button data-sbk="ag" data-sbv="1" class="${sbCfg().ag?'on':''}">表示</button><button data-sbk="ag" data-sbv="0" class="${sbCfg().ag?'':'on'}">隠す</button></div></div>
+      <div class="sbopt"><span>条件リスト</span><div class="seg">${[['row','1行にまとめる'],['list','1つずつ並べる'],['off','隠す']].map(([v,l])=>`<button data-sbk="vw" data-sbv="${v}" class="${sbCfg().vw===v?'on':''}">${l}</button>`).join('')}</div></div>
+      <div class="hint">「1行にまとめる」は、押すと一覧の小窓が出ます。小窓やサイドバーに出す項目は、各小窓の「編集」で ${ic('u-eye')} を付け外しして選べます。この設定はこの端末だけのものです。</div></div>
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow desk-only"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
      <div class="setrow"><span>この端末の版</span><div class="hint">${APPV}<br>端末ごとに表示が違う場合、古い版が開いています。ホーム画面のアプリは一度完全に終了して開き直してください。</div></div>
@@ -4185,10 +4235,7 @@ function openConfig(btn){
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
     $$('[data-vh]',el).forEach(b=>b.onclick=()=>{const v=+b.dataset.vh;S.ui.vhAdj=v?Math.max(-120,Math.min(120,(VHINFO.adj||0)+v)):null;save();fixVH();draw()});
     $('#cfgGuide',el).onclick=()=>{closeConfig();openGuide()};
-    $$('[data-sv]',el).forEach(b=>b.onclick=()=>{S.sideViews=b.dataset.sv==='1';save();renderSide();draw()});
-    $$('[data-cvs]',el).forEach(b=>b.onchange=()=>{const v=viewOf(b.dataset.cvs);if(v){v.side=b.checked;save();renderSide()}});
-    $$('[data-cve]',el).forEach(b=>b.onclick=()=>{closeConfig();openViewEditor(viewOf(b.dataset.cve))});
-    $('#cvNew',el).onclick=()=>{closeConfig();openViewEditor(null,id=>{if(id)openView(id)})};
+    $$('[data-sbk]',el).forEach(b=>b.onclick=()=>{const c=sbCfg(),k=b.dataset.sbk,v=b.dataset.sbv;c[k]=k==='vw'?v:v==='1';save();renderSide();draw()});
     place();
   };
   el._draw=draw;draw();
@@ -4288,7 +4335,7 @@ function openPlacesEditor(after){
      <div class="sadd-row"><div class="sadd">${ic('plus')}<input id="placeAdd" placeholder="追加（例：研究室、車の中、週末）⏎" maxlength="16"></div><button class="btn psadd" id="placeSep" type="button">区切りを追加</button></div>
     </div><div class="sheet-foot"><span class="spacer"></span><button class="btn primary" id="plDone">完了</button></div></div>`;
     $$('.pname',scrim).forEach(inp=>inp.oninput=()=>{S.places[+inp.dataset.n].name=inp.value});
-    $$('[data-icon]',scrim).forEach(b=>b.onclick=()=>{const p=S.places[+b.dataset.icon];const k=PLACE_ICONS.indexOf(p.icon||'pin');p.icon=PLACE_ICONS[(k+1)%PLACE_ICONS.length];draw()});
+    $$('[data-icon]',scrim).forEach(b=>b.onclick=()=>{const p=S.places[+b.dataset.icon];pickIcon(p.icon||'pin',n=>{p.icon=n;draw()})});
     $('#placeSep',scrim).onclick=()=>{S.places.push({id:uid(),sep:true});draw()};
     $$('[data-del]',scrim).forEach(b=>b.onclick=()=>{if(S.places[+b.dataset.del]?.sep){S.places.splice(+b.dataset.del,1);draw();return}if(!b.classList.contains('armed')){b.classList.add('armed');b.title='もう一度押すと削除';return}
       const p=S.places[+b.dataset.del];S.places.splice(+b.dataset.del,1);S.tasks.forEach(t=>{t.tags=t.tags.filter(x=>x!==p.id)});F.tags.delete(p.id);draw()});
@@ -4685,7 +4732,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-06 日本語入力修正版';
+const APPV='2026-10-06 小窓統一版';
 const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
 const SKEY='fusen.sync';
 let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
