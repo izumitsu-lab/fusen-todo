@@ -1886,7 +1886,8 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .agpop .agp-h{padding-top:8px}
 }
 .agp-h .agp-tot{flex:1}.agp-h .agp-ed{margin-left:0}
-.sdrill{display:flex;flex-direction:column;min-height:100%;animation:sdIn .18s ease-out}
+.sdrill{display:flex;flex-direction:column;min-height:100%}.sdrill.anim{animation:sdIn .18s ease-out}
+.side-main.anim{animation:sdOut .18s ease-out}@keyframes sdOut{from{opacity:0;transform:translateX(-14px)}}
 @keyframes sdIn{from{opacity:0;transform:translateX(14px)}}
 .sd-back{display:inline-flex;align-items:center;gap:2px;align-self:flex-start;color:var(--accent);font-size:13px;padding:4px 8px 4px 2px;border-radius:7px;margin:2px 0 4px}.sd-back:hover{background:var(--sel)}
 .sd-back svg.i{width:15px;height:15px;transform:rotate(90deg)}
@@ -1903,6 +1904,23 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .sd-hid{display:block;width:100%;font-size:12px;color:var(--ink3);padding:4px 0 10px;text-align:center}.sd-hid:hover{color:var(--accent)}
 .sd-ft{padding:6px 2px 8px}.sd-add{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border-radius:9px;background:var(--pop);box-shadow:inset 0 0 0 1px var(--line);font-size:12.5px;color:var(--ink2)}.sd-add:hover{background:var(--sel)}.sd-add svg.i{width:13px;height:13px}
 .sd-addin{display:flex;align-items:center;gap:6px;height:32px;border-radius:9px;background:var(--pop);box-shadow:inset 0 0 0 1.5px var(--accent);padding:0 10px;color:var(--ink3)}.sd-addin input{flex:1;min-width:0;border:0;outline:none;background:none;font:inherit;font-size:13px;color:var(--ink)}
+.g-area{--gc:#B8913A;--ar-c:#B8913A}.sdrill{--ar-c:#B8913A}.g-place{--gc:#C76A1C}.g-agenda{--gc:#6A55C9}.g-view{--gc:#5B6CC9}
+.nav.gtd .sd-cur{margin-left:auto;display:inline-flex;align-items:center;gap:5px;max-width:45%;min-width:0;font-size:12.5px;font-weight:500;color:var(--ink2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.nav.gtd .sd-cur .dot{width:8px;height:8px;border-radius:2px}
+.nav.gtd .sd-go{display:inline-flex;color:var(--ink3);opacity:.7;margin-left:2px}.nav.gtd .sd-go svg.i{width:13px;height:13px;transform:rotate(-90deg)}
+.nav.gtd .lbl+.sd-go,.nav.gtd .n:empty+.sd-go{margin-left:auto}
+.sd-areas .nav.area{font-size:14.5px;font-weight:500;padding:7px 10px;gap:11px}
+.sd-areas .nav.area:not(.sub) .dot{width:26px;height:26px;border-radius:7px;box-shadow:inset 0 -1px 0 rgba(0,0,0,.07),0 1px 1.5px rgba(0,0,0,.1),inset 0 0 0 1px rgba(0,0,0,.05)}
+.sd-areas .nav.area.sub{font-size:14px;font-weight:400;padding:8px 10px 8px 46px;color:var(--ink)}
+.sd-areas .nav.area.sub .dot{width:9px;height:9px;border-radius:50%}
+.sd-areas .nav.projn{font-size:14px;padding:8px 10px 8px 46px;gap:9px;color:var(--ink)}
+.sd-areas .nav.projn.deep{padding-left:66px}
+.sd-areas .nav.projn svg.i{width:14px;height:14px}
+.sd-areas .nav .n{font-size:12px;min-width:23px;padding:1px 8px;border-radius:99px;background:var(--sel);color:var(--ink2);text-align:center;box-sizing:border-box}
+.sd-areas .nav .n:empty{display:none}
+.sgrp.sd-areas>.nav:not(:first-child)::before{left:46px}
+.sd-areas .caret svg.i{width:14px;height:14px}
+.sd-areas[hidden],.sd-areas .nav[hidden]{display:none}
 /* ---------- quick add card ---------- */
 .scrim.qk-scrim{display:block;padding:0}
 .qk{position:fixed;left:0;right:0;bottom:0;box-sizing:border-box;background:var(--pop);border-radius:16px 16px 0 0;padding:8px 14px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -12px rgba(0,0,0,.3);animation:qkUp .26s cubic-bezier(.2,.8,.2,1)}
@@ -2278,11 +2296,12 @@ function parse(raw){
 
 /* ---------- sidebar ---------- */
 /* サイドバーの「中身が切り替わる」表示（場所・道具／Agenda／条件リスト） */
-function renderSideDrill(kind){const K=popKinds()[kind],P=K.items(),side=$('#side');
+let sdAnim=false;
+function renderSideDrill(kind){const K=popKinds()[kind],P=K.items(),side=$('#side');const an=sdAnim;sdAnim=false;
   const icoS=g=>kind==='ag'?`<span class="sd-av" style="background:${agColor(g)}">${esc((g.name||'?').slice(0,1))}</span>`:`<span class="sq" style="background:${kind==='pl'?agColor(g):'#5B6CC9'}">${ic(g.icon||(kind==='pl'?'pin':'filter'))}</span>`;
   const groups=[[]];P.forEach(g=>{if(g.sep){if(groups[groups.length-1].length)groups.push([])}else if(K.vis(g))groups[groups.length-1].push(g)});
   const hid=P.filter(g=>!g.sep&&!K.vis(g)).length;
-  side.innerHTML=`<div class="sdrill">
+  side.innerHTML=`<div class="sdrill ${an?'anim':''}">
    <button class="sd-back" id="sdBack">${ic('chev')}戻る</button>
    <div class="sd-h"><span class="sq" style="background:${K.hcol}">${ic(K.hico)}</span><b>${K.title}</b><button class="sd-ed" id="sdEdit">${ic('edit')}編集</button></div>
    <label class="sd-s">${ic('search')}<input id="sdQ" placeholder="${K.ph}" autocomplete="off"></label>
@@ -2290,7 +2309,7 @@ function renderSideDrill(kind){const K=popKinds()[kind],P=K.items(),side=$('#sid
     <div class="sd-none sd-nohit" hidden>見つかりませんでした</div>
     ${hid?`<button class="sd-hid" id="sdHid">ほかに ${hid}件を隠しています</button>`:''}</div>
    <div class="sd-ft" id="sdFt">${K.add?`<button class="sd-add" id="sdAdd">${ic('plus')}${K.addLabel}</button>`:K.newFn?`<button class="sd-add" id="sdAdd">${ic('plus')}${K.addLabel}</button>`:''}</div></div>`;
-  $('#sdBack').onclick=()=>{S.ui.sbDrill=null;save();renderSide()};
+  $('#sdBack').onclick=()=>{S.ui.sbDrill=null;sdAnim=true;save();renderSide()};
   $('#sdEdit').onclick=e=>{e.stopPropagation();openPickPop($('#sdEdit'),kind,{edit:true})};
   const hb=$('#sdHid');if(hb)hb.onclick=e=>{e.stopPropagation();openPickPop(hb,kind,{edit:true})};
   $$('[data-sdp]',side).forEach(b=>b.onclick=()=>{K.open(b.dataset.sdp);closeSide()});
@@ -2306,36 +2325,46 @@ function renderSideDrill(kind){const K=popKinds()[kind],P=K.items(),side=$('#sid
     ni.onblur=()=>setTimeout(()=>{if(ni.isConnected&&!ni.value.trim())renderSide()},150)};
 }
 function renderSide(){
-  {const DK=S.ui.sbDrill,c=sbCfg();if(DK&&((DK==='ag'&&c.ag)||(DK==='pl'&&c.pl)||(DK==='vw'&&c.vw==='row'))){renderSideDrill(DK);return}}
-  const sec=S.ui.section;
+  {const DK=S.ui.sbDrill,c=sbCfg();if(DK&&((DK==='ag'&&c.ag)||(DK==='pl'&&c.pl)||(DK==='vw'&&c.vw==='row'))){renderSideDrill(DK);return}if(DK&&DK!=='ar')S.ui.sbDrill=null}
+  const sec=S.ui.section,drillAr=S.ui.sbDrill==='ar',an=sdAnim;sdAnim=false;
   const cnt=s=>s==='today'?S.tasks.filter(t=>dueNow(t)||calNow(t)).length:s==='calendar'?S.tasks.filter(t=>t.status==='calendar'&&!(t.info&&t.cdate<todayKey())).length:s==='tickler'?S.tasks.filter(tickled).length:S.tasks.filter(t=>t.status===s&&!isProj(t)&&!tickled(t)&&!queued(t)).length;
-  const mins=s=>S.tasks.filter(t=>t.status===s).reduce((a,t)=>a+(tMin(t)||0),0);
   const nav=s=>`<button class="nav gtd g-${s} ${sec===s&&!F.area?'on':''}" data-sec="${s}" data-drop="${s}"><span class="sq">${ic(s)}</span><span class="lbl">${SECT[s].en}</span><span class="n">${cnt(s)||''}</span></button>`;
   const doneToday=logItems().filter(x=>dayKey(new Date(x.doneAt))===todayKey()).length;
   const rvAgo=S.ui.lastReview?-dayDiff(dayKey(new Date(S.ui.lastReview))):null;
-  $('#side').innerHTML=`
-   <div class="sgrp">${['today','next','calendar'].map(nav).join('')}</div>
-   <div class="sgrp">${['waiting','someday','tickler'].map(nav).join('')}
+  const areaRows=()=>orderedAreas().map(a=>{const sub=rootOf(a)!==a;const n=S.tasks.filter(t=>inArea(t,a.id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length;const ps=projects().filter(p=>p.area===a.id);const R=rootOf(a);const fold=!!(S.ui.fold||{})[R.id];if(sub&&fold)return '';const hid=sub?0:kids(a.id).length+projects().filter(p=>p.area===a.id||kids(a.id).some(k=>k.id===p.area)).length;const open=!fold;
+     return `<button class="nav area ${sub?'sub':''} c-${areaColor(a)} ${F.area===a.id?'on':''} ${sub&&F.area===a.parent?'in':''}" data-area="${a.id}" data-parent="${sub?a.parent:''}" data-drop="area:${a.id}" data-nm="${esc((a.name||'').toLowerCase())}"><span class="dot"></span><span class="lbl">${esc(a.name)}</span>${!sub&&hid?`<span class="caret ${open?'open':''}" data-toggle="${a.id}" role="button" aria-label="${open?'折りたたむ':'広げる'}">${ic('chev')}${open?'':`<em>${hid}</em>`}</span>`:''}<span class="n">${n||''}</span></button>
+     ${open?ps.map(p=>`<button class="nav projn ${sub?'deep':''} ${projMode()&&S.ui.proj===p.id?'on':''}" data-proj="${p.id}" data-pa="${p.area||''}" data-drop="proj:${p.id}" data-nm="${esc((p.title||'').toLowerCase())}">${ic('clip')}<span class="lbl">${esc(p.title)}</span>${(st=>st.k==='ok'?'':`<i class="warn-dot ${st.k}" title="${esc(st.l)}"></i>`)(projState(p))}<span class="n">${pKids(p).length||''}</span></button>`).join(''):''}`}).join('');
+  const foldBtn=()=>(fs=>fs.length?(op=>`<button class="sd-ed" id="foldAll" data-open="${op?1:''}" title="${op?'すべてたたむ':'すべて開く'}" aria-label="${op?'すべてたたむ':'すべて開く'}">${ic(op?'foldall':'unfoldall')}${op?'たたむ':'開く'}</button>`)(fs.some(t=>!(S.ui.fold||{})[t.id])):'')(foldables());
+  const curA=F.area&&area(F.area);
+  $('#side').innerHTML=drillAr?`<div class="sdrill ${an?'anim':''}">
+   <button class="sd-back" id="sdBack">${ic('chev')}戻る</button>
+   <div class="sd-h"><span class="sq" style="background:var(--ar-c)">${ic('u-layers')}</span><b>エリア</b>${foldBtn()}</div>
+   <label class="sd-s">${ic('search')}<input id="sdQ" placeholder="エリア・プロジェクトを探す" autocomplete="off"></label>
+   <div class="sd-list"><div id="areaAddSlot"></div>
+    ${(h=>h?`<div class="sgrp sareas sd-areas">${h}</div>`:`<div class="sd-none">エリアはまだありません</div>`)(areaRows())}
+    <div class="sd-none sd-nohit" hidden>見つかりませんでした</div></div>
+   <div class="sd-ft"><button class="sd-add" id="addArea">${ic('plus')}エリアを追加</button></div></div>`:`<div class="side-main ${an?'anim':''}">
+   <div class="sgrp">${nav('today')}</div>
+   <div class="sgrp">${['inbox','next','calendar','waiting','someday','tickler'].map(nav).join('')}
    <button class="nav gtd g-projects ${sec==='projects'&&!F.area?'on':''}" data-sec="projects"><span class="sq">${ic('clip')}</span><span class="lbl">プロジェクト</span><span class="n">${projects().length||''}</span></button></div>
-   ${(c=>{const h=(c.pl?`<button class="nav gtd g-place ${sec==='pl'?'on':''}" id="plBtn" title="場所・道具"><span class="sq">${ic('pin')}</span><span class="lbl">場所・道具</span><span class="n"></span></button>`:'')
-     +(c.ag?`<button class="nav gtd g-agenda ${sec==='ag'?'on':''}" id="agBtn" title="Agenda（人・会議）"><span class="sq">${ic('user')}</span><span class="lbl">Agenda</span><span class="n">${agTotal()||''}</span></button>`:'')
-     +(c.vw==='row'?`<button class="nav gtd g-view ${sec==='sv'?'on':''}" id="vwBtn" title="条件で絞ったリスト"><span class="sq">${ic('filter')}</span><span class="lbl">条件リスト</span><span class="n">${(S.views||[]).filter(v=>v.side!==false).length||''}</span></button>`:'');
+   <div class="sgrp"><button class="nav gtd g-area ${curA?'on':''}" id="arBtn" title="エリア"><span class="sq">${ic('u-layers')}</span><span class="lbl">エリア</span>${curA?`<span class="sd-cur"><i class="dot c-${areaColor(curA)}"></i>${esc(curA.name)}</span>`:''}<span class="sd-go">${ic('chev')}</span></button></div>
+   ${(c=>{const h=(c.pl?`<button class="nav gtd g-place ${sec==='pl'?'on':''}" id="plBtn" title="場所・道具"><span class="sq">${ic('pin')}</span><span class="lbl">場所・道具</span>${sec==='pl'&&plMode()?`<span class="sd-cur">${esc(tagName(S.ui.pl))}</span>`:''}<span class="sd-go">${ic('chev')}</span></button>`:'')
+     +(c.ag?`<button class="nav gtd g-agenda ${sec==='ag'?'on':''}" id="agBtn" title="Agenda（人・会議）"><span class="sq">${ic('user')}</span><span class="lbl">Agenda</span>${sec==='ag'&&agMode()?`<span class="sd-cur">${esc(pName(S.ui.ag))}</span>`:`<span class="n">${agTotal()||''}</span>`}<span class="sd-go">${ic('chev')}</span></button>`:'')
+     +(c.vw==='row'?`<button class="nav gtd g-view ${sec==='sv'?'on':''}" id="vwBtn" title="条件で絞ったリスト"><span class="sq">${ic('filter')}</span><span class="lbl">条件リスト</span>${sec==='sv'&&curView()?`<span class="sd-cur">${esc(curView().name)}</span>`:''}<span class="sd-go">${ic('chev')}</span></button>`:'');
      return h?`<div class="sgrp">${h}</div>`:''})(sbCfg())}
-   ${(n=>`<button class="ibx-card ${n?'':'empty'} ${sec==='inbox'&&!F.area?'on':''}" data-sec="inbox" data-drop="inbox" title="Inbox (1)"><span class="sq">${ic('inbox')}</span><span class="tt"><b>Inbox</b><small>${n?n+'件が仕分け待ち':'空っぽです。頭もすっきり'}</small></span>${n?`<span class="pile" aria-hidden="true"><i></i><i></i><i>${n>99?'99+':n}</i></span>`:''}</button>`)(S.tasks.filter(t=>t.status==='inbox').length)}
    ${sbCfg().vw!=='list'?'':`<div class="cap">条件リスト<span class="cap-b"><button id="viewMenu" aria-label="条件リストを管理" title="表示する条件リストを選ぶ">${ic('more')}</button><button id="addView" aria-label="条件リストを追加" title="条件で絞ったリストを追加">${ic('plus')}</button></span></div>
    ${(vs=>vs.length?`<div class="sgrp sviews">${vs.map(v=>`<button class="nav gtd g-view ${sec==='sv'&&S.ui.sv===v.id?'on':''}" data-vw="${v.id}" title="${esc(viewSum(v))}"><span class="sq">${ic(v.icon||'filter')}</span><span class="lbl">${esc(v.name)}</span><span class="n">${vCount(v)||''}</span></button>`).join('')}</div>`:'')((S.views||[]).filter(v=>v.side))}`}
-   <div class="cap">エリア<span class="cap-b">${(fs=>fs.length?(op=>`<button id="foldAll" data-open="${op?1:''}" title="${op?'すべてたたむ':'すべて開く'}" aria-label="${op?'すべてたたむ':'すべて開く'}">${ic(op?'foldall':'unfoldall')}</button>`)(fs.some(t=>!(S.ui.fold||{})[t.id])):'')(foldables())}<button id="addArea" aria-label="エリアを追加" title="エリアを追加">${ic('plus')}</button></span></div>
-   <div id="areaAddSlot"></div>
-   <div class="sgrp sareas">${orderedAreas().map(a=>{const sub=rootOf(a)!==a;const n=S.tasks.filter(t=>inArea(t,a.id)&&active(t)&&t.status!=='inbox'&&!isProj(t)).length;const ps=projects().filter(p=>p.area===a.id);const R=rootOf(a);const fold=!!(S.ui.fold||{})[R.id];if(sub&&fold)return '';const hid=sub?0:kids(a.id).length+projects().filter(p=>p.area===a.id||kids(a.id).some(k=>k.id===p.area)).length;const open=!fold;
-     return `<button class="nav area ${sub?'sub':''} c-${areaColor(a)} ${F.area===a.id?'on':''} ${sub&&F.area===a.parent?'in':''}" data-area="${a.id}" data-parent="${sub?a.parent:''}" data-drop="area:${a.id}"><span class="dot"></span><span class="lbl">${esc(a.name)}</span>${!sub&&hid?`<span class="caret ${open?'open':''}" data-toggle="${a.id}" role="button" aria-label="${open?'折りたたむ':'広げる'}">${ic('chev')}${open?'':`<em>${hid}</em>`}</span>`:''}<span class="n">${n||''}</span></button>
-     ${open?ps.map(p=>{const na=nextAction(p);return `<button class="nav projn ${sub?'deep':''} ${projMode()&&S.ui.proj===p.id?'on':''}" data-proj="${p.id}" data-pa="${p.area||''}" data-drop="proj:${p.id}">${ic('clip')}<span class="lbl">${esc(p.title)}</span>${(st=>st.k==='ok'?'':`<i class="warn-dot ${st.k}" title="${esc(st.l)}"></i>`)(projState(p))}<span class="n">${pKids(p).length||''}</span></button>`}).join(''):''}`}).join('')}</div>
    <div class="side-foot">
      <button class="loglink ${sec==='review'?'on':''}" data-sec="review">${ic('review')}週次レビュー<span class="${rvAgo==null||rvAgo>=7?'due':''}">${rvAgo==null?'未実施':agoLabel(S.ui.lastReview)}</span></button>
      ${SYNC.on?`<button class="loglink sy-${syncState()}" id="syncLink">${ic('sync')}<em class="sy">${syncShort()}</em></button>`:''}
      <button class="loglink ${sec==='log'&&!F.area?'on':''}" data-sec="log" data-drop="done">${ic('log')}完了ログ${doneToday?`<span>今日 ${doneToday}</span>`:''}</button>
      <div class="mob-only"><button id="sTl">${ic('cal')}今日のタイムライン</button><button id="sSet">${ic('palette')}デザイン</button><button id="sCfg">${ic('gear')}設定</button><button id="sGuide">${ic('book')}手引き</button></div>
      ${S.sample?'<button id="clearSample">サンプルを消去</button>':''}
-   </div>`;
+   </div></div>`;
+  if(drillAr){$('#sdBack').onclick=()=>{S.ui.sbDrill=null;sdAnim=true;save();renderSide()};
+    const qi=$('#sdQ');qi.oninput=()=>{const w=qi.value.trim().toLowerCase();let any=0;$$('.sd-areas [data-nm]').forEach(b=>{const ok=!w||b.dataset.nm.includes(w);b.hidden=!ok;if(ok)any++});const nh=$('.sd-nohit');if(nh)nh.hidden=!!any||!w};
+    qi.onkeydown=e=>{if(isIME(e))return;if(e.key==='Enter'){const b=$$('.sd-areas [data-nm]').find(x=>!x.hidden);if(b){e.preventDefault();b.click()}}else if(e.key==='Escape'){qi.value='';qi.oninput()}}}
+  const arB=$('#arBtn');if(arB)arB.onclick=e=>{e.stopPropagation();S.ui.sbDrill='ar';sdAnim=true;save();renderSide()};
   $$('#side [data-sec]').forEach(b=>b.onclick=()=>{S.ui.section=b.dataset.sec;F.area=null;if(b.dataset.sec==='review'&&(S.ui.rvStep||0)>=RV.length-1)S.ui.rvStep=0;save();render();closeSide()});
   $$('#side [data-area]').forEach(b=>{b.oncontextmenu=e=>{e.preventDefault();openAreaEditor(area(b.dataset.area))};b.addEventListener('pointerdown',e=>areaReorderDown(e,b))});
   $$('#side [data-proj]').forEach(b=>{b.onclick=()=>{if(b._dragged){b._dragged=false;return}openProject(b.dataset.proj);closeSide()};b.addEventListener('pointerdown',e=>projReorderDown(e,b))});
@@ -2343,15 +2372,15 @@ function renderSide(){
     if(b._dragged){b._dragged=false;return}
     const tg=e.target.closest('[data-toggle]');if(tg){e.stopPropagation();S.ui.fold=S.ui.fold||{};S.ui.fold[tg.dataset.toggle]=!S.ui.fold[tg.dataset.toggle];save();renderSide();return}
     F.area=F.area===b.dataset.area?null:b.dataset.area;S.ui.section='next';render();closeSide()});
-  $('#addArea').onclick=showAreaAdd;
-  [['agBtn','ag'],['plBtn','pl'],['vwBtn','vw']].forEach(([id,k])=>{const b=$('#'+id);if(b)b.onclick=e=>{e.stopPropagation();S.ui.sbDrill=k;save();renderSide()}});
+  const aab=$('#addArea');if(aab)aab.onclick=showAreaAdd;
+  [['agBtn','ag'],['plBtn','pl'],['vwBtn','vw']].forEach(([id,k])=>{const b=$('#'+id);if(b)b.onclick=e=>{e.stopPropagation();S.ui.sbDrill=k;sdAnim=true;save();renderSide()}});
   $$('#side [data-vw]').forEach(b=>{b.addEventListener('pointerdown',e=>viewReorderDown(e,b));b.onclick=()=>{if(b._dragged){b._dragged=false;return}openView(b.dataset.vw);closeSide()};b.oncontextmenu=e=>{e.preventDefault();openViewEditor(viewOf(b.dataset.vw))}});
   const avb=$('#addView');if(avb)avb.onclick=()=>{closeSide();openViewEditor(null,id=>{if(id)openView(id)})};
   const vmb=$('#viewMenu');if(vmb)vmb.onclick=e=>{e.stopPropagation();openViewMenu(vmb)};
   const fa=$('#foldAll');if(fa)fa.onclick=()=>{const close=!!fa.dataset.open;S.ui.fold=S.ui.fold||{};foldables().forEach(t=>{S.ui.fold[t.id]=close});save();renderSide()};
-  $('#sTl').onclick=()=>{closeSide();if(!S.ui.tl)toggleTL()};$('#sGuide').onclick=()=>{closeSide();openGuide()};
+  if($('#sTl')){$('#sTl').onclick=()=>{closeSide();if(!S.ui.tl)toggleTL()};$('#sGuide').onclick=()=>{closeSide();openGuide()};
   $('#sCfg').onclick=e=>{e.stopPropagation();openConfig($('#sCfg'));closeSide()};
-  $('#sSet').onclick=e=>{e.stopPropagation();const b=$('#sSet');openSettings(b);closeSide()};
+  $('#sSet').onclick=e=>{e.stopPropagation();const b=$('#sSet');openSettings(b);closeSide()}}
   const sl=$('#syncLink');if(sl)sl.onclick=e=>{e.stopPropagation();openConfig(sl)};
   const cs=$('#clearSample');if(cs)cs.onclick=()=>{
     if(!cs.classList.contains('armed')){cs.classList.add('armed');cs.textContent='もう一度押すと消去します';setTimeout(()=>{if(cs.isConnected){cs.classList.remove('armed');cs.textContent='サンプルを消去'}},4000);return}
@@ -2447,7 +2476,7 @@ function renderBar(){
   $('#bar').innerHTML=`
    <button class="iconbtn menu-btn" id="menuBtn" aria-label="メニュー">${ic('menu')}</button>
    <h1><span class="ttl">${title}</span><span class="cnt">${noBoard?'':list.length+'枚'}</span>${sec==='sv'?`<button class="iconbtn edit-area" id="editView" title="条件を編集">${ic('edit')}<span class="lb">条件を編集</span></button>`:''}${F.area&&!isLog?`<button class="iconbtn edit-area" id="editArea" title="エリアを編集">${ic('edit')}<span class="lb">編集</span></button>`:''}${PJ?`<button class="iconbtn edit-area" id="pEdit" title="プロジェクトを編集">${ic('edit')}<span class="lb">編集</span></button><button class="fbtn seqbtn ${PJ.seq?'on':''}" id="pSeq" title="オンにすると、先頭の1枚だけが Next Action に出ます">${ic('next')}<span>順番に進める${PJ.seq?'：オン':''}</span></button>`:''}${sec==='projects'?`<button class="btn" id="newProj">${ic('plus')}新しいプロジェクト</button>`:''}</h1>
-   ${noBoard?'':`${sec==='sv'?'':`<div class="seg" role="group" aria-label="表示">
+   ${noBoard?'':`${false?'':`<div class="seg" role="group" aria-label="表示">
      <button class="${isList()?'on':''}" data-view="list" title="リスト (L)">${ic('list')}<span class="lb">リスト</span></button>
      <button class="${!isList()?'on':''}" data-view="board" title="ボード (B)">${ic('board')}<span class="lb">ボード</span></button></div>`}
    <div class="filters"><button class="fbtn ${F.due?'on':''}" id="fDue" aria-haspopup="true" title="締切・予定日で絞り込み">${ic('flag')}<span>${F.due?DUEF.find(x=>x.id===F.due).l.replace('（遅れを含む）',''):'締切'}</span></button>
@@ -2539,7 +2568,8 @@ const ctxMode=()=>agMode()||plMode();
 const ctxCur=()=>agMode()?{k:'ag',id:S.ui.ag}:{k:'pl',id:S.ui.pl};
 const ctxHas=(t,c)=>c.k==='ag'?(t.agenda||[]).includes(c.id):(t.tags||[]).includes(c.id);
 const ctxAdd=(t,c)=>{const f=c.k==='ag'?'agenda':'tags';if(!Array.isArray(t[f]))t[f]=[];if(!t[f].includes(c.id))t[f].push(c.id)};
-const zoneMode=()=>ctxMode()||areaMode()||todayMode()||tickMode()||projMode()||calMode();
+const svMode=()=>!F.area&&S.ui.section==='sv'&&!!curView();
+const zoneMode=()=>ctxMode()||areaMode()||todayMode()||tickMode()||projMode()||calMode()||svMode();
 const dueNow=t=>!isProj(t)&&!!t.due&&t.due<=todayKey()&&(t.status==='next'||t.status==='waiting')&&!tickled(t)&&!queued(t);
 const tkIn=(t,a,b)=>{if(!tickled(t))return false;const n=dayDiff(t.start);return n>=a&&n<=b};
 const tkSet=(t,a,b)=>{if(!tkIn(t,a,b))t.start=keyAdd(todayKey(),a);if(t.status==='inbox'||t.status==='done')t.status='next'};
@@ -2558,6 +2588,8 @@ function zonesFor(){
     {id:'next',label:'Next Action',icon:'next',match:t=>t.status==='next'&&!dueNow(t)&&!isProj(t),drop:t=>{if(dueNow(t))t.due=null;t.status='next'},empty:'Next Actionのタスクはここに並びます'}];
   const calZone=(m)=>({id:'zcal',label:'Calendar',icon:'calendar',soft:true,tk:true,minH:170,match:t=>m(t)&&t.status==='calendar'&&!(t.info&&t.cdate<todayKey()),drop:t=>{if(t.status!=='calendar'){t.status='calendar';t.cdate=todayKey();t.start=null}},empty:'ここへ入れると今日のカレンダー予定になります'});
   const tkZone=(m)=>({id:'ztk',label:'Tickler',icon:'tickler',soft:true,tk:true,minH:170,match:t=>m(t)&&tickled(t),drop:t=>{if(!tickled(t))t.start=keyAdd(todayKey(),1);if(t.status==='inbox'||t.status==='someday')t.status='next'},empty:'ここへ入れると明日 Next Action に戻ります'});
+  if(svMode()){const v=curView(),m=t=>vMatch(t,v);
+    return vSts(v).map(st=>st==='tickler'?tkZone(m):st==='calendar'?calZone(m):{id:'v'+st,label:SECT[st].en,icon:st,soft:st!=='next'&&st!=='inbox',match:t=>m(t)&&!tickled(t)&&t.status===st,drop:t=>{t.status=st;t.start=null},empty:`ここへドラッグすると ${SECT[st].en} に移動します`})}
   if(ctxMode()){const c=ctxCur(),m=t=>!isProj(t)&&ctxHas(t,c),tag=fn=>t=>{fn(t);ctxAdd(t,c)};
     const CZ=[...ZS.map(k=>({id:'c'+k,label:SECT[k].en,icon:k,soft:k!=='next',match:t=>m(t)&&t.status===k,drop:tag(t=>{t.status=k;t.start=null}),empty:`ここへドラッグすると ${SECT[k].en} に移動します`})),tkZone(m),calZone(m)];
     CZ[3].drop=tag(CZ[3].drop);CZ[4].drop=tag(CZ[4].drop);
@@ -2574,7 +2606,7 @@ const zoneOf=t=>{const z=zonesFor().find(z=>z.match(t));return z?z.id:null};
 const onBoardZ=(t,zn)=>zn&&(zn.tk?(!isProj(t)&&!isToday(t)):onBoard(t));
 const visibleOnBoard=t=>S.ui.section==='sv'?vMatch(t,curView()):zoneMode()?onBoardZ(t,zonesFor().find(z=>z.match(t))):(t.status===S.ui.section&&onBoard(t)&&!isProj(t));
 let ZG={},ZL=[];
-const viewKey=()=>agMode()?'ag:'+S.ui.ag:plMode()?'pl:'+S.ui.pl:todayMode()?'today':tickMode()?'tickler':calMode()?'calendar':projMode()?'proj:'+S.ui.proj:F.area;
+const viewKey=()=>svMode()?'sv:'+S.ui.sv:agMode()?'ag:'+S.ui.ag:plMode()?'pl:'+S.ui.pl:todayMode()?'today':tickMode()?'tickler':calMode()?'calendar':projMode()?'proj:'+S.ui.proj:F.area;
 const AP=t=>t.apos&&t.apos[viewKey()];
 const setAP=(t,v)=>{(t.apos=t.apos||{})[viewKey()]=v};
 function zoneLayout(){
@@ -2661,7 +2693,7 @@ function applyFilter(){
 let wheelAcc=0,wheelT=0;
 function wheelZoom(e){if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();wheelAcc+=e.deltaY;const now=Date.now();
   if(Math.abs(wheelAcc)>60&&now-wheelT>250){stepSize(wheelAcc>0?-1:1);wheelAcc=0;wheelT=now}}
-const boardKey=()=>agMode()?'ag:'+S.ui.ag:plMode()?'pl:'+S.ui.pl:areaMode()?'area:'+F.area:projMode()?'proj:'+S.ui.proj:S.ui.section;
+const boardKey=()=>svMode()?'sv:'+S.ui.sv:agMode()?'ag:'+S.ui.ag:plMode()?'pl:'+S.ui.pl:areaMode()?'area:'+F.area:projMode()?'proj:'+S.ui.proj:S.ui.section;
 function setZoom(z){
   const old=S.ui.zoom;if(z===old)return;
   const sc=$('#boardScroll');let fx=0,fy=0;
@@ -2676,7 +2708,7 @@ function setZoom(z){
 
 /* ---------- list ---------- */
 const narrow=()=>matchMedia('(max-width:760px)').matches;
-const isList=()=>narrow()||S.ui.view==='list'||S.ui.section==='sv';
+const isList=()=>narrow()||S.ui.view==='list';
 const filterOn=()=>!!(F.tags.size||F.labels.size||F.people.size||F.time||F.due||F.energy);
 const LSORT=[{id:'manual',l:'手動（ドラッグで並べ替え）'},{id:'area',l:'エリアごと'},{id:'due',l:'締切が近い順'},{id:'min',l:'所要時間が短い順'}];
 const listKey=()=>'L:'+(S.ui.section==='sv'?'sv:'+S.ui.sv:zoneMode()?viewKey():S.ui.section);
@@ -2695,18 +2727,18 @@ function sortItems(items){
 const ZCLS={cal:'calendar'};
 function listGroups(){
   const sec=S.ui.section,vis=t=>!isProj(t)&&(projMode()||!queued(t));
-  if(zoneMode()){
-    const P=projMode()?taskById(S.ui.proj):null;
-    return zonesFor().map(zn=>({id:zn.id,name:zn.label,icon:zn.icon,cls:ZCLS[zn.icon]||zn.icon,zone:true,
-      items:S.tasks.filter(t=>vis(t)&&(zn.tk||!tickled(t))&&(zn.match(t)||(todayMode()&&zn.id==='today'&&calNow(t)))),drop:zn.drop,
-      base:()=>({status:'next',area:F.area||(P?P.area:null),project:P?P.id:null,agenda:agMode()?[S.ui.ag]:null,tags:plMode()?[S.ui.pl]:null})}));
-  }
   if(sec==='sv'){const v=curView();if(!v)return [];const A=(v.areas||[]).length===1?v.areas[0]:null,P=v.places||[],tg=P.length&&(v.placesAll||P.length===1)?[...P]:[];
     const gs=vSts(v).map(st=>({id:'v:'+st,name:VST.find(x=>x[0]===st)[1],icon:st,cls:st,
       items:S.tasks.filter(t=>vMatch(t,v)&&(st==='tickler'?tickled(t):!tickled(t)&&t.status===st)),
       drop:st==='tickler'?t=>{if(!tickled(t))t.start=keyAdd(todayKey(),1);if(t.status==='inbox')t.status='next'}:t=>{t.status=st;t.start=null},
       base:()=>({status:st==='tickler'?'next':st,area:A,tags:tg,start:st==='tickler'?keyAdd(todayKey(),1):null})}));
     if(gs.length===1)gs[0].flat=true;return gs}
+  if(zoneMode()){
+    const P=projMode()?taskById(S.ui.proj):null;
+    return zonesFor().map(zn=>({id:zn.id,name:zn.label,icon:zn.icon,cls:ZCLS[zn.icon]||zn.icon,zone:true,
+      items:S.tasks.filter(t=>vis(t)&&(zn.tk||!tickled(t))&&(zn.match(t)||(todayMode()&&zn.id==='today'&&calNow(t)))),drop:zn.drop,
+      base:()=>({status:'next',area:F.area||(P?P.area:null),project:P?P.id:null,agenda:agMode()?[S.ui.ag]:null,tags:plMode()?[S.ui.pl]:null})}));
+  }
   if(sec==='inbox')return [{id:'inbox',name:'Inbox',icon:'inbox',cls:'inbox',items:S.tasks.filter(t=>t.status==='inbox'&&!isProj(t)),drop:t=>{t.status='inbox';t.start=null},base:()=>({status:'inbox',area:null})}];
   const L=S.tasks.filter(t=>t.status===sec&&vis(t)&&!tickled(t));
   if(!areaGrouped())return [{id:'s:'+sec,name:SECT[sec].en,flat:true,items:L,drop:t=>{t.status=sec;t.start=null},base:()=>({status:sec,area:null})}];
@@ -3169,7 +3201,7 @@ Object.assign(I,{
  'u-award':'<path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/>',
  'u-circle-check':'<circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/>'
 });
-Object.assign(I,{'u-eye':'<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>','u-eye-off':'<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>'});
+Object.assign(I,{'u-layers':'<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>','u-eye':'<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>','u-eye-off':'<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>'});
 const ICAT=[["GTD",[["inbox","受信 インボックス 箱"],["next","次 再生 ネクスト"],["waiting","待つ 砂時計 ウェイティング"],["someday","いつか 雲"],["tickler","ティックラー 戻る"],["calendar","カレンダー 予定"],["today","今日 太陽"],["clip","プロジェクト クリップ"],["review","レビュー ふりかえり"],["log","完了 チェック"],["list","リスト 一覧"],["folder","フォルダ"]]],["仕事・学び",[["brief","仕事 かばん ビジネス"],["building","会社 ビル 職場"],["pc","パソコン PC"],["phone","電話 スマホ"],["mail","メール 手紙"],["cal","カレンダー 日付"],["clock","時計 時間"],["book","本 読書"],["grad","学校 卒業 勉強"],["edit","書く 編集 ペン"],["u-presentation","プレゼン 発表 会議"],["u-clipboard-list","チェックリスト クリップボード"],["u-file-text","書類 ファイル 資料"],["u-notebook-pen","ノート メモ"],["u-calculator","計算 電卓 経理"],["u-chart-column","グラフ 数字 分析"],["u-chart-line","グラフ 推移 成長"],["u-target","目標 ゴール"],["u-lightbulb","アイデア ひらめき 電球"],["u-video","ビデオ 動画 オンライン会議"],["u-handshake","握手 商談 取引"],["u-megaphone","告知 広報 宣伝"],["u-school","学校 校舎"],["u-languages","語学 英語 翻訳"],["u-code","プログラミング コード 開発"]]],["科学・研究",[["u-flask-conical","フラスコ 実験 化学"],["u-flask-round","丸底フラスコ 化学 合成"],["u-test-tube","試験管 実験"],["u-test-tubes","試験管 サンプル 検体"],["u-pipette","ピペット 実験 分注"],["u-microscope","顕微鏡 観察 イメージング"],["u-dna","DNA 遺伝子 ゲノム 分子生物学"],["u-atom","原子 物理 化学"],["u-virus","ウイルス 微生物 感染"],["u-biohazard","バイオハザード 安全 P2"],["u-radiation","放射線 RI 安全"],["u-magnet","磁石 物理 磁場"],["u-thermometer","温度 インキュベーター 体温"],["u-telescope","望遠鏡 天文"],["u-orbit","軌道 宇宙 天体"],["u-satellite","衛星 宇宙 観測"],["u-earth","地球 環境 地学"],["u-brain-circuit","神経科学 脳 AI"],["u-scale","天秤 秤量 はかり"],["u-ruler","定規 測る 計測"],["u-chart-scatter","散布図 データ 統計"],["u-chart-network","ネットワーク 解析 相関"],["u-chart-pie","円グラフ 割合 集計"],["u-sigma","シグマ 統計 数学 合計"],["u-pi","円周率 数学"],["u-square-function","関数 数式 解析"],["u-square-radical","ルート 平方根 数学"],["u-variable","変数 数式 モデル"],["u-binary","二進数 計算 情報"],["u-database","データベース データ"],["u-cpu","計算機 CPU シミュレーション"],["u-server","サーバー 計算 クラスタ"],["u-bot","ロボット AI 自動化"]]],["生物",[["u-bug","虫 昆虫 ショウジョウバエ"],["u-worm","線虫 ミミズ"],["u-rat","ラット マウス 動物実験"],["u-rabbit","うさぎ 抗体"],["u-turtle","カメ 爬虫類"],["u-snail","カタツムリ 貝"],["u-squirrel","リス 動物"],["u-shell","貝 海洋生物"],["u-egg","卵 発生 胚"],["u-bone","骨 解剖"],["u-skull","頭蓋骨 解剖 形態"],["u-leafy-green","植物 葉 光合成"],["u-flower","花 植物学"],["u-tree-deciduous","木 生態"],["u-trees","森 生態系 フィールド"],["u-wheat","作物 農学 イネ"]]],["大学・学術",[["u-university","大学 キャンパス"],["u-library","図書館 文献"],["u-library-big","図書館 蔵書 本棚"],["u-book-open-text","論文 文献 読む"],["u-book-marked","教科書 しおり"],["u-notebook","実験ノート ノート"],["u-notebook-tabs","ラボノート 記録 研究ノート"],["u-scroll-text","原稿 規程 書類"],["u-quote","引用 文献 参考"],["u-file-search","文献検索 調査 サーベイ"],["u-search-check","査読 確認 チェック"],["u-file-pen","原稿 執筆 投稿 申請書"],["u-pen-line","執筆 書く 添削"],["u-file-chart-column-increasing","報告書 成果 実績"],["u-speech","発表 講演 質疑 学会"],["u-backpack","学生 通学"],["u-pencil-ruler","授業準備 製図"],["u-id-card","学生証 身分証"],["u-file-badge","証明書 修了"],["u-stamp","押印 事務 申請"],["u-signature","署名 契約"],["u-medal","受賞 メダル 表彰"],["u-badge-check","採択 承認 合格"]]],["お金・買い物",[["yen","お金 円"],["cart","買い物 カート"],["bag","買い物 袋"],["gift","プレゼント ギフト"],["u-wallet","財布 支払い"],["u-credit-card","カード クレジット"],["u-piggy-bank","貯金 ぶた"],["u-receipt","レシート 領収書 経費"],["u-banknote","お札 現金"],["u-landmark","銀行 役所"],["u-store","お店 ショップ"],["u-package","荷物 配達 宅配"]]],["家・暮らし",[["home","家 自宅"],["u-bed","寝る ベッド 睡眠"],["u-sofa","ソファ くつろぐ"],["u-bath","風呂 お風呂"],["u-shirt","服 洗濯 衣替え"],["u-washing-machine","洗濯機 洗濯"],["u-key-round","鍵 カギ"],["u-trash-2","ゴミ 捨てる"],["u-recycle","リサイクル 資源ごみ"],["u-hammer","修理 DIY 工具"],["wrench","工具 修理 レンチ"],["u-paintbrush","ペンキ 掃除 塗る"],["u-scissors","はさみ 切る"],["u-sparkles","掃除 きれい キラキラ"],["u-flower-2","花 植物"]]],["食",[["food","食事 ごはん"],["coffee","コーヒー カフェ"],["u-utensils","食事 レストラン 外食"],["u-chef-hat","料理 シェフ"],["u-cooking-pot","鍋 料理 自炊"],["u-apple","りんご 果物 健康"],["u-cake","ケーキ 誕生日 お祝い"],["u-wine","ワイン お酒"],["u-beer","ビール 飲み会"],["u-sandwich","サンドイッチ ランチ 弁当"]]],["健康・運動",[["dumbbell","筋トレ 運動 ジム"],["pill","薬 くすり"],["heart","ハート 好き"],["u-activity","運動 心拍 活動"],["u-heart-pulse","健康 心拍 病院"],["u-stethoscope","病院 診察 医者"],["u-bike","自転車 サイクリング"],["u-footprints","散歩 ウォーキング 歩く"],["u-brain","頭 考える 脳"],["u-smile","笑顔 気分"]]],["移動・旅行",[["car","車 ドライブ"],["plane","飛行機 旅行 出張"],["pin","場所 地図 ピン"],["out","外出 出かける"],["u-train-front","電車 通勤"],["u-bus","バス"],["u-map","地図 マップ"],["u-luggage","スーツケース 旅行 荷造り"],["u-tent","キャンプ テント"],["u-mountain","山 登山"],["u-globe","世界 海外 地球"],["u-hotel","ホテル 宿"]]],["趣味・遊び",[["music","音楽"],["palette","絵 デザイン パレット"],["u-camera","カメラ 写真"],["u-gamepad-2","ゲーム"],["u-guitar","ギター 楽器"],["u-headphones","ヘッドホン 音楽 ポッドキャスト"],["u-film","映画 フィルム"],["u-tv","テレビ 動画"],["u-book-open","読書 本"],["u-puzzle","パズル"],["u-dices","サイコロ ボードゲーム"],["u-trophy","トロフィー 優勝 大会"],["u-fishing-hook","釣り"],["u-brush","書道 筆 絵"]]],["人・家族・ペット",[["people","人々 チーム 家族"],["user","人 自分"],["contact","連絡先 名刺"],["u-baby","赤ちゃん 子ども 育児"],["u-hand-heart","支援 ボランティア 寄付"],["u-party-popper","パーティー お祝い イベント"],["u-message-circle","メッセージ チャット 会話"],["u-dog","犬 いぬ ペット"],["u-cat","猫 ねこ ペット"],["u-paw-print","ペット 足あと"],["u-fish","魚 さかな"]]],["自然・天気",[["leaf","葉 植物 自然"],["moon","夜 月"],["sunrise","朝 日の出"],["dusk","夕方 夕暮れ"],["u-sun","晴れ 太陽"],["u-cloud","くもり 雲"],["u-cloud-rain","雨"],["u-snowflake","雪 冬"],["u-tree-pine","木 森 クリスマス"],["u-sprout","芽 成長 家庭菜園"],["u-waves","海 波"],["u-flame","火 やる気 炎"]]],["記号・その他",[["star","星 お気に入り"],["flag","旗 目標"],["bolt","いなずま すばやく"],["tag","タグ ラベル"],["lock","鍵 秘密"],["gear","設定 歯車"],["search","検索 探す"],["u-bell","通知 ベル"],["u-alarm-clock","目覚まし アラーム"],["u-timer","タイマー"],["u-bookmark","しおり ブックマーク"],["u-shield","守る 保険 セキュリティ"],["u-crown","王冠 一番"],["u-gem","宝石 大事"],["u-rocket","ロケット 挑戦 始める"],["u-award","賞 表彰"],["u-circle-check","完了 チェック"]]]];
 const TAB_ICONS=ICAT.flatMap(c=>c[1].map(x=>x[0]));
 const ICKW=Object.fromEntries(ICAT.flatMap(c=>c[1].map(x=>[x[0],c[0]+' '+x[1]])));
@@ -4020,7 +4052,7 @@ function padDown(e,btn,p){
     document.body.classList.remove('is-dragging');
     if(g){const r=g.getBoundingClientRect();g.remove();const z=zoneAt(ev.clientX,ev.clientY);
       if(z?.type==='board'){const pl=$('.plane').getBoundingClientRect();startDraft(p,(r.left-pl.left)/S.ui.zoom,(r.top-pl.top)/S.ui.zoom,null)}
-    }else{const sp=zoneMode()?findSpotArea(todayMode()?'today':projMode()?'pnext':tickMode()?'tk1':'next'):findSpot(S.ui.section);startDraft(p,sp.x,sp.y,btn.getBoundingClientRect())}
+    }else{const sp=zoneMode()?findSpotArea(todayMode()?'today':projMode()?'pnext':tickMode()?'tk1':svMode()?((zonesFor()[0]||{}).id||'next'):'next'):findSpot(S.ui.section);startDraft(p,sp.x,sp.y,btn.getBoundingClientRect())}
   };
   window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
 }
@@ -4088,7 +4120,7 @@ function takeDraft(){
   document.removeEventListener('pointerdown',draftOutside,true);$('#boardScroll')?.removeEventListener('scroll',positionTray);window.removeEventListener('resize',positionTray);
   dr.tray.remove();
   if(!d.title)return {dr,ok:false};
-  if(zoneMode()){if(projMode()){d.project=S.ui.proj;const P=taskById(S.ui.proj);if(P.area)d.area=P.area;addAreaPlaces(d)}const zid=placeInArea(d,d.x,d.y);applyZone(d,zid);{const sp=findSpot(d.status);d.x=sp.x;d.y=sp.y}}
+  if(zoneMode()){if(projMode()){d.project=S.ui.proj;const P=taskById(S.ui.proj);if(P.area)d.area=P.area;addAreaPlaces(d)}if(svMode()){const v=curView(),P=v.places||[];if(P.length&&(v.placesAll||P.length===1))d.tags=[...new Set([...(d.tags||[]),...P])];if((v.people||[]).length===1)d.agenda=[...new Set([...(d.agenda||[]),v.people[0]])]}const zid=placeInArea(d,d.x,d.y);applyZone(d,zid);{const sp=findSpot(d.status);d.x=sp.x;d.y=sp.y}}
   
   S.tasks.push(d);if(S.sample===undefined)S.sample=false;
   return {dr,ok:true};
@@ -4776,7 +4808,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-06 サイドバー切り替え版';
+const APPV='2026-10-06 サイドバー島整理版';
 const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
 const SKEY='fusen.sync';
 let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
