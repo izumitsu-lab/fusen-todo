@@ -2087,7 +2087,7 @@ function normalize(){
     t.kind='project';const st=t.steps;t.steps=[];t.minutes=null;t.tags=[];t.sched=null;
     st.forEach((x,i)=>S.tasks.push({id:x.id||uid(),status:x.done||t.status==='done'?'done':'next',title:x.title,note:'',area:t.area,minutes:x.minutes,tags:x.tags||[],x:0,y:0,px:30+(i%3)*196,py:30+Math.floor(i/3)*186,waitingFor:'',sched:x.sched||null,created:Date.now(),doneAt:x.doneAt||null,project:t.id,prevStatus:'next',sample:t.sample}));
   });
-  S.tasks.forEach(t=>{delete t.steps;if(!Array.isArray(t.tags))t.tags=[];if(t.tags.includes('deep')&&!S.places.some(p=>p.id==='deep')&&!t.energy)t.energy='deep';t.tags=t.tags.filter(g=>S.places.some(p=>p.id===g));t.labels=(Array.isArray(t.labels)?t.labels:[]).filter(g=>S.labels.some(l=>l.id===g));t.agenda=(Array.isArray(t.agenda)?t.agenda:[]).filter(g=>S.people.some(l=>l.id===g))});
+  S.tasks.forEach(t=>{delete t.steps;if(!Array.isArray(t.tags))t.tags=[];if(t.tags.includes('deep')&&!S.places.some(p=>p.id==='deep')&&!t.energy)t.energy='deep';/* 名簿にないIDも消さずに残す（同期で名簿が後から届くことがあるため。表示では無視される） */if(!Array.isArray(t.labels))t.labels=[];if(!Array.isArray(t.agenda))t.agenda=[]});
   if(S.sample&&!S.v6){const st=new Set([...seed().tasks.map(t=>t.title),...sampleSteps().map(x=>x.title),'企画書のドラフトを書く']);S.tasks.forEach(t=>{if(st.has(t.title))t.sample=true})}S.v6=true;
   if(!S.v5){S.v5=true;S.tasks.filter(t=>t.project&&!isProj(t)&&t.status!=='done'&&!t.x&&!t.y).forEach(t=>{const sp=findSpot(t.status);t.x=sp.x;t.y=sp.y});
     S.tasks.filter(isProj).forEach(P=>{S.tasks.filter(t=>t.project===P.id&&t.px!=null).forEach(t=>{t.apos=t.apos||{};t.apos['proj:'+P.id]={x:t.px,y:t.py+46}})});
@@ -4075,6 +4075,7 @@ function openConfig(btn){
       <div class="hint">名前・アイコン・条件は同期され、iPhone でも Mac でも同じものが使えます。チェックを入れたものだけが PC の左サイドバーに出ます。iPhone の下のタブに置くかどうかは、「リスト」画面の「下のタブ」で選べます。</div></div>
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow desk-only"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
+     <div class="setrow"><span>この端末の版</span><div class="hint">${APPV}<br>端末ごとに表示が違う場合、古い版が開いています。ホーム画面のアプリは一度完全に終了して開き直してください。</div></div>
      <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く<span class="desk-only">（?）</span></button></div>
      ${VHINFO.st?`<div class="setrow"><span>画面下端の位置（ホーム画面アプリ）</span><div class="vhadj"><button class="btn" data-vh="-5">上へ</button><b>${(VHINFO.adj||0)>0?'+':''}${VHINFO.adj||0}${VHINFO.auto?'（自動）':''}</b><button class="btn" data-vh="5">下へ</button><button class="btn" data-vh="0">自動</button></div><div class="hint">タブバーが浮く・めり込むときに調整します。診断：画面 ${VHINFO.sh} ／ 表示領域 ${VHINFO.ih} ／ 補正 ${VHINFO.gap}${VHINFO.adj?(VHINFO.adj>0?'+':'')+VHINFO.adj:''}px</div></div>`:''}`;
     {const a=$('#sgIn',el);if(a)a.onclick=signIn;const b=$('#sgOut',el);if(b)b.onclick=async()=>{await signOutSync();toast('ログアウトしました（この端末のデータはそのまま残ります）')}}
@@ -4587,6 +4588,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
+const APPV='2026-10-05 Agenda・場所ボード版';
 const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
 const SKEY='fusen.sync';
 let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
