@@ -2947,7 +2947,7 @@ function allSlots(){const t=Array.isArray(S.ui.tabs)?S.ui.tabs.slice(0,5):[];
   return t}
 const tabSlots=()=>allSlots().slice(0,tabN()-2);
 const tabIcon=(k,ty)=>((S.ui.tabIcons||{})[k])||(ty==='sec'?(TABSEC[k.slice(4)]||[])[1]:ty==='view'?(viewOf(k.slice(5))?.icon||'filter'):ty==='menu'?(SMENU[k.slice(5)]||[])[1]:ty==='proj'?'clip':'folder');
-const SMENU={lists:['GTD','u-clipboard-list','Inbox・Next・Someday などから選ぶ'],areas:['エリア','folder','エリア・サブエリアから選ぶ'],views:['条件','filter','条件で絞ったリストから選ぶ'],projects:['プロジェクト','clip','プロジェクトから選ぶ']};
+const SMENU={lists:['GTD','u-clipboard-list','Inbox・Next・Someday などから選ぶ'],areas:['エリア','folder','エリア・サブエリアから選ぶ'],views:['条件','filter','条件で絞ったリストから選ぶ'],projects:['プロジェクト','clip','プロジェクトから選ぶ'],search:['検索','search','全部のタスクから探す（完了したものも可）']};
 const MLISTS=['inbox','next','calendar','waiting','someday','tickler','projects'];
 const menuCovers=(m,ck)=>m==='lists'?MLISTS.some(x=>ck==='sec:'+x):m==='areas'?ck.startsWith('area:'):m==='views'?ck.startsWith('view:'):m==='projects'?ck.startsWith('proj:')||ck==='sec:projects':false;
 const coveredByMenu=ck=>tabSlots().some(x=>x&&x.startsWith('menu:')&&menuCovers(x.slice(5),ck));
@@ -3015,7 +3015,7 @@ function openTabPicker(i,startIcon){
        <button class="ph-ir ic" id="tpIco">${cs.tico||cs.pico}<span class="l">アイコン</span><span class="cv">${ic('chev')}</span></button>
        ${cs.ty==='view'?`<button class="ph-ir ic" id="tpEditV"><span class="ph-ico g-view">${ic('filter')}</span><span class="l">条件を編集<small>${esc(viewSum(viewOf(cs.v)))}</small></span><span class="cv">${ic('chev')}</span></button>`:''}</div>`:''}
       <div class="ph-sec">条件で絞ったリスト</div><div class="ph-ig">${vws}<button class="ph-ir ic" id="tpNewV"><span class="ph-ico g-view">${ic('plus')}</span><span class="l">新しく作る<small>エリア・場所・所要時間などを組み合わせる</small></span></button></div>
-      <div class="ph-sec">押すとメニューが開くボタン</div><div class="ph-ig">${Object.keys(SMENU).map(m=>{const k='menu:'+m,j=T.indexOf(k);return `<button class="ph-ir ic" data-k="${k}"><span class="ph-ico g-gray">${ic(SMENU[m][1])}</span><span class="l">${SMENU[m][0]}<small>${SMENU[m][2]}</small></span>${k===cur?`<span class="tp-ck">${ic('log')}</span>`:j>=0&&j<vis?`<span class="v">${j+2}番目</span>`:''}</button>`}).join('')}</div>
+      <div class="ph-sec">押すとメニュー・検索が開くボタン</div><div class="ph-ig">${Object.keys(SMENU).map(m=>{const k='menu:'+m,j=T.indexOf(k);return `<button class="ph-ir ic" data-k="${k}"><span class="ph-ico g-gray">${ic(SMENU[m][1])}</span><span class="l">${SMENU[m][0]}<small>${SMENU[m][2]}</small></span>${k===cur?`<span class="tp-ck">${ic('log')}</span>`:j>=0&&j<vis?`<span class="v">${j+2}番目</span>`:''}</button>`}).join('')}</div>
       <div class="ph-sec">リスト</div><div class="ph-ig">${secs}</div>
       ${ars?`<div class="ph-sec">エリア</div><div class="ph-ig">${ars}</div>`:''}
       ${pjs?`<div class="ph-sec">プロジェクト</div><div class="ph-ig">${pjs}</div>`:''}
@@ -3035,7 +3035,7 @@ function openTabPicker(i,startIcon){
   draw();document.body.appendChild(scrim);
 }
 /* 下タブの「メニュー」ボタン：押すと一覧が開いて選べる */
-function openSlotMenu(m){const ck=curKey(),M=SMENU[m];if(!M)return;
+function openSlotMenu(m){if(m==='search'){openSearch();return}const ck=curKey(),M=SMENU[m];if(!M)return;
   const ck1=k=>k===ck?`<span class="tp-ck">${ic('log')}</span>`:'';
   const secN=x=>x==='calendar'?S.tasks.filter(t=>t.status==='calendar'&&!(t.info&&t.cdate<todayKey())).length:x==='tickler'?S.tasks.filter(tickled).length:x==='projects'?projects().length:S.tasks.filter(t=>t.status===x&&!isProj(t)&&!tickled(t)&&!queued(t)).length;
   let html='';
