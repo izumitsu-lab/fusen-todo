@@ -4588,15 +4588,24 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-05 Agenda・場所ボード版';
+const APPV='2026-10-05 同期修正版';
 const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
 const SKEY='fusen.sync';
 let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
 const saveSB=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SB))}catch(e){}};
 const hj=j=>j==null?null:hash(j)+':'+j.length;
 let FB=null;
-const metaJ=()=>JSON.stringify({areas:S.areas,places:S.places,labels:S.labels||[],views:S.views||[],people:S.people||[],sideViews:S.sideViews!==false,sample:!!S.sample,lastReview:S.ui.lastReview||null,logKeep:S.ui.logKeep??null});
-function setMeta(j){const m=JSON.parse(j);if(m.logKeep!=null)S.ui.logKeep=m.logKeep;if(Array.isArray(m.areas))S.areas=m.areas;if(Array.isArray(m.places))S.places=m.places;if(Array.isArray(m.labels))S.labels=m.labels;if(Array.isArray(m.views))S.views=m.views;if(Array.isArray(m.people))S.people=m.people;if(typeof m.sideViews==='boolean')S.sideViews=m.sideViews;S.sample=!!m.sample;if(m.lastReview)S.ui.lastReview=m.lastReview;TAGS=S.places;if(migrateTOD())setTimeout(()=>save(),0)}
+/* 設定は項目ごとに「最後に変えた時刻（mt）」を持ち、同期では新しい方を採用する（1台の古い状態で全体が上書きされないように） */
+const MK=['areas','places','labels','views','people','sideViews'];
+const mval=k=>k==='sideViews'?S.sideViews!==false:(S[k]||[]);
+function stampMeta(){if(!S.mt)S.mt={};const fresh=!S.mh;if(!S.mh)S.mh={};MK.forEach(k=>{const h=hash(JSON.stringify(mval(k)));if(S.mh[k]!==h){if(!fresh)S.mt[k]=Date.now();S.mh[k]=h}})}
+const metaJ=()=>{stampMeta();return JSON.stringify({areas:S.areas,places:S.places,labels:S.labels||[],views:S.views||[],people:S.people||[],sideViews:S.sideViews!==false,mt:Object.fromEntries(MK.map(k=>[k,(S.mt||{})[k]||0])),sample:!!S.sample,lastReview:S.ui.lastReview||null,logKeep:S.ui.logKeep??null})};
+function setMeta(j,first){const m=JSON.parse(j),rt=m.mt||{};if(!S.mt)S.mt={};if(!S.mh)S.mh={};if(m.logKeep!=null)S.ui.logKeep=m.logKeep;
+  MK.forEach(k=>{const has=k==='sideViews'?typeof m[k]==='boolean':Array.isArray(m[k]);
+    /* 初回ログイン：サーバーを正とする。サーバーに無い名簿・条件リストは、手元のサンプル由来のものを送り返さないよう空にする */
+    if(!has){if(first&&(k==='people'||k==='views')){S[k]=[];S.mt[k]=0;S.mh[k]=hash(JSON.stringify(mval(k)))}return}
+    if(first||(rt[k]||0)>=(S.mt[k]||0)){S[k]=m[k];S.mt[k]=rt[k]||0;S.mh[k]=hash(JSON.stringify(mval(k)))}});
+  S.sample=!!m.sample;if(m.lastReview)S.ui.lastReview=m.lastReview;TAGS=S.places;if(migrateTOD())setTimeout(()=>save(),0)}
 const fixTask=t=>{if(!Array.isArray(t.tags))t.tags=[];if(!Array.isArray(t.labels))t.labels=[];if(!Array.isArray(t.agenda))t.agenda=[];if(migWho(t)&&PCH){PCH=false;setTimeout(()=>save(),0)}if(t.tags.some(g=>TOD.includes(g))){t.labels=[...new Set([...t.labels,...t.tags.filter(g=>TOD.includes(g))])];t.tags=t.tags.filter(g=>!TOD.includes(g))}return t};
 const tcol=()=>FB.FS.collection(FB.db,'users',SYNC.user.uid,'fusenTasks');
 const mref=()=>FB.FS.doc(FB.db,'users',SYNC.user.uid,'fusen','meta');
@@ -4657,11 +4666,11 @@ async function startSync(u){
     if(ms.exists()||cloud.size){
       const mine=S.tasks.filter(t=>!t.sample&&!cloud.has(t.id));
       const merge=mine.length?await askMerge(mine.length,cloud.size):false;
-      const lm={areas:S.areas,places:S.places,labels:S.labels||[]};
+      const lm={areas:S.areas,places:S.places,labels:S.labels||[],views:S.views||[],people:S.people||[]};
+      if(ms.exists()){const mj=ms.data().j;setMeta(mj,true);SB.h.__meta=hj(mj)}
       S.tasks=[...[...cloud.values()].map(j=>fixTask(JSON.parse(j))),...(merge?mine:[])];
       cloud.forEach((j,id)=>{SB.h[id]=hj(j)});
-      if(ms.exists()){const mj=ms.data().j;setMeta(mj);SB.h.__meta=hj(mj)}
-      if(merge)['areas','places','labels'].forEach(k=>{const have=new Set(S[k].map(x=>x.id));lm[k].forEach(x=>{if(!have.has(x.id))S[k].push(x)})});
+      if(merge)['areas','places','labels','views','people'].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[];const have=new Set(S[k].map(x=>x.id));lm[k].forEach(x=>{if(!have.has(x.id))S[k].push(x)})});
       TAGS=S.places;resetView();saveLocal();render();
       toast(merge?'クラウドのデータと合わせました':'クラウドのデータを読み込みました');
     }else toast('この端末のデータをクラウドに送ります');
