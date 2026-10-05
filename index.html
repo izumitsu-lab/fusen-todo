@@ -297,7 +297,8 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;-webkit-user-selec
 .stk.soft{filter:var(--stk-filter) saturate(.62) brightness(1.03)}
 .bar h1 .dot{width:12px;height:12px;align-self:center}
 .nav.area.reorder{background:var(--pop);box-shadow:var(--shadow-pop);z-index:5;transition:none}
-#side [data-area],#side [data-proj]{transition:transform .15s,background .15s}
+#side [data-area],#side [data-proj],#side [data-vw]{transition:transform .15s,background .15s}
+.nav.gtd.reorder{background:var(--pop);box-shadow:var(--shadow-pop);z-index:5;transition:none;position:relative}
 .nav.projn.reorder{background:var(--pop);box-shadow:var(--shadow-pop);z-index:5;transition:none}
 #side [data-area].reorder{transition:none}
 .edit-area{height:24px;font-size:11.5px;font-weight:500;margin-left:2px;color:var(--ink3);align-self:center}
@@ -2161,7 +2162,7 @@ function renderSide(){
     const tg=e.target.closest('[data-toggle]');if(tg){e.stopPropagation();S.ui.fold=S.ui.fold||{};S.ui.fold[tg.dataset.toggle]=!S.ui.fold[tg.dataset.toggle];save();renderSide();return}
     F.area=F.area===b.dataset.area?null:b.dataset.area;S.ui.section='next';render();closeSide()});
   $('#addArea').onclick=showAreaAdd;
-  $$('#side [data-vw]').forEach(b=>{b.onclick=()=>{openView(b.dataset.vw);closeSide()};b.oncontextmenu=e=>{e.preventDefault();openViewEditor(viewOf(b.dataset.vw))}});
+  $$('#side [data-vw]').forEach(b=>{b.addEventListener('pointerdown',e=>viewReorderDown(e,b));b.onclick=()=>{if(b._dragged){b._dragged=false;return}openView(b.dataset.vw);closeSide()};b.oncontextmenu=e=>{e.preventDefault();openViewEditor(viewOf(b.dataset.vw))}});
   const avb=$('#addView');if(avb)avb.onclick=()=>{closeSide();openViewEditor(null,id=>{if(id)openView(id)})};
   const vmb=$('#viewMenu');if(vmb)vmb.onclick=e=>{e.stopPropagation();openViewMenu(vmb)};
   const fa=$('#foldAll');if(fa)fa.onclick=()=>{const close=!!fa.dataset.open;S.ui.fold=S.ui.fold||{};foldables().forEach(t=>{S.ui.fold[t.id]=close});save();renderSide()};
@@ -2177,6 +2178,25 @@ function renderSide(){
     S.tasks=kept;S.sample=false;if(!kept.length)S.ui.section='inbox';else if(S.ui.section==='proj'&&!taskById(S.ui.proj))S.ui.section='next';
     save();render();
     toast(kept.length?`サンプル ${gone.length}件を消去しました（あなたのタスク ${kept.length}件はそのままです）`:`サンプル ${gone.length}件を消去しました`,{label:'元に戻す',fn:()=>{S.tasks=[...S.tasks,...gone];unl.forEach(([t,p])=>{t.project=p});S.sample=true;Object.assign(S.ui,was);save();render()}})};
+}
+/* サイドバーの条件リストを上下ドラッグで並べ替え（順番は同期される） */
+function viewReorderDown(e,b){
+  if(e.button!==0)return;const sy=e.clientY,sibs=$$('#side [data-vw]');if(sibs.length<2)return;
+  const idx=sibs.indexOf(b);let on=false,to=idx,line=null;
+  const rects=sibs.map(x=>x.getBoundingClientRect()),sideR=$('#side').getBoundingClientRect();
+  const mv=ev=>{const dy=ev.clientY-sy;
+    if(!on&&Math.abs(dy)>6){on=true;b.classList.add('reorder');document.body.classList.add('is-dragging');line=document.createElement('div');line.className='area-ins';$('#side').appendChild(line)}
+    if(!on)return;b.style.transform=`translateY(${dy}px)`;
+    to=0;rects.forEach((r,i)=>{if(i!==idx&&ev.clientY>(r.top+r.bottom)/2)to++});
+    const others=rects.filter((_,i)=>i!==idx);const y=to<others.length?others[to].top-1:others[others.length-1].bottom+1;
+    line.style.top=(y-sideR.top+$('#side').scrollTop)+'px';line.style.left='14px'};
+  const up=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);document.body.classList.remove('is-dragging');
+    if(!on)return;b._dragged=true;b.style.transform='';b.classList.remove('reorder');line&&line.remove();
+    if(to===idx)return;
+    const ids=sibs.map(x=>x.dataset.vw);const [m]=ids.splice(idx,1);ids.splice(to,0,m);
+    /* 表示中のものだけ並べ替え、隠しているものはそのままの位置に残す */
+    const shown=new Set(ids);let k=0;S.views=(S.views||[]).map(v=>shown.has(v.id)?viewOf(ids[k++]):v);save();render()};
+  window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
 }
 function projReorderDown(e,b){
   if(e.button!==0)return;const sy=e.clientY,pa=b.dataset.pa;
