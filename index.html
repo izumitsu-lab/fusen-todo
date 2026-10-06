@@ -1921,6 +1921,11 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .sgrp.sd-areas>.nav:not(:first-child)::before{left:46px}
 .sd-areas .caret svg.i{width:14px;height:14px}
 .sd-areas[hidden],.sd-areas .nav[hidden]{display:none}
+.sd-bd{display:flex;gap:2px;margin:0 2px 10px;padding:2px;border-radius:9px;background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.sd-bd button{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;height:28px;border-radius:7px;font-size:12.5px;font-weight:500;color:var(--ink2);transition:background .15s,color .15s}
+.sd-bd button:hover:not(.on){color:var(--ink)}
+.sd-bd button.on{background:var(--pop);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.05)}
+.sd-bd svg.i{width:14px;height:14px}
 /* ---------- quick add card ---------- */
 .scrim.qk-scrim{display:block;padding:0}
 .qk{position:fixed;left:0;right:0;bottom:0;box-sizing:border-box;background:var(--pop);border-radius:16px 16px 0 0;padding:8px 14px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -12px rgba(0,0,0,.3);animation:qkUp .26s cubic-bezier(.2,.8,.2,1)}
@@ -2304,12 +2309,13 @@ function renderSideDrill(kind){const K=popKinds()[kind],P=K.items(),side=$('#sid
   side.innerHTML=`<div class="sdrill ${an?'anim':''}">
    <button class="sd-back" id="sdBack">${ic('chev')}戻る</button>
    <div class="sd-h"><span class="sq" style="background:${K.hcol}">${ic(K.hico)}</span><b>${K.title}</b><button class="sd-ed" id="sdEdit">${ic('edit')}編集</button></div>
+   ${bdSeg(kind)}
    <label class="sd-s">${ic('search')}<input id="sdQ" placeholder="${K.ph}" autocomplete="off"></label>
    <div class="sd-list">${groups.filter(g=>g.length).map(gr=>`<div class="sgrp">${gr.map(g=>{const n=K.cnt(g.id);const gc=kind==='vw'?'#5B6CC9':agColor(g);return `<button class="nav gtd sd-it ${K.on(g.id)?'on':''} ${n?'':'zero'}" style="--gc:${gc}" data-sdp="${g.id}" data-nm="${esc((g.name||'').toLowerCase())}">${icoS(g)}<span class="lbl">${esc(g.name)}</span><span class="n">${n||''}</span></button>`}).join('')}</div>`).join('')||`<div class="sd-none">${K.empty}</div>`}
     <div class="sd-none sd-nohit" hidden>見つかりませんでした</div>
     ${hid?`<button class="sd-hid" id="sdHid">ほかに ${hid}件を隠しています</button>`:''}</div>
    <div class="sd-ft" id="sdFt">${K.add?`<button class="sd-add" id="sdAdd">${ic('plus')}${K.addLabel}</button>`:K.newFn?`<button class="sd-add" id="sdAdd">${ic('plus')}${K.addLabel}</button>`:''}</div></div>`;
-  $('#sdBack').onclick=()=>{S.ui.sbDrill=null;sdAnim=true;save();renderSide()};
+  $('#sdBack').onclick=()=>{S.ui.sbDrill=null;sdAnim=true;save();renderSide()};bindBdSeg(side);
   $('#sdEdit').onclick=e=>{e.stopPropagation();openPickPop($('#sdEdit'),kind,{edit:true})};
   const hb=$('#sdHid');if(hb)hb.onclick=e=>{e.stopPropagation();openPickPop(hb,kind,{edit:true})};
   $$('[data-sdp]',side).forEach(b=>b.onclick=()=>{K.open(b.dataset.sdp);closeSide()});
@@ -2339,6 +2345,7 @@ function renderSide(){
   $('#side').innerHTML=drillAr?`<div class="sdrill ${an?'anim':''}">
    <button class="sd-back" id="sdBack">${ic('chev')}戻る</button>
    <div class="sd-h"><span class="sq" style="background:var(--ar-c)">${ic('u-layers')}</span><b>エリア</b>${foldBtn()}</div>
+   ${bdSeg('ar')}
    <label class="sd-s">${ic('search')}<input id="sdQ" placeholder="エリア・プロジェクトを探す" autocomplete="off"></label>
    <div class="sd-list"><div id="areaAddSlot"></div>
     ${(h=>h?`<div class="sgrp sareas sd-areas">${h}</div>`:`<div class="sd-none">エリアはまだありません</div>`)(areaRows())}
@@ -2361,7 +2368,7 @@ function renderSide(){
      <div class="mob-only"><button id="sTl">${ic('cal')}今日のタイムライン</button><button id="sSet">${ic('palette')}デザイン</button><button id="sCfg">${ic('gear')}設定</button><button id="sGuide">${ic('book')}手引き</button></div>
      ${S.sample?'<button id="clearSample">サンプルを消去</button>':''}
    </div></div>`;
-  if(drillAr){$('#sdBack').onclick=()=>{S.ui.sbDrill=null;sdAnim=true;save();renderSide()};
+  if(drillAr){$('#sdBack').onclick=()=>{S.ui.sbDrill=null;sdAnim=true;save();renderSide()};bindBdSeg($('#side'));
     const qi=$('#sdQ');qi.oninput=()=>{const w=qi.value.trim().toLowerCase();let any=0;$$('.sd-areas [data-nm]').forEach(b=>{const ok=!w||b.dataset.nm.includes(w);b.hidden=!ok;if(ok)any++});const nh=$('.sd-nohit');if(nh)nh.hidden=!!any||!w};
     qi.onkeydown=e=>{if(isIME(e))return;if(e.key==='Enter'){const b=$$('.sd-areas [data-nm]').find(x=>!x.hidden);if(b){e.preventDefault();b.click()}}else if(e.key==='Escape'){qi.value='';qi.oninput()}}}
   const arB=$('#arBtn');if(arB)arB.onclick=e=>{e.stopPropagation();S.ui.sbDrill='ar';sdAnim=true;save();renderSide()};
@@ -2471,7 +2478,7 @@ function renderBar(){
   const sec=S.ui.section,v=S.ui.view,isLog=sec==='log',noBoard=isLog||sec==='projects'||sec==='review';
   const list=noBoard?[]:S.tasks.filter(t=>visibleOnBoard(t)&&passes(t));
   const PJ=projMode()?taskById(S.ui.proj):null;
-  const title=isLog?'完了ログ':sec==='projects'?'プロジェクト':sec==='review'?'週次レビュー':sec==='ag'&&agMode()?`<span class="ag-av">${esc(pName(S.ui.ag).slice(0,1))}</span><span class="ag-nm">${esc(pName(S.ui.ag))}</span><button class="ag-sw" id="agSwitch" title="ほかの人・会議に切り替え">${ic('chev')}</button>`:sec==='pl'&&plMode()?`${ic((TAGS.find(x=>x.id===S.ui.pl)||{}).icon||'pin')}<span class="ag-nm">${esc(tagName(S.ui.pl))}</span><button class="ag-sw" id="plSwitch" title="ほかの場所・道具に切り替え">${ic('chev')}</button>`:sec==='sv'?`${ic(curView().icon||'filter')}${esc(curView().name)}`:PJ?`${ic('clip')}${esc(PJ.title)}`:F.area?`<i class="dot c-${areaColor(area(F.area))}"></i>`+esc(areaLabel(area(F.area))):SECT[sec].en;
+  const title=isLog?'完了ログ':sec==='projects'?'プロジェクト':sec==='review'?'週次レビュー':sec==='ag'&&agMode()?esc(pName(S.ui.ag)):sec==='pl'&&plMode()?esc(tagName(S.ui.pl)):sec==='sv'?esc(curView().name):PJ?`${ic('clip')}${esc(PJ.title)}`:F.area?`<i class="dot c-${areaColor(area(F.area))}"></i>`+esc(areaLabel(area(F.area))):SECT[sec].en;
   $('#bar').classList.toggle('pj',!!PJ);
   $('#bar').innerHTML=`
    <button class="iconbtn menu-btn" id="menuBtn" aria-label="メニュー">${ic('menu')}</button>
@@ -2571,7 +2578,9 @@ const ctxAdd=(t,c)=>{const f=c.k==='ag'?'agenda':'tags';if(!Array.isArray(t[f]))
 const svMode=()=>!F.area&&S.ui.section==='sv'&&!!curView();
 /* 場所・道具／Agenda／条件リストのボードの形：'gtd'（区分ごとの帯）か 'today'（Today の帯＋Next Action） */
 const bdCfg=()=>S.ui.bd||(S.ui.bd={});
-const bdToday=()=>(agMode()&&bdCfg().ag==='today')||(plMode()&&bdCfg().pl==='today')||(svMode()&&bdCfg().vw==='today');
+const bdToday=()=>(agMode()&&bdCfg().ag==='today')||(plMode()&&bdCfg().pl==='today')||(svMode()&&bdCfg().vw==='today')||(areaMode()&&bdCfg().ar==='today');
+const bdSeg=k=>`<div class="sd-bd" role="group" aria-label="ボードの形"><button data-bd="${k}" data-bdv="gtd" class="${bdCfg()[k]!=='today'?'on':''}" title="Next Action・Calendar・Waiting・Someday・Tickler の帯で並べる">${ic('u-layers')}GTD</button><button data-bd="${k}" data-bdv="today" class="${bdCfg()[k]==='today'?'on':''}" title="今日が締切・今日の予定と、Next Action を並べる">${ic('today')}Today</button></div>`;
+const bindBdSeg=root=>$$('[data-bd]',root).forEach(b=>b.onclick=()=>{bdCfg()[b.dataset.bd]=b.dataset.bdv;save();render()});
 const zoneMode=()=>ctxMode()||areaMode()||todayMode()||tickMode()||projMode()||calMode()||svMode();
 const dueNow=t=>!isProj(t)&&!!t.due&&t.due<=todayKey()&&(t.status==='next'||t.status==='waiting')&&!tickled(t)&&!queued(t);
 const tkIn=(t,a,b)=>{if(!tickled(t))return false;const n=dayDiff(t.start);return n>=a&&n<=b};
@@ -2591,7 +2600,7 @@ function zonesFor(){
     {id:'next',label:'Next Action',icon:'next',match:t=>t.status==='next'&&!dueNow(t)&&!isProj(t),drop:t=>{if(dueNow(t))t.due=null;t.status='next'},empty:'Next Actionのタスクはここに並びます'}];
   const calZone=(m)=>({id:'zcal',label:'Calendar',icon:'calendar',soft:true,tk:true,minH:170,match:t=>m(t)&&t.status==='calendar'&&!(t.info&&t.cdate<todayKey()),drop:t=>{if(t.status!=='calendar'){t.status='calendar';t.cdate=todayKey();t.start=null}},empty:'ここへ入れると今日のカレンダー予定になります'});
   const tkZone=(m)=>({id:'ztk',label:'Tickler',icon:'tickler',soft:true,tk:true,minH:170,match:t=>m(t)&&tickled(t),drop:t=>{if(!tickled(t))t.start=keyAdd(todayKey(),1);if(t.status==='inbox'||t.status==='someday')t.status='next'},empty:'ここへ入れると明日 Next Action に戻ります'});
-  if(bdToday()){const sv=svMode(),v=sv&&curView(),c=sv?null:ctxCur(),m=sv?(t=>vMatch(t,v)):(t=>!isProj(t)&&ctxHas(t,c)),tag=fn=>t=>{fn(t);if(!sv)ctxAdd(t,c)};
+  if(bdToday()){const sv=svMode(),ar=areaMode(),v=sv&&curView(),c=sv||ar?null:ctxCur(),m=sv?(t=>vMatch(t,v)):ar?(t=>!isProj(t)&&inArea(t,F.area)):(t=>!isProj(t)&&ctxHas(t,c)),tag=fn=>t=>{fn(t);if(c)ctxAdd(t,c)};
     const nm=t=>!isProj(t)&&t.status==='next'&&!tickled(t)&&!queued(t);
     return [{id:'today',label:'Today',icon:'today',match:t=>!isProj(t)&&!queued(t)&&(dueNow(t)||(calNow(t)&&t.ctime==null&&!t.info))&&m(t),drop:tag(t=>{if(t.status==='calendar')return;t.due=todayKey();if(t.status!=='next'&&t.status!=='waiting')t.status='next';t.start=null}),empty:'今日が締切・今日の予定のタスクがここに出ます',minH:150},
       {id:'next',label:'Next Action',icon:'next',match:t=>m(t)&&nm(t)&&!dueNow(t),drop:tag(t=>{if(dueNow(t))t.due=null;t.status='next';t.start=null}),empty:'Next Actionのタスクはここに並びます'}]}
@@ -2760,7 +2769,7 @@ function rowMeta(t){
   if(tickled(t))out.push(`<span class="mt">${ic('tickler')}${dueLabel(t.start).l}に戻る</span>`);
   if(isToday(t))out.push(`<span class="ms">${ic('clock')}${clock(t.sched.start)}</span>`);
   if(t.due&&t.status!=='calendar'){const x=dlLabel(t.due);out.push(`<span class="md ${x.c.replace('dl-','md-')}">${ic('flag')}${x.l}</span>`)}
-  if(t.status==='waiting'){const n=-dayDiff(dayKey(new Date(t.created||Date.now())));out.push(`<span class="mw">${ic('waiting')}${esc(whoTxt(t)||'相手は未設定')}${n>0?` · ${n}日`:''}</span>`)}
+  if(t.status==='waiting'){const n=-dayDiff(dayKey(new Date(t.created||Date.now())));out.push(`<span class="mw">${ic('waiting')}${esc(whoTxt(t)||'相手は未設定')}</span>`)}
   if(t.rep)out.push(`<span class="mr">${ic('repeat')}${repLabel(t.rep)}</span>`);
   (t.status==='waiting'?[]:(t.agenda||[])).forEach(g=>{const n=pName(g);if(n)out.push(`<span class="mag">${ic('user')}${esc(n)}</span>`)});
   (t.labels||[]).forEach(l=>{const n=labName(l);if(n)out.push(`<span class="mlab">#${esc(n)}</span>`)});
@@ -4303,9 +4312,6 @@ function openConfig(btn){
       <div class="sbopt"><span>Agenda</span><div class="seg"><button data-sbk="ag" data-sbv="1" class="${sbCfg().ag?'on':''}">表示</button><button data-sbk="ag" data-sbv="0" class="${sbCfg().ag?'':'on'}">隠す</button></div></div>
       <div class="sbopt"><span>条件リスト</span><div class="seg">${[['row','1行にまとめる'],['list','1つずつ並べる'],['off','隠す']].map(([v,l])=>`<button data-sbk="vw" data-sbv="${v}" class="${sbCfg().vw===v?'on':''}">${l}</button>`).join('')}</div></div>
       <div class="hint">「1行にまとめる」は、押すとサイドバーがその一覧に切り替わります。一覧に出す項目は「編集」で ${ic('u-eye')} を付け外しして選べます。この設定はこの端末だけのものです。</div></div>
-     <div class="setrow desk-only"><span>ボードの形</span>
-      ${[['pl','場所・道具'],['ag','Agenda'],['vw','条件リスト']].map(([k,l])=>`<div class="sbopt"><span>${l}</span><div class="seg"><button data-bdk="${k}" data-bdv="gtd" class="${bdCfg()[k]!=='today'?'on':''}">GTD</button><button data-bdk="${k}" data-bdv="today" class="${bdCfg()[k]==='today'?'on':''}">Today</button></div></div>`).join('')}
-      <div class="hint">GTD：Next Action・Calendar・Waiting・Someday・Tickler の帯に分けて並べます（エリアと同じ形）。Today：今日が締切または過ぎたもの・今日の予定を上の帯に、その下に Next Action を並べます（Today と同じ形）。この設定はこの端末だけのものです。</div></div>
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow desk-only"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
      <div class="setrow"><span>この端末の版</span><div class="hint">${APPV}<br>端末ごとに表示が違う場合、古い版が開いています。ホーム画面のアプリは一度完全に終了して開き直してください。</div></div>
@@ -4321,7 +4327,6 @@ function openConfig(btn){
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
     $$('[data-vh]',el).forEach(b=>b.onclick=()=>{const v=+b.dataset.vh;S.ui.vhAdj=v?Math.max(-120,Math.min(120,(VHINFO.adj||0)+v)):null;save();fixVH();draw()});
     $('#cfgGuide',el).onclick=()=>{closeConfig();openGuide()};
-    $$('[data-bdk]',el).forEach(b=>b.onclick=()=>{bdCfg()[b.dataset.bdk]=b.dataset.bdv;save();render();draw()});
     $$('[data-sbk]',el).forEach(b=>b.onclick=()=>{const c=sbCfg(),k=b.dataset.sbk,v=b.dataset.sbv;c[k]=k==='vw'?v:v==='1';save();renderSide();draw()});
     place();
   };
@@ -4819,7 +4824,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-06 ボードの形選択版';
+const APPV='2026-10-06 ボード切り替え版';
 const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
 const SKEY='fusen.sync';
 let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
