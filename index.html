@@ -2340,7 +2340,7 @@ function renderSide(){
   const rvAgo=S.ui.lastReview?-dayDiff(dayKey(new Date(S.ui.lastReview))):null;
   const areaRows=()=>orderedAreas().map(a=>{const sub=rootOf(a)!==a;const n=modeCount('ar',a.id);const ps=projects().filter(p=>p.area===a.id);const R=rootOf(a);const fold=!!(S.ui.fold||{})[R.id];if(sub&&fold)return '';const hid=sub?0:kids(a.id).length+projects().filter(p=>p.area===a.id||kids(a.id).some(k=>k.id===p.area)).length;const open=!fold;
      return `<button class="nav area ${sub?'sub':''} c-${areaColor(a)} ${F.area===a.id?'on':''} ${sub&&F.area===a.parent?'in':''}" data-area="${a.id}" data-parent="${sub?a.parent:''}" data-drop="area:${a.id}" data-nm="${esc((a.name||'').toLowerCase())}"><span class="dot"></span><span class="lbl">${esc(a.name)}</span>${!sub&&hid?`<span class="caret ${open?'open':''}" data-toggle="${a.id}" role="button" aria-label="${open?'折りたたむ':'広げる'}">${ic('chev')}${open?'':`<em>${hid}</em>`}</span>`:''}<span class="n">${n||''}</span></button>
-     ${open?ps.map(p=>`<button class="nav projn ${sub?'deep':''} ${projMode()&&S.ui.proj===p.id?'on':''}" data-proj="${p.id}" data-pa="${p.area||''}" data-drop="proj:${p.id}" data-nm="${esc((p.title||'').toLowerCase())}">${ic('clip')}<span class="lbl">${esc(p.title)}</span>${(st=>st.k==='ok'?'':`<i class="warn-dot ${st.k}" title="${esc(st.l)}"></i>`)(projState(p))}<span class="n">${pKids(p).length||''}</span></button>`).join(''):''}`}).join('');
+     ${open?ps.map(p=>`<button class="nav projn ${sub?'deep':''} ${projMode()&&S.ui.proj===p.id?'on':''}" data-proj="${p.id}" data-pa="${p.area||''}" data-drop="proj:${p.id}" data-nm="${esc((p.title||'').toLowerCase())}">${ic('clip')}<span class="lbl">${esc(p.title)}</span>${(st=>st.k==='ok'?'':`<i class="warn-dot ${st.k}" title="${esc(st.l)}"></i>`)(projState(p))}<span class="n">${projCount(p)||''}</span></button>`).join(''):''}`}).join('');
   const foldBtn=()=>(fs=>fs.length?(op=>`<button class="sd-ed" id="foldAll" data-open="${op?1:''}" title="${op?'すべてたたむ':'すべて開く'}" aria-label="${op?'すべてたたむ':'すべて開く'}">${ic(op?'foldall':'unfoldall')}${op?'たたむ':'開く'}</button>`)(fs.some(t=>!(S.ui.fold||{})[t.id])):'')(foldables());
   const curA=F.area&&area(F.area);
   $('#side').innerHTML=drillAr?`<div class="sdrill ${an?'anim':''}">
@@ -2373,7 +2373,7 @@ function renderSide(){
   const arB=$('#arBtn');if(arB)arB.onclick=e=>{e.stopPropagation();S.ui.sbDrill='ar';sdAnim=true;save();renderSide()};
   $$('#side [data-sec]').forEach(b=>b.onclick=()=>{S.ui.section=b.dataset.sec;F.area=null;if(b.dataset.sec==='review'&&(S.ui.rvStep||0)>=RV.length-1)S.ui.rvStep=0;save();render();closeSide()});
   $$('#side [data-area]').forEach(b=>{b.oncontextmenu=e=>{e.preventDefault();openAreaEditor(area(b.dataset.area))};b.addEventListener('pointerdown',e=>areaReorderDown(e,b))});
-  $$('#side [data-proj]').forEach(b=>{b.onclick=()=>{if(b._dragged){b._dragged=false;return}openProject(b.dataset.proj);closeSide()};b.addEventListener('pointerdown',e=>projReorderDown(e,b))});
+  $$('#side [data-proj]').forEach(b=>{b.onclick=()=>{if(b._dragged){b._dragged=false;return}openProject(b.dataset.proj,false,true);closeSide()};b.addEventListener('pointerdown',e=>projReorderDown(e,b))});
   $$('#side [data-area]').forEach(b=>b.onclick=e=>{
     if(b._dragged){b._dragged=false;return}
     const tg=e.target.closest('[data-toggle]');if(tg){e.stopPropagation();S.ui.fold=S.ui.fold||{};S.ui.fold[tg.dataset.toggle]=!S.ui.fold[tg.dataset.toggle];save();renderSide();return}
@@ -2577,7 +2577,7 @@ const ctxAdd=(t,c)=>{const f=c.k==='ag'?'agenda':'tags';if(!Array.isArray(t[f]))
 const svMode=()=>!F.area&&S.ui.section==='sv'&&!!curView();
 /* 場所・道具／Agenda／お気に入りのボードの形：'gtd'（区分ごとの帯）か 'today'（Today の帯＋Next Action） */
 const bdCfg=()=>S.ui.bd||(S.ui.bd={});
-const bdToday=()=>(agMode()&&bdCfg().ag==='today')||(plMode()&&bdCfg().pl==='today')||(svMode()&&bdCfg().vw==='today')||(areaMode()&&bdCfg().ar==='today');
+const bdToday=()=>(projMode()&&S.ui.pjAr&&bdCfg().ar==='today')||(agMode()&&bdCfg().ag==='today')||(plMode()&&bdCfg().pl==='today')||(svMode()&&bdCfg().vw==='today')||(areaMode()&&bdCfg().ar==='today');
 const bdSeg=k=>`<div class="sd-bd" role="group" aria-label="ボードの形"><button data-bd="${k}" data-bdv="gtd" class="${bdCfg()[k]!=='today'?'on':''}" title="Next Action・Calendar・Waiting・Someday・Tickler の帯で並べる">${ic('u-layers')}GTD</button><button data-bd="${k}" data-bdv="today" class="${bdCfg()[k]==='today'?'on':''}" title="今日が締切・今日の予定と、Next Action を並べる">${ic('today')}Today</button></div>`;
 const bdKindNow=()=>svMode()?'vw':agMode()?'ag':plMode()?'pl':areaMode()&&!projMode()?'ar':null;
 const bindBdSeg=root=>$$('[data-bd]',root).forEach(b=>b.onclick=()=>{bdCfg()[b.dataset.bd]=b.dataset.bdv;save();render()});
@@ -2600,8 +2600,8 @@ function zonesFor(){
     {id:'next',label:'Next Action',icon:'next',match:t=>t.status==='next'&&!dueNow(t)&&!isProj(t),drop:t=>{if(dueNow(t))t.due=null;t.status='next'},empty:'Next Actionのタスクはここに並びます'}];
   const calZone=(m)=>({id:'zcal',label:'Calendar',icon:'calendar',soft:true,tk:true,minH:170,match:t=>m(t)&&t.status==='calendar'&&!(t.info&&t.cdate<todayKey()),drop:t=>{if(t.status!=='calendar'){t.status='calendar';t.cdate=todayKey();t.start=null}},empty:'ここへ入れると今日のカレンダー予定になります'});
   const tkZone=(m)=>({id:'ztk',label:'Tickler',icon:'tickler',soft:true,tk:true,minH:170,match:t=>m(t)&&tickled(t),drop:t=>{if(!tickled(t))t.start=keyAdd(todayKey(),1);if(t.status==='inbox'||t.status==='someday')t.status='next'},empty:'ここへ入れると明日 Next Action に戻ります'});
-  if(bdToday()){const sv=svMode(),ar=areaMode(),v=sv&&curView(),c=sv||ar?null:ctxCur(),m=sv?(t=>vMatch(t,v)):ar?(t=>!isProj(t)&&inArea(t,F.area)):(t=>!isProj(t)&&ctxHas(t,c)),tag=fn=>t=>{fn(t);if(c)ctxAdd(t,c)};
-    const nm=t=>!isProj(t)&&t.status==='next'&&!tickled(t)&&!queued(t);
+  if(bdToday()){const sv=svMode(),ar=areaMode(),pj=projMode()?S.ui.proj:null,v=sv&&curView(),c=sv||ar||pj?null:ctxCur(),m=pj?(t=>!isProj(t)&&t.project===pj):sv?(t=>vMatch(t,v)):ar?(t=>!isProj(t)&&inArea(t,F.area)):(t=>!isProj(t)&&ctxHas(t,c)),tag=fn=>t=>{fn(t);if(c)ctxAdd(t,c)};
+    const nm=t=>!isProj(t)&&(t.status==='next'||(pj&&t.status==='inbox'))&&!tickled(t)&&(pj||!queued(t));
     return [{id:'today',label:'Today',icon:'today',match:t=>!isProj(t)&&!queued(t)&&(dueNow(t)||(calNow(t)&&t.ctime==null&&!t.info))&&m(t),drop:tag(t=>{if(t.status==='calendar')return;t.due=todayKey();if(t.status!=='next'&&t.status!=='waiting')t.status='next';t.start=null}),empty:'今日が締切・今日の予定のタスクがここに出ます',minH:150},
       {id:'next',label:'Next Action',icon:'next',match:t=>m(t)&&nm(t)&&!dueNow(t),drop:tag(t=>{if(dueNow(t))t.due=null;t.status='next';t.start=null}),empty:'Next Actionのタスクはここに並びます'}]}
   if(svMode()){const v=curView(),m=t=>!isProj(t)&&vCond(t,v);
@@ -3334,7 +3334,7 @@ function popKinds(){return {
     ico:g=>`<span class="agp-av" style="background:${agColor(g)}">${esc((g.name||'?').slice(0,1))}</span>`,ph:'人・会議を探す',edit:true,add:true,addLabel:'人・会議を追加',empty:'まだ誰もいません。下のボタンか上の欄から追加できます。',...hideVis},
   pl:{title:'場所・道具',hico:'pin',hcol:'#C76A1C',items:()=>S.places,cnt:plCount,on:id=>S.ui.section==='pl'&&S.ui.pl===id,open:openPlace,
     ico:g=>`<span class="agp-sq" style="background:${agColor(g)}">${ic(g.icon||'pin')}</span>`,ph:'場所・道具を探す',edit:true,add:true,addLabel:'場所・道具を追加',empty:'場所・道具はまだありません',...hideVis},
-  vw:{title:'お気に入り',hico:'star',hcol:'#5B6CC9',items:()=>S.views||(S.views=[]),cnt:vCount,on:id=>S.ui.section==='sv'&&S.ui.sv===id,open:openView,
+  vw:{title:'お気に入り',hico:'star',hcol:'#5B6CC9',items:()=>S.views||(S.views=[]),cnt:id=>modeCount('vw',id),on:id=>S.ui.section==='sv'&&S.ui.sv===id,open:openView,
     ico:g=>`<span class="agp-sq" style="background:#5B6CC9">${ic(g.icon||'filter')}</span>`,ph:'お気に入りを探す',edit:true,newFn:()=>openViewEditor(null,id=>{if(id)openView(id)}),addLabel:'新しく作る',empty:'お気に入りはまだありません',
     vis:g=>g.side!==false,setVis:(g,v)=>{g.side=v}},
   ar:{title:'エリア',hico:'folder',hcol:'#7A746A',items:()=>{const o=[];tops().forEach((a,i)=>{if(i&&kids(a.id).length)o.push({sep:true});o.push(a,...kids(a.id));if(kids(a.id).length)o.push({sep:true})});return o},
@@ -3438,6 +3438,8 @@ const vCount=v=>v?modeCount('vw',v.id):0;
 /* サイドバーなどの件数：いまの形（GTD／Today）でボードに出る枚数 */
 const ctxPred=(k,id)=>k==='ar'?(t=>inArea(t,id)):k==='ag'?(t=>(t.agenda||[]).includes(id)):k==='pl'?(t=>(t.tags||[]).includes(id)):(v=>t=>!!v&&vCond(t,v))(viewOf(id));
 const modeBase=k=>bdCfg()[k]==='today'?todayBase:gtdBase;
+/* エリア一覧に並ぶプロジェクトの件数（エリアの GTD／Today に合わせる） */
+const projCount=p=>{const ks=pKids(p);return bdCfg().ar==='today'?ks.filter(t=>!isProj(t)&&(dueNow(t)||(calNow(t)&&t.ctime==null&&!t.info)||((t.status==='next'||t.status==='inbox')&&!tickled(t)))).length:ks.filter(t=>!(t.status==='calendar'&&t.info&&t.cdate<todayKey())).length};
 const modeCount=(k,id)=>{const p=ctxPred(k,id),b=modeBase(k);return S.tasks.filter(t=>b(t)&&p(t)).length};
 function viewSum(v){if(!v)return '';const o=[];
   if(v.areas&&v.areas.length)o.push(v.areas.map(a=>area(a)?.name).filter(Boolean).join('・'));
@@ -4231,7 +4233,7 @@ function openAreaPop(btn,d,onPick){
 }
 
 /* ---------- project ---------- */
-function openProject(id,startNew){S.ui.fromProjects=S.ui.section==='projects';F.area=null;S.ui.section='proj';S.ui.proj=id;const P=taskById(id);if(P&&area(P.area)){S.ui.fold=S.ui.fold||{};S.ui.fold[rootOf(area(P.area)).id]=false}save();render();if(startNew)setTimeout(()=>{const pd=$('#pads .pad');if(!pd)return;const sp=findSpotArea('pnext');startDraft({area:P.area,color:areaColor(area(P.area)),name:area(P.area)?.name||''},sp.x,sp.y,pd.getBoundingClientRect(),{placeholder:'最初の一手は？'})},120)}
+function openProject(id,startNew,fromAr){S.ui.pjAr=!!fromAr;S.ui.fromProjects=S.ui.section==='projects';F.area=null;S.ui.section='proj';S.ui.proj=id;const P=taskById(id);if(P&&area(P.area)){S.ui.fold=S.ui.fold||{};S.ui.fold[rootOf(area(P.area)).id]=false}save();render();if(startNew)setTimeout(()=>{const pd=$('#pads .pad');if(!pd)return;const sp=findSpotArea('pnext');startDraft({area:P.area,color:areaColor(area(P.area)),name:area(P.area)?.name||''},sp.x,sp.y,pd.getBoundingClientRect(),{placeholder:'最初の一手は？'})},120)}
 
 function openStartPop(anchor,cur,onPick,po={}){
   closePop();const el=document.createElement('div');el.className='fpop';document.body.appendChild(el);POP={el,btn:anchor,kind:'start'};
@@ -4825,7 +4827,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-07 お気に入り・表示切り替え版';
+const APPV='2026-10-07 お気に入り・表示切り替え版2';
 const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
 const SKEY='fusen.sync';
 let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
