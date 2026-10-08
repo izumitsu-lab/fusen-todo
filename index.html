@@ -2214,7 +2214,7 @@ function normalize(){
   rollover();
 }
 function rollover(){const t=todayKey();let n=0;S.tasks.forEach(k=>{if(k.sched&&k.sched.date!==t&&k.status!=='done'){k.sched=null;n++}});return n}
-let saveT;const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};function save(){clearTimeout(saveT);saveT=setTimeout(()=>{saveT=0;saveLocal();pushNow()},150)}
+let saveT,lsWarned=false;const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(!lsWarned){lsWarned=true;setTimeout(()=>toast('この端末の保存容量がいっぱいで、保存できませんでした。設定で完了ログを残す期間を短くしてください'),0)}}};function save(){clearTimeout(saveT);saveT=setTimeout(()=>{saveT=0;saveLocal();pushNow()},150)}
 const flushSave=()=>{if(!saveT)return;clearTimeout(saveT);saveT=0;saveLocal();pushNow()};
 addEventListener('pagehide',flushSave);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S){if(purgeOld()){save();render()}else updBadge(true)}});if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});document.addEventListener('visibilitychange',()=>{if(document.hidden)flushSave()});
 const F={tags:new Set(),labels:new Set(),people:new Set(),area:null,time:null,due:null,energy:null};
@@ -3535,7 +3535,7 @@ function logItems(){
 }
 /* 完了タスクの保存期間（日数）。0 は自動で消さない。同期している端末で共有する */
 const KEEP=[[30,'1か月'],[14,'2週間'],[7,'1週間'],[3,'3日'],[1,'1日'],[0,'消さない']];
-const keepDays=()=>S.ui.logKeep==null?30:+S.ui.logKeep;
+const keepDays=()=>S.ui.logKeep==null?0:+S.ui.logKeep;
 const keepLabel=()=>(KEEP.find(x=>x[0]===keepDays())||[0,keepDays()+'日'])[1];
 function purgeOld(){const d=keepDays();if(!d)return null;const cut=Date.now()-d*864e5;
   const gone=S.tasks.filter(t=>t.status==='done'&&t.doneAt&&t.doneAt<cut);if(!gone.length)return null;
@@ -4828,28 +4828,102 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-07 お気に入り・表示切り替え版4';
-const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pT:false,pM:false};
+const APPV='2026-10-08 同期（項目ごと・差分のみ）版';
+/* 同期のしくみ（読み込み・書き込みの回数を抑えるための工夫）
+   - タスク1件 = ドキュメント1件。中身は f:{項目名: JSON文字列} と、サーバーで付く更新時刻 u。
+     書き込むときは「変わった項目だけ」を merge で送るので、2台で別々の項目を変えても両方残る。
+     同じ項目を両方で変えたときは、あとからサーバーに届いた方が残る。
+   - 起動時は「前回受け取った時刻（cur）より後に変わったもの」だけを読み込む（全件は読まない）。
+     そのため完了済みタスクが増えても、起動のたびの読み込みは増えない。
+   - 削除は「消した」という印（del:true）を付け、45日たったら本当に消す。印を付けた後に別の端末の編集が届いたら、編集を残す。
+   - 新しい端末での初回ログインと、40日以上同期していない端末だけ、全件を1回読み込む。
+   - 設定（エリア・場所・タグ・お気に入り・Agenda）は1つのドキュメントに、項目のIDごとに入れる。 */
+const SYNC={on:!!FB_CONFIG.apiKey,user:null,ready:false,state:'out',err:'',pend:0};
 const SKEY='fusen.sync';
-let SB={uid:null,h:{}};try{SB=Object.assign(SB,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
+/* SB：この端末が最後にサーバーとそろえた内容の控え
+   v:形式 / uid / b:{タスクID:{項目:ハッシュ}} / mb:設定の控え / cur:受け取った最新の更新時刻 / at:最後に全件を確かめた時刻 / tomb:{削除したID:記録した時刻}
+   h:旧形式（タスク全体のハッシュ）の控え。移行のときだけ使う */
+let SB={};try{SB=JSON.parse(localStorage.getItem(SKEY)||'{}')||{}}catch(e){SB={}}
+if(SB.v!==2)SB={uid:SB.uid||null,v:0,h:SB.h||{},b:{},mb:null,cur:0,at:0,tomb:{}};
+if(!SB.b)SB.b={};if(!SB.tomb)SB.tomb={};
 const saveSB=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SB))}catch(e){}};
-const hj=j=>j==null?null:hash(j)+':'+j.length;
+const TOMB_MS=45*864e5,STALE_MS=40*864e5;
+const LEG=new Set();/* 旧形式（j）のままのドキュメント。次の書き込みで全項目を書き直す */
 let FB=null;
-/* 設定は項目ごとに「最後に変えた時刻（mt）」を持ち、同期では新しい方を採用する（1台の古い状態で全体が上書きされないように） */
-const MK=['areas','places','labels','views','people','sideViews'];
-const mval=k=>k==='sideViews'?S.sideViews!==false:(S[k]||[]);
-function stampMeta(){if(!S.mt)S.mt={};const fresh=!S.mh;if(!S.mh)S.mh={};MK.forEach(k=>{const h=hash(JSON.stringify(mval(k)));if(S.mh[k]!==h){if(!fresh)S.mt[k]=Date.now();S.mh[k]=h}})}
-const metaJ=()=>{stampMeta();return JSON.stringify({areas:S.areas,places:S.places,labels:S.labels||[],views:S.views||[],people:S.people||[],sideViews:S.sideViews!==false,mt:Object.fromEntries(MK.map(k=>[k,(S.mt||{})[k]||0])),sample:!!S.sample,lastReview:S.ui.lastReview||null,logKeep:S.ui.logKeep??null})};
-function setMeta(j,first){const m=JSON.parse(j),rt=m.mt||{};if(!S.mt)S.mt={};if(!S.mh)S.mh={};if(m.logKeep!=null)S.ui.logKeep=m.logKeep;
-  MK.forEach(k=>{const has=k==='sideViews'?typeof m[k]==='boolean':Array.isArray(m[k]);
-    /* 初回ログイン：サーバーを正とする。サーバーに無い名簿・お気に入りは、手元のサンプル由来のものを送り返さないよう空にする */
-    if(!has){if(first&&(k==='people'||k==='views')){S[k]=[];S.mt[k]=0;S.mh[k]=hash(JSON.stringify(mval(k)))}return}
-    if(first||(rt[k]||0)>=(S.mt[k]||0)){S[k]=m[k];S.mt[k]=rt[k]||0;S.mh[k]=hash(JSON.stringify(mval(k)))}});
-  S.sample=!!m.sample;if(m.lastReview)S.ui.lastReview=m.lastReview;TAGS=S.places;if(migrateTOD())setTimeout(()=>save(),0)}
+const hs=s=>s==null?null:hash(s).toString(36)+'.'+s.length.toString(36);
+const oldH=j=>j==null?null:hash(j)+':'+j.length;/* 旧形式の控えと比べる用 */
+const tF=t=>{const o={};for(const k in t){const v=t[k];if(v!==undefined&&typeof v!=='function')o[k]=JSON.stringify(v)}return o};
+const fH=f=>{const o={};for(const k in f)o[k]=hs(f[k]);return o};
+const fromF=f=>{const o={};for(const k in f){try{o[k]=JSON.parse(f[k])}catch(e){}}return o};
+const sameH=(a,b)=>{for(const k of new Set([...Object.keys(a),...Object.keys(b)]))if((a[k]??null)!==(b[k]??null))return false;return true};
+const docF=d=>{if(d.del)return null;if(d.f)return d.f;if(d.j!=null){try{return tF(JSON.parse(d.j))}catch(e){return {}}}return null};
+const uMs=d=>d&&d.u&&d.u.toMillis?d.u.toMillis():0;
 const fixTask=t=>{if(!Array.isArray(t.tags))t.tags=[];if(!Array.isArray(t.labels))t.labels=[];if(!Array.isArray(t.agenda))t.agenda=[];if(migWho(t)&&PCH){PCH=false;setTimeout(()=>save(),0)}if(t.tags.some(g=>TOD.includes(g))){t.labels=[...new Set([...t.labels,...t.tags.filter(g=>TOD.includes(g))])];t.tags=t.tags.filter(g=>!TOD.includes(g))}return t};
+/* タスク1件を「控え・この端末・サーバー」の3つで項目ごとに突き合わせる。rf=null は削除済み */
+function mergeTask(id,rf,t){
+  const B=SB.b[id];
+  if(rf===null){
+    SB.tomb[id]=SB.tomb[id]||Date.now();
+    if(!B)return false;
+    if(!t){delete SB.b[id];return false}
+    if(sameH(fH(tF(t)),B)){const i=S.tasks.indexOf(t);if(i>=0)S.tasks.splice(i,1);delete SB.b[id];return true}
+    SB.b[id]={};return false;/* 消された後にこの端末で編集していた → 残して、もう一度送る */
+  }
+  const RH=fH(rf);
+  if(!t){
+    if(B&&sameH(RH,B))return false;/* この端末で消したところ（削除の印をこれから送る） */
+    S.tasks.push(fixTask(fromF(rf)));SB.b[id]=RH;delete SB.tomb[id];return true;
+  }
+  const L=tF(t),LH=fH(L),Bb=B||{},out={};let ch=false;
+  for(const k of new Set([...Object.keys(LH),...Object.keys(RH),...Object.keys(Bb)])){
+    const hl=LH[k]??null,hr=RH[k]??null,hb=Bb[k]??null;
+    if(hl===hb){if(rf[k]!=null)out[k]=rf[k];if(hr!==hl)ch=true}/* この端末では変えていない → サーバーの値 */
+    else if(L[k]!=null)out[k]=L[k];/* この端末で変えた → この端末の値（あとで送る） */
+  }
+  SB.b[id]=RH;
+  if(ch){const o=fixTask(fromF(out));Object.keys(t).forEach(k=>delete t[k]);Object.assign(t,o)}
+  return ch;
+}
+/* ---- 設定 ---- */
+const ML=['areas','places','labels','views','people'];
+const SCAL=['sample','lastReview','logKeep','sideViews'];
+function metaLocal(){const m={},o={};
+  ML.forEach(k=>{const a=(Array.isArray(S[k])?S[k]:[]).filter(x=>x&&x.id!=null);m[k]={};a.forEach(x=>{m[k][String(x.id)]=JSON.stringify(x)});o[k]=JSON.stringify(a.map(x=>String(x.id)))});
+  return {m,o,s:{sample:JSON.stringify(!!S.sample),lastReview:JSON.stringify(S.ui.lastReview||null),logKeep:JSON.stringify(S.ui.logKeep??null),sideViews:JSON.stringify(S.sideViews!==false)}}}
+const metaH=M=>({m:Object.fromEntries(ML.map(k=>[k,fH((M.m||{})[k]||{})])),o:fH(M.o||{}),s:fH(M.s||{})});
+function metaFromDoc(d){
+  if(d.m||d.o||d.s)return {m:d.m||{},o:d.o||{},s:d.s||{}};
+  if(d.j==null)return {m:{},o:{},s:{}};
+  let x={};try{x=JSON.parse(d.j)}catch(e){}
+  const m={},o={},s={sample:JSON.stringify(!!x.sample)};
+  ML.forEach(k=>{if(!Array.isArray(x[k]))return;const a=x[k].filter(it=>it&&it.id!=null);m[k]={};a.forEach(it=>{m[k][String(it.id)]=JSON.stringify(it)});o[k]=JSON.stringify(a.map(it=>String(it.id)))});
+  if(x.lastReview)s.lastReview=JSON.stringify(x.lastReview);if(x.logKeep!=null)s.logKeep=JSON.stringify(x.logKeep);if(typeof x.sideViews==='boolean')s.sideViews=JSON.stringify(x.sideViews);
+  return {m,o,s,leg:1}}
+function setScalar(k,j){let v;try{v=JSON.parse(j)}catch(e){return}
+  if(k==='sample')S.sample=!!v;else if(k==='lastReview'){if(v)S.ui.lastReview=v}else if(k==='logKeep')S.ui.logKeep=v;else if(k==='sideViews')S.sideViews=v}
+const listFrom=(map,ord,extra)=>{const ids=[...ord,...(extra||[]),...Object.keys(map)].filter((x,i,a)=>map[x]!=null&&a.indexOf(x)===i);return ids.map(id=>JSON.parse(map[id]))};
+const pOrd=j=>{try{const a=JSON.parse(j||'[]');return Array.isArray(a)?a.map(String):[]}catch(e){return []}};
+function mergeMeta(R){
+  const L=metaLocal(),LH=metaH(L),RH=metaH(R),B=SB.mb||{m:{},o:{},s:{}};let ch=false;
+  ML.forEach(k=>{
+    const Lm=L.m[k]||{},Rm=R.m[k]||{},Lh=LH.m[k],Rh=RH.m[k],Bh=(B.m||{})[k]||{},res={};let c=false;
+    for(const id of new Set([...Object.keys(Lh),...Object.keys(Rh),...Object.keys(Bh)])){
+      const hl=Lh[id]??null,hr=Rh[id]??null,hb=Bh[id]??null;
+      if(hl===hb){if(Rm[id]!=null)res[id]=Rm[id];if(hr!==hl)c=true}else if(Lm[id]!=null)res[id]=Lm[id];
+    }
+    const useR=(LH.o[k]??null)===((B.o||{})[k]??null);/* 並び順：この端末で変えていなければサーバーの順 */
+    if(useR&&(RH.o[k]??null)!==(LH.o[k]??null))c=true;
+    if(c){S[k]=useR?listFrom(res,pOrd(R.o[k]),pOrd(L.o[k])):listFrom(res,pOrd(L.o[k]),pOrd(R.o[k]));ch=true}
+  });
+  for(const k of SCAL){const hl=LH.s[k]??null,hr=RH.s[k]??null,hb=(B.s||{})[k]??null;if(hl===hb&&hr!=null&&hr!==hl){setScalar(k,R.s[k]);ch=true}}
+  SB.mb=R.leg?null:RH;
+  if(ch){TAGS=S.places;if(migrateTOD())setTimeout(()=>save(),0);padSig=''}
+  return ch;
+}
+/* ---- Firebase ---- */
 const tcol=()=>FB.FS.collection(FB.db,'users',SYNC.user.uid,'fusenTasks');
 const mref=()=>FB.FS.doc(FB.db,'users',SYNC.user.uid,'fusen','meta');
-function syncState(){if(!SYNC.user)return 'out';if(SYNC.state==='err')return 'err';if(!navigator.onLine)return 'offline';if(!SYNC.ready||SYNC.pT||SYNC.pM)return 'sync';return 'ok'}
+function syncState(){if(!SYNC.user)return 'out';if(SYNC.state==='err')return 'err';if(!navigator.onLine)return 'offline';if(!SYNC.ready||SYNC.pend>0)return 'sync';return 'ok'}
 const syncShort=()=>({out:'ログインして同期',err:'同期エラー',offline:'オフライン',sync:'同期中…',ok:'同期済み'})[syncState()];
 const syncLong=()=>({out:'',err:'エラー：'+SYNC.err,offline:'オフラインです。つながると自動で送ります',sync:'同期しています…',ok:'同期済み（変更は自動で送られます）'})[syncState()];
 function syncUI(){const l=$('#syncLink');if(l){l.className='loglink sy-'+syncState();$('.sy',l).textContent=syncShort()}if(CFGP&&CFGP._draw)CFGP._draw()}
@@ -4871,7 +4945,7 @@ async function fbInit(){
     const app=A.initializeApp(FB_CONFIG);
     let db;try{db=FS.initializeFirestore(app,{localCache:FS.persistentLocalCache({tabManager:FS.persistentMultipleTabManager()})})}catch(e){db=FS.getFirestore(app)}
     const auth=AU.getAuth(app);
-    FB={AU,FS,db,auth,unsub:[]};
+    FB={AU,FS,db,auth,uT:null,uM:null};
     AU.getRedirectResult(auth).catch(e=>{SYNC.err=authMsg(e);syncUI()});
     AU.onAuthStateChanged(auth,u=>{if(u)startSync(u);else stopSync()});
   }catch(e){SYNC.on=true;SYNC.err='Firebase を読み込めませんでした';syncUI()}
@@ -4884,80 +4958,128 @@ async function signIn(){
     else if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request'){SYNC.err=authMsg(e);syncUI()}}
 }
 async function signOutSync(){flushSave();if(FB)await FB.AU.signOut(FB.auth)}
-function stopSync(){if(FB){FB.unsub.forEach(f=>f());FB.unsub=[]}SYNC.user=null;SYNC.ready=false;SYNC.state='out';syncUI()}
+function stopSync(){if(FB){if(FB.uT)FB.uT();if(FB.uM)FB.uM();FB.uT=FB.uM=null}SYNC.user=null;SYNC.ready=false;SYNC.state='out';syncUI()}
 function askMerge(n,m){return new Promise(res=>{const scrim=document.createElement('div');scrim.className='scrim';
   scrim.innerHTML=`<div class="sheet" role="dialog" aria-label="データの扱い"><div class="sheet-body"><b class="im-h">${ic('sync')}クラウドにデータがあります</b>
    <p class="im-p">クラウドに ${m}件、この端末にはクラウドにないタスクが ${n}件 あります。この端末の分をどうしますか？</p>
    <div class="hint">「クラウドだけ使う」を選ぶと、この端末の ${n}件 は消えます。心配なら先に設定からバックアップを書き出してください。</div></div>
    <div class="sheet-foot"><span class="spacer"></span><button class="btn" id="mgCloud">クラウドだけ使う</button><button class="btn primary" id="mgMerge">合わせる</button></div></div>`;
   document.body.appendChild(scrim);const fin=v=>{scrim.remove();res(v)};$('#mgCloud',scrim).onclick=()=>fin(false);$('#mgMerge',scrim).onclick=()=>fin(true)})}
+const within=(p,ms)=>Promise.race([p,new Promise((_,rj)=>setTimeout(()=>rj({code:'unavailable'}),ms))]);
 async function startSync(u){
   if(SYNC.user&&SYNC.user.uid===u.uid)return;
   SYNC.user=u;SYNC.ready=false;SYNC.state='sync';SYNC.err='';syncUI();
-  const {FS}=FB;
-  if(SB.uid!==u.uid){
-    /* この端末で初めてのログイン：まずサーバーの中身を確かめる */
-    let ms,ts;
-    try{[ms,ts]=await Promise.all([FS.getDocFromServer(mref()),FS.getDocsFromServer(tcol())])}
+  const first=SB.uid!==u.uid,stale=SB.v!==2||!SB.at||Date.now()-SB.at>STALE_MS;
+  if(first||stale){
+    try{await fullSync(first)}
     catch(e){SYNC.user=null;SYNC.state='err';SYNC.err=e&&e.code==='permission-denied'?fsMsg(e):'オンラインのときにもう一度試します（'+fsMsg(e)+'）';syncUI();
-      addEventListener('online',()=>{if(FB.auth.currentUser)startSync(FB.auth.currentUser)},{once:true});return}
-    const cloud=new Map(ts.docs.map(d=>[d.id,d.data().j]));
-    SB={uid:u.uid,h:{}};
-    if(ms.exists()||cloud.size){
-      const mine=S.tasks.filter(t=>!t.sample&&!cloud.has(t.id));
-      const merge=mine.length?await askMerge(mine.length,cloud.size):false;
-      const lm={areas:S.areas,places:S.places,labels:S.labels||[],views:S.views||[],people:S.people||[]};
-      if(ms.exists()){const mj=ms.data().j;setMeta(mj,true);SB.h.__meta=hj(mj)}
-      S.tasks=[...[...cloud.values()].map(j=>fixTask(JSON.parse(j))),...(merge?mine:[])];
-      cloud.forEach((j,id)=>{SB.h[id]=hj(j)});
-      if(merge)['areas','places','labels','views','people'].forEach(k=>{if(!Array.isArray(S[k]))S[k]=[];const have=new Set(S[k].map(x=>x.id));lm[k].forEach(x=>{if(!have.has(x.id))S[k].push(x)})});
-      TAGS=S.places;resetView();saveLocal();render();
-      toast(merge?'クラウドのデータと合わせました':'クラウドのデータを読み込みました');
-    }else toast('この端末のデータをクラウドに送ります');
-    saveSB();
+      const retry=()=>{if(FB.auth.currentUser&&!SYNC.user)startSync(FB.auth.currentUser)};addEventListener('online',retry,{once:true});setTimeout(retry,60000);return}
   }
   attach();
+}
+/* 全件を1回だけ読み込む（新しい端末の初回・旧形式からの移行・長く同期していない端末） */
+async function fullSync(first){
+  const {FS}=FB;
+  if(!navigator.onLine)throw {code:'unavailable'};
+  if(!first)await within(FS.waitForPendingWrites(FB.db),20000);/* 送りかけの変更を先に届けておく */
+  const [ms,ts]=await Promise.all([FS.getDocFromServer(mref()),FS.getDocsFromServer(tcol())]);
+  const rem=new Map(),rawJ=new Map();let mx=0;
+  ts.docs.forEach(doc=>{const d=doc.data();mx=Math.max(mx,uMs(d));rem.set(doc.id,docF(d));if(d.j!=null&&!d.f){LEG.add(doc.id);rawJ.set(doc.id,d.j)}});
+  const md=ms.exists()?ms.data():null;
+  if(first){
+    const live=[...rem].filter(([,f])=>f);
+    SB={uid:SYNC.user.uid,v:2,b:{},mb:null,cur:0,at:0,tomb:{}};
+    rem.forEach((f,id)=>{if(!f)SB.tomb[id]=Date.now()});
+    if(md||live.length){
+      const mine=S.tasks.filter(t=>!t.sample&&!rem.has(t.id));
+      const merge=mine.length?await askMerge(mine.length,live.length):false;
+      const keep={};ML.forEach(k=>{keep[k]=Array.isArray(S[k])?S[k]:[]});
+      if(md){const R=metaFromDoc(md);
+        ML.forEach(k=>{if(R.m[k])S[k]=listFrom(R.m[k],pOrd(R.o[k]));else if(k==='people'||k==='views')S[k]=[]});
+        for(const k in R.s)setScalar(k,R.s[k]);
+        SB.mb=R.leg?null:metaH(R);
+        if(merge){ML.forEach(k=>{const have=new Set(S[k].map(x=>x.id));keep[k].forEach(x=>{if(!have.has(x.id))S[k].push(x)})})}}
+      S.tasks=[...live.map(([id,f])=>{SB.b[id]=LEG.has(id)?{}:fH(f);return fixTask(fromF(f))}),...(merge?mine:[])];
+      TAGS=S.places;migrateTOD();resetView();
+      toast(merge?'クラウドのデータと合わせました':'クラウドのデータを読み込みました');
+    }else toast('この端末のデータをクラウドに送ります');
+  }else{
+    const loc=new Map(S.tasks.map(t=>[t.id,t]));
+    if(SB.v!==2){
+      /* 旧形式からの移行：旧い控え（タスク全体のハッシュ）で、どちらが変わったかを判断する */
+      const old=SB.h||{};SB.b={};SB.mb=null;
+      rem.forEach((f,id)=>{if(!f)return;const t=loc.get(id),oh=old[id];if(oh==null)return;
+        if(rawJ.has(id)&&oldH(rawJ.get(id))===oh)SB.b[id]=fH(f);/* サーバーは変わっていない → この端末の変更を残す */
+        else if(t&&oldH(JSON.stringify(t))===oh)SB.b[id]=fH(tF(t));/* この端末は変わっていない → サーバーの値 */
+        else SB.b[id]={}});
+      loc.forEach((t,id)=>{if(!rem.has(id)&&old[id]!=null)SB.b[id]=oldH(JSON.stringify(t))===old[id]?fH(tF(t)):{}});
+      if(md){const R=metaFromDoc(md);SB.mb=md.j!=null&&oldH(md.j)===old.__meta?metaH(R):metaH(metaLocal())}
+      delete SB.h;SB.v=2;
+    }
+    rem.forEach((f,id)=>{mergeTask(id,f,loc.get(id))});
+    loc.forEach((t,id)=>{if(!rem.has(id)&&SB.b[id])mergeTask(id,null,t)});/* サーバーから完全に消えたもの */
+    if(md)mergeMeta(metaFromDoc(md));
+  }
+  SB.cur=mx;SB.at=Date.now();/* 端末の時計は使わない（ずれていると受け取りもれが起きるため） */
+  saveLocal();saveSB();render();
 }
 let rrT=0;
 function remoteRender(){clearTimeout(rrT);const ae=document.activeElement;
   const busy=D||DR||SWO||LADD||POP||$('.scrim')||$('#cmp')||$('#guide')||(ae&&ae.matches&&ae.matches('input,textarea'));
   if(busy){rrT=setTimeout(remoteRender,800);return}render()}
-/* 1件ずつ「最後に同期した内容（SB.h）」と比べて、どちらで変わったかを判断する */
-function reconcile(id,rj,cur,setLocal,delLocal,allowDel){
-  const r=hj(rj),b=SB.h[id],l=cur==null?null:hj(cur);
-  if(r===b)return false;
-  if(rj==null){if(b===undefined||!allowDel)return false;let ch=false;if(l===b){delLocal();ch=true}delete SB.h[id];return ch}
-  let ch=false;if(l!==r){setLocal(rj);ch=true}SB.h[id]=r;return ch;
-}
 function afterRemote(ch){if(purgeOld())ch=true;if(ch){saveLocal();remoteRender()}SYNC.ready=true;if(SYNC.state==='err'&&navigator.onLine)SYNC.state='sync';saveSB();pushNow();syncUI()}
-function attach(){
-  const {FS}=FB;let srv=false;
-  FB.unsub.push(FS.onSnapshot(tcol(),{includeMetadataChanges:true},snap=>{
-    if(!snap.metadata.fromCache)srv=true;
-    const rem=new Map(snap.docs.map(d=>[d.id,d.data().j]));
-    const loc=new Map(S.tasks.map(t=>[t.id,t]));
-    const ids=new Set([...rem.keys(),...Object.keys(SB.h).filter(k=>k!=='__meta'),...loc.keys()]);
-    let ch=false;
-    ids.forEach(id=>{const t=loc.get(id);
-      ch=reconcile(id,rem.has(id)?rem.get(id):null,t?JSON.stringify(t):null,
-        rj=>{const o=fixTask(JSON.parse(rj));if(t){Object.keys(t).forEach(k=>delete t[k]);Object.assign(t,o)}else S.tasks.push(o)},
-        ()=>{const i=S.tasks.indexOf(t);if(i>=0)S.tasks.splice(i,1)},srv)||ch});
-    SYNC.pT=snap.metadata.hasPendingWrites;afterRemote(ch);
-  },syncErr));
-  FB.unsub.push(FS.onSnapshot(mref(),{includeMetadataChanges:true},snap=>{
-    const ch=snap.exists()?reconcile('__meta',snap.data().j,metaJ(),setMeta,()=>{},false):false;
-    SYNC.pM=snap.metadata.hasPendingWrites;if(ch)padSig='';afterRemote(ch);
-  },syncErr));
+/* 前回受け取った時刻より後に変わったタスクだけを監視する（少し余裕を持たせる） */
+function listenTasks(){
+  const {FS}=FB;if(FB.uT)FB.uT();
+  const since=FS.Timestamp.fromMillis(Math.max(0,(SB.cur||0)-120000));
+  FB.uT=FS.onSnapshot(FS.query(tcol(),FS.where('u','>',since)),snap=>{
+    let ch=false,mx=SB.cur||0;const loc=new Map(S.tasks.map(t=>[t.id,t]));
+    snap.docChanges().forEach(c=>{if(c.type==='removed')return;const doc=c.doc,d=doc.data();
+      if(!doc.metadata.hasPendingWrites)mx=Math.max(mx,uMs(d));
+      if(d.j!=null&&!d.f)LEG.add(doc.id);
+      ch=mergeTask(doc.id,docF(d),loc.get(doc.id))||ch;
+      if(!loc.has(doc.id)){const t=S.tasks.find(x=>x.id===doc.id);if(t)loc.set(doc.id,t)}});
+    SB.cur=mx;if(!snap.metadata.fromCache)SB.at=Date.now();afterRemote(ch);
+  },syncErr);
 }
+function attach(){
+  const {FS}=FB;listenTasks();if(FB.uM)FB.uM();
+  FB.uM=FS.onSnapshot(mref(),snap=>{const ch=snap.exists()?mergeMeta(metaFromDoc(snap.data())):false;afterRemote(ch)},syncErr);
+}
+/* しばらく裏に回っていたら、監視を「その時点より後」にかけ直す（再接続で多く読み込まないように） */
+let hidAt=0;
+document.addEventListener('visibilitychange',()=>{if(document.hidden){hidAt=Date.now();return}
+  if(SYNC.ready&&FB&&FB.uT&&hidAt&&Date.now()-hidAt>10*60e3)listenTasks();hidAt=0});
 function pushNow(){
   if(!SYNC.ready||!SYNC.user||!FB)return;
-  const {FS}=FB,ops=[],loc=new Set();
-  S.tasks.forEach(t=>{loc.add(t.id);const j=JSON.stringify(t),h=hj(j);if(SB.h[t.id]!==h){ops.push([FS.doc(tcol(),t.id),j]);SB.h[t.id]=h}});
-  Object.keys(SB.h).forEach(id=>{if(id==='__meta'||loc.has(id))return;ops.push([FS.doc(tcol(),id),null]);delete SB.h[id]});
-  const mj=metaJ(),mh=hj(mj);if(SB.h.__meta!==mh){ops.push([mref(),mj]);SB.h.__meta=mh}
+  const {FS}=FB,ops=[],loc=new Set(),now=Date.now();
+  S.tasks.forEach(t=>{loc.add(t.id);const L=tF(t),LH=fH(L),B=SB.b[t.id];
+    const full=!B||!Object.keys(B).length||LEG.has(t.id);const f={};let n=0;
+    for(const k in LH)if(full||LH[k]!==B[k]){f[k]=L[k];n++}
+    if(B&&!full)for(const k in B)if(!(k in LH)){f[k]=FS.deleteField();n++}
+    if(!n)return;
+    /* del を毎回外す：オフライン中の編集が、別の端末の削除の後に届いたら、編集を残す */
+    const d={f,u:FS.serverTimestamp(),del:FS.deleteField()};
+    if(full&&LEG.has(t.id)){d.j=FS.deleteField();d.t=FS.deleteField();LEG.delete(t.id)}
+    ops.push({r:FS.doc(tcol(),t.id),d,merge:true,id:t.id});SB.b[t.id]=LH});
+  Object.keys(SB.b).forEach(id=>{if(loc.has(id))return;ops.push({r:FS.doc(tcol(),id),d:{del:true,u:FS.serverTimestamp()},merge:true});delete SB.b[id];SB.tomb[id]=now});
+  Object.keys(SB.tomb).forEach(id=>{if(now-SB.tomb[id]>TOMB_MS&&!loc.has(id)&&!SB.b[id]){ops.push({r:FS.doc(tcol(),id),rm:true});delete SB.tomb[id]}});
+  /* 設定：変わった項目（ID）だけ。空の入れ物を送るとサーバー側が空で上書きされるので、変更のあるものだけを入れる */
+  {const L=metaLocal(),LH=metaH(L),B=SB.mb,d={};let n=0;
+    const put=(a,b,k,v)=>{(d[a]=d[a]||{});if(b==null)d[a][k]=v;else{(d[a][b]=d[a][b]||{})[k]=v}n++};
+    ML.forEach(k=>{const Bh=B?((B.m||{})[k]||{}):{};
+      for(const id in LH.m[k])if(LH.m[k][id]!==Bh[id])put('m',k,id,L.m[k][id]);
+      for(const id in Bh)if(!(id in LH.m[k]))put('m',k,id,FS.deleteField());
+      if(!B||LH.o[k]!==(B.o||{})[k])put('o',null,k,L.o[k])});
+    for(const k in LH.s)if(!B||LH.s[k]!==(B.s||{})[k])put('s',null,k,L.s[k]);
+    if(!B){d.j=FS.deleteField();d.t=FS.deleteField()}
+    if(n){ops.push({r:mref(),d,merge:true,meta:true});SB.mb=LH}}
   if(!ops.length)return;saveSB();
-  for(let i=0;i<ops.length;i+=400){const b=FS.writeBatch(FB.db);ops.slice(i,i+400).forEach(([r,j])=>j==null?b.delete(r):b.set(r,{j,t:Date.now()}));b.commit().catch(syncErr)}
-  SYNC.pT=true;syncUI();
+  for(let i=0;i<ops.length;i+=400){const part=ops.slice(i,i+400),b=FS.writeBatch(FB.db);
+    part.forEach(o=>o.rm?b.delete(o.r):o.merge?b.set(o.r,o.d,{merge:true}):b.set(o.r,o.d));
+    SYNC.pend++;
+    b.commit().then(()=>{SYNC.pend--;syncUI()}).catch(e=>{SYNC.pend--;part.forEach(o=>{if(o.id&&SB.b[o.id])SB.b[o.id]={};if(o.meta)SB.mb=null});saveSB();syncErr(e)})}
+  syncUI();
 }
 
 /* ---------- toast ---------- */
