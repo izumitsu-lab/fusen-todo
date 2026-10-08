@@ -1076,7 +1076,7 @@ button.ladd:hover{background:color-mix(in srgb,var(--ink) 3%,var(--win));color:v
   .ladd-in{font-size:16px}
   .lempty{padding:18px 18px 6px}
   .lins{left:0;right:0}
-  .tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:700;height:calc(58px + env(safe-area-inset-bottom,0px));padding:6px 4px env(safe-area-inset-bottom,0px);background:color-mix(in srgb,var(--win) 92%,transparent);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-top:1px solid var(--line)}
+  .tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:700;box-sizing:border-box;height:calc(58px + env(safe-area-inset-bottom,0px));padding:6px 4px env(safe-area-inset-bottom,0px);background:color-mix(in srgb,var(--win) 92%,transparent);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-top:1px solid var(--line)}
   .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;color:var(--ink3);position:relative}
   .tab .sq{width:30px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:background .15s}
   .tab .sq svg.i{width:19px;height:19px}
@@ -1504,7 +1504,6 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .ph-big{margin:10px 16px 0;height:50px;border-radius:14px;background:var(--accent);color:#fff;font-size:17px;font-weight:700;flex:none}
   /* ---- tabs ---- */
   .tabs{height:calc(54px + env(safe-area-inset-bottom,0px))!important;padding-top:6px!important;background:color-mix(in srgb,var(--win) 86%,transparent)!important;border-top:.5px solid var(--line)!important}
-  html.vh-fix .tabs{height:calc(54px + var(--bpad))!important}
   .tab{font-size:11px!important;font-weight:600;color:var(--ink3);gap:2px!important}
   .tab .sq{width:auto!important;height:28px!important;background:none!important;color:inherit!important;border-radius:0!important}
   .tab .sq svg.i{width:26px!important;height:26px!important;stroke-width:1.7}
@@ -1529,7 +1528,6 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .fpop,.setpop{left:0!important;right:0!important;top:auto!important;bottom:0!important;width:auto!important;max-width:none!important;min-width:0!important;
     max-height:min(78vh,calc(100% - 60px))!important;overflow-y:auto;border:0!important;border-radius:14px 14px 0 0!important;padding:8px 16px calc(18px + env(safe-area-inset-bottom,0px))!important;
     box-shadow:0 0 0 100vmax rgba(20,16,10,.32),0 -10px 30px -10px rgba(0,0,0,.25)!important;animation:phUp .26s cubic-bezier(.2,.8,.2,1)!important;background:var(--win)!important;z-index:980!important}
-  html.vh-fix .fpop,html.vh-fix .setpop{bottom:calc(-1 * var(--gap))!important;padding-bottom:calc(18px + var(--bpad))!important}
   .fpop::before,.setpop::before{content:"";display:block;width:36px;height:5px;border-radius:3px;background:var(--line2);margin:0 auto 8px}
   .fpop .fp-h{font-size:13px!important;padding:10px 6px 8px!important;display:flex;flex-direction:column;gap:2px;color:var(--ink3)}
   .fpop .fp-h span{margin:0!important;font-size:12.5px}
@@ -1626,7 +1624,6 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .rv-acts{padding-left:0!important;gap:6px!important;margin-top:4px}
   .rv-acts button{height:34px!important;padding:0 12px!important;font-size:14px!important;border-radius:17px!important}
   .rv-foot{position:fixed;left:0;right:0;bottom:calc(54px + env(safe-area-inset-bottom,0px));z-index:690;margin:0!important;padding:10px 16px!important;border-top:.5px solid var(--line)!important;background:color-mix(in srgb,var(--win) 90%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-  html.vh-fix .rv-foot{bottom:calc(54px + var(--bpad) - var(--gap))}
   .rv-foot .spacer{display:none}
   .rv-foot .btn{flex:1;height:46px;font-size:17px!important;font-weight:700;border-radius:12px;justify-content:center}
 }
@@ -1882,7 +1879,6 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .agp-dim{position:fixed;inset:0;background:rgba(20,16,10,.28);z-index:975;animation:fade .18s}
 @media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .agpop.agp-float{left:8px!important;right:8px!important;top:auto!important;bottom:calc(62px + env(safe-area-inset-bottom,0px))!important;width:auto!important;border-radius:22px!important;max-height:min(68vh,calc(100% - 140px))!important;padding:0!important;box-shadow:0 18px 44px -10px rgba(40,30,10,.38),0 0 0 .5px rgba(40,30,10,.12)!important;animation:agpUp .22s cubic-bezier(.2,.8,.2,1)!important}
-  html.vh-fix .agpop.agp-float{bottom:calc(62px + var(--bpad))!important}
   .agpop.agp-float::before{margin:7px auto 0!important}
   @keyframes agpUp{from{transform:translateY(24px);opacity:0}}
   .agpop .agp-h{padding-top:8px}
@@ -1967,16 +1963,6 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 @media (max-width:760px), (pointer:coarse) and (max-height:500px){.qk-t{font-size:19px}.qk-n,.qk-who input{font-size:16px}.qk-ib{width:36px;height:40px}.qk{padding-left:12px;padding-right:12px}}
 @media (max-width:370px){.qk-dest{font-size:13px}.qk-ib{width:34px}}
 /*PH-END*/
-/* iOS のホーム画面アプリで、表示領域が画面より短く報告される不具合の補正。
-   ページ全体の高さは変えず、画面下端に付く要素だけを --gap 分だけ下へずらす（JS で html.vh-fix を付ける） */
-html.vh-fix{--bpad:max(env(safe-area-inset-bottom,0px),20px)}
-@media (max-width:760px), (pointer:coarse) and (max-height:500px){
-  html.vh-fix .side,html.vh-fix .scrim,html.vh-fix .guide,html.vh-fix .cmp{bottom:calc(-1 * var(--gap))}
-  html.vh-fix .tabs{bottom:calc(-1 * var(--gap));height:calc(58px + var(--bpad));padding-bottom:var(--bpad);box-sizing:border-box}
-  html.vh-fix .fab{bottom:calc(74px + var(--bpad) - var(--gap))}
-  html.vh-fix .toast{bottom:calc(144px + var(--bpad) - var(--gap))}
-  html.vh-fix .ed-scroll,html.vh-fix .edp-body{padding-bottom:calc(28px + var(--bpad))}
-}
 @media (display-mode:standalone) and (max-width:760px), (display-mode:standalone) and (pointer:coarse) and (max-height:500px){.bar{padding-top:calc(16px + env(safe-area-inset-top,0px))}}
 /* iPhone を横にしたとき：縦に戻すよう案内する（iPhone のブラウザでは向きを固定できないため） */
 .rot-lock{display:none}
@@ -4339,8 +4325,7 @@ function openConfig(btn){
       <div class="hint">「1行にまとめる」は、押すとサイドバーがその一覧に切り替わります。一覧に出す項目は「編集」で ${ic('u-eye')} を付け外しして選べます。この設定はこの端末だけのものです。</div></div>
      <div class="setrow"><span>データ</span><div class="databtns"><button class="btn" id="dExport">${ic('download')}バックアップを書き出す</button><button class="btn" id="dImport">${ic('upload')}読み込む</button></div><div class="hint">${S.ui.lastExport?'最終書き出し：'+agoLabel(S.ui.lastExport):'まだ書き出していません'}。データはこのブラウザの中だけに保存されています。</div></div>
      <div class="setrow desk-only"><span>操作方法</span><button class="btn kbt" id="kbT">${ic('edit')}${kbOpen?'閉じる':'キーボードとジェスチャーを見る'}</button>${kbOpen?KBHTML():''}</div>
-     <div class="setrow"><span>この端末の版</span><div class="hint">${APPV}<br>端末ごとに表示が違う場合、古い版が開いています。ホーム画面のアプリは一度完全に終了して開き直してください。</div></div>
-     ${VHINFO.st?`<div class="setrow"><span>画面下端の位置（ホーム画面アプリ）</span><div class="vhadj"><button class="btn" data-vh="-5">上へ</button><b>${(VHINFO.adj||0)>0?'+':''}${VHINFO.adj||0}${VHINFO.auto?'（自動）':''}</b><button class="btn" data-vh="5">下へ</button><button class="btn" data-vh="0">自動</button></div><div class="databtns" style="margin-top:6px"><button class="btn" id="vhDiag">表示の情報をコピー</button></div><div class="hint">タブバーが浮く・めり込むときに調整します。診断：画面 ${VHINFO.sh} ／ 表示領域 ${VHINFO.ih} ／ 補正 ${VHINFO.gap}${VHINFO.adj?(VHINFO.adj>0?'+':'')+VHINFO.adj:''}px</div></div>`:''}
+     <div class="setrow"><span>この端末の版</span><div class="databtns" style="margin-bottom:4px"><button class="btn" id="vhDiag">表示の情報をコピー</button></div><div class="hint">${APPV}<br>端末ごとに表示が違う場合、古い版が開いています。ホーム画面のアプリは一度完全に終了して開き直してください。</div></div>
      <div class="setrow"><span>手引き</span><button class="btn kbt" id="cfgGuide">${ic('book')}Fusen の手引きを開く<span class="desk-only">（?）</span></button></div>`;
     {const a=$('#sgIn',el);if(a)a.onclick=signIn;const b=$('#sgOut',el);if(b)b.onclick=async()=>{await signOutSync();toast('ログアウトしました（この端末のデータはそのまま残ります）')}}
     const kb=$('#kbT',el);if(kb)kb.onclick=()=>{kbOpen=!kbOpen;draw()};$$('[data-phx]',el).forEach(b=>b.onclick=closeConfig);
@@ -4350,7 +4335,6 @@ function openConfig(btn){
     $$('[data-keep]',el).forEach(b=>b.onclick=()=>{const prev=S.ui.logKeep;S.ui.logKeep=+b.dataset.keep;const r=purgeOld();save();render();draw();
       if(r)toast(`完了から${keepLabel()}を過ぎた ${r.gone.length}件 を削除しました`,{label:'元に戻す',fn:()=>{S.ui.logKeep=prev;S.tasks=[...S.tasks,...r.gone];r.links.forEach(([t,p])=>{t.project=p});save();render();if(CFGP&&CFGP._draw)CFGP._draw()}})});
     $('#dExport',el).onclick=()=>{exportData();draw()};$('#dImport',el).onclick=importData;
-    $$('[data-vh]',el).forEach(b=>b.onclick=()=>{const v=+b.dataset.vh;S.ui.vhAdj=v?Math.max(-120,Math.min(120,(VHINFO.adj||0)+v)):null;save();vhApply();draw()});
     {const vd=$('#vhDiag',el);if(vd)vd.onclick=()=>{const t=vhDiag();try{navigator.clipboard.writeText(t).then(()=>toast('コピーしました。そのまま貼り付けて送ってください'),()=>prompt('この文字を送ってください',t))}catch(e){prompt('この文字を送ってください',t)}}}
     $('#cfgGuide',el).onclick=()=>{closeConfig();openGuide()};
     $$('[data-sbk]',el).forEach(b=>b.onclick=()=>{const c=sbCfg(),k=b.dataset.sbk,v=b.dataset.sbv;c[k]=k==='vw'?v:v==='1';save();renderSide();draw()});
@@ -4850,7 +4834,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-08 14:00';
+const APPV='2026-10-08 14:15';
 /* 同期のしくみ（読み込み・書き込みの回数を抑えるための工夫）
    - タスク1件 = ドキュメント1件。中身は f:{項目名: JSON文字列} と、サーバーで付く更新時刻 u。
      書き込むときは「変わった項目だけ」を merge で送るので、2台で別々の項目を変えても両方残る。
@@ -5294,32 +5278,13 @@ document.addEventListener('pointerdown',e=>{if(!narrow())return;const op=$('.fpo
 /* iPhone / iPad かどうか（横向きの案内に使う） */
 const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 if(IOS)document.documentElement.classList.add('ios');
-let VHINFO={};
-/* iOS のホーム画面アプリで、画面の下に付く部品の位置を補正する。
-   回転の途中は iOS が報告する高さが一時的に食い違うので、縦向きで、値が落ち着いてから（150ms おきに2回続けて同じ値）だけ測る。
-   横向きのあいだは測らない（縦向きの案内で画面を覆っている） */
-const vhApply=()=>{const de=document.documentElement;const st=IOS&&(navigator.standalone===true||matchMedia('(display-mode: standalone)').matches);
-  const sh=Math.max(screen.width,screen.height);
-  const gap=st?Math.round(sh-innerHeight):0;VHINFO={st,sh,ih:innerHeight,gap};
-  /* 実機（画面852・表示領域793）で「補正 = ずれ − 45」がぴったりだったので、それを自動の既定値にする */
-  const auto=gap>=40&&gap<=80?-45:0;const set=typeof S!=='undefined'&&S&&S.ui&&S.ui.vhAdj!=null&&S.ui.vhAdj!=='';
-  const adj=set?+S.ui.vhAdj:auto;VHINFO.adj=adj;VHINFO.auto=!set;
-  const g=Math.max(0,gap)+adj;if(st&&g>0&&g<220){de.classList.add('vh-fix');de.style.setProperty('--gap',g+'px')}else{de.classList.remove('vh-fix');de.style.removeProperty('--gap')}};
 /* 表示の不具合を調べるための数値をまとめる（設定の「表示の情報をコピー」）。測る手間はいらず、押すだけ */
 function vhDiag(){const pr=document.createElement('div');pr.style.cssText='position:fixed;left:0;top:0;width:1px;visibility:hidden;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)';document.body.appendChild(pr);
   const cs=getComputedStyle(pr),sa=[cs.paddingTop,cs.paddingBottom];const H=u=>{pr.style.padding='0';pr.style.height=u;return Math.round(pr.getBoundingClientRect().height)};
   const r={ua:navigator.userAgent,v:APPV,st:navigator.standalone,screen:screen.width+'x'+screen.height,inner:innerWidth+'x'+innerHeight,client:document.documentElement.clientWidth+'x'+document.documentElement.clientHeight,
     vv:window.visualViewport?Math.round(visualViewport.width)+'x'+Math.round(visualViewport.height)+'@'+Math.round(visualViewport.offsetTop):'',safeTop:sa[0],safeBottom:sa[1],
-    vh:H('100vh'),dvh:H('100dvh'),svh:H('100svh'),lvh:H('100lvh'),dpr:devicePixelRatio,fix:VHINFO,tabs:(t=>t?Math.round(t.top)+'-'+Math.round(t.bottom):'')(document.getElementById('tabs')&&document.getElementById('tabs').getBoundingClientRect())};
+    vh:H('100vh'),dvh:H('100dvh'),svh:H('100svh'),lvh:H('100lvh'),dpr:devicePixelRatio,tabs:(t=>t?Math.round(t.top)+'-'+Math.round(t.bottom):'')(document.getElementById('tabs')&&document.getElementById('tabs').getBoundingClientRect())};
   pr.remove();return JSON.stringify(r)}
-let vhT=0;
-const fixVH=()=>{clearTimeout(vhT);let last='',n=0;
-  const tick=()=>{if(innerWidth>innerHeight){vhT=setTimeout(tick,300);return}/* 横向き：縦に戻るまで待つ */
-    const v=innerWidth+'x'+innerHeight+'x'+screen.width+'x'+screen.height;
-    if(v===last||++n>20){vhApply();return}last=v;vhT=setTimeout(tick,150)};
-  tick()};
-addEventListener('resize',fixVH);addEventListener('orientationchange',fixVH);addEventListener('pageshow',fixVH);
-if(window.visualViewport)visualViewport.addEventListener('resize',fixVH);
 /* 向きを変えたとき、iOS がページ全体をずらしたままにすることがある（下のタブが押せなくなる原因）。
    入力中でなければ、ずれを元に戻す。回転は少し遅れて終わるので、何度か確かめる */
 const resetScroll=()=>{const ae=document.activeElement;if(ae&&ae.matches&&ae.matches('input,textarea,[contenteditable]'))return;
@@ -5327,7 +5292,7 @@ const resetScroll=()=>{const ae=document.activeElement;if(ae&&ae.matches&&ae.mat
 addEventListener('orientationchange',()=>{[0,150,400,900].forEach(t=>setTimeout(resetScroll,t))});
 addEventListener('resize',()=>setTimeout(resetScroll,50));addEventListener('pageshow',resetScroll);
 if(window.visualViewport)visualViewport.addEventListener('resize',()=>setTimeout(resetScroll,50));
-(async()=>{await load();if(purgeOld())save();if(innerHeight>=innerWidth)vhApply();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
+(async()=>{await load();if(purgeOld())save();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
 setTimeout(()=>{$$('.due-b.back').forEach(e=>{const b=e.parentNode;e.remove();if(b&&b.classList.contains('badges')&&!b.children.length)b.remove()})},6100);
 fbInit()})();
 })();
