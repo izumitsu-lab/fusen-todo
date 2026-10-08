@@ -492,7 +492,7 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;-webkit-user-selec
 .tr .c:hover{color:var(--ink);border-color:var(--ink3)}
 .tr .c.on{background:var(--ink);color:var(--win);border-color:var(--ink)}
 .tr-foot{display:flex;justify-content:space-between;color:var(--ink3);font-size:10.5px;border-top:1px solid var(--line);padding-top:6px}
-@media (max-width:760px){.pads{width:60px}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){.pads{width:60px}}
 /* ================= sticky styles (settings) ================= */
 body{--mn-bg:#FFFFFF;--mn-ink:#1C1C1E;--mn-line:#E3E2DE;--mn-chip:#F2F1ED;--fl-bg:#FFFFFF;--fl-ink:#222;--gl-card:rgba(255,255,255,.36);--gl-ink:#1D1B2A;--gl-edge:rgba(255,255,255,.75);--g1:rgba(255,160,190,.85);--g2:rgba(140,200,255,.85);--g3:rgba(255,220,130,.85)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body{--mn-bg:#26262A;--mn-ink:#ECECEE;--mn-line:#38383C;--mn-chip:#303034;--fl-bg:#2B2A27;--fl-ink:#EEE;--gl-card:rgba(40,40,56,.5);--gl-ink:#ECEAF6;--gl-edge:rgba(255,255,255,.18);--g1:rgba(150,50,100,.55);--g2:rgba(40,90,160,.55);--g3:rgba(150,110,30,.5)}
@@ -857,8 +857,8 @@ body.sty-index .pad{background:#FFFEFA repeating-linear-gradient(transparent 0 7
 .g-ex{list-style:none;margin:6px 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:8px}
 .g-ex li{font-size:13px;background:rgba(255,255,255,.55);border-radius:99px;padding:3px 12px}
 .g-two .g-in{color:#6B5200;max-width:none;flex-wrap:nowrap}
-@media (max-width:760px){.g-two{grid-template-columns:1fr;gap:10px;padding:32px 24px}.g-two-fig span{font-size:96px}}
-@media (max-width:760px){.g-cover{grid-template-columns:1fr;gap:28px}.g-title{writing-mode:horizontal-tb;height:auto;font-size:38px}.g-note{position:static;transform:rotate(-2deg)}.g-rules{grid-template-columns:1fr}.g-wish{margin:56px -28px 0;padding:56px 28px}.g-last{font-size:30px!important}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){.g-two{grid-template-columns:1fr;gap:10px;padding:32px 24px}.g-two-fig span{font-size:96px}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){.g-cover{grid-template-columns:1fr;gap:28px}.g-title{writing-mode:horizontal-tb;height:auto;font-size:38px}.g-note{position:static;transform:rotate(-2deg)}.g-rules{grid-template-columns:1fr}.g-wish{margin:56px -28px 0;padding:56px 28px}.g-last{font-size:30px!important}}
 
 /* ---------- weekly review ---------- */
 .rv{max-width:880px}
@@ -906,7 +906,7 @@ body.sty-index .pad{background:#FFFEFA repeating-linear-gradient(transparent 0 7
 .sync-me{display:flex;align-items:center;gap:10px}.sync-me img{width:32px;height:32px;border-radius:50%;flex:none}
 .sync-me b{display:block;font-size:13px}.sync-me small{display:block;font-size:11.5px;color:var(--ink3)}
 .side-foot button.armed{color:var(--now)!important;font-weight:600}
-@media (max-width:760px){.rv-row{flex-wrap:wrap}.rv-acts{max-width:none;width:100%;justify-content:flex-start;padding-left:21px}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){.rv-row{flex-wrap:wrap}.rv-acts{max-width:none;width:100%;justify-content:flex-start;padding-left:21px}}
 /* ---------- capture & search ---------- */
 .scrim.cap-scrim{padding-top:14vh}
 .capsheet{width:min(600px,100%)}
@@ -1051,7 +1051,7 @@ button.ladd:hover{background:color-mix(in srgb,var(--ink) 3%,var(--win));color:v
 .mvs-del svg.i{width:15px;height:15px}
 .mvs-del.armed{background:var(--now);color:#fff}
 .tabs,.fab,.mob-only,.tl-x{display:none}
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .bar{flex-wrap:wrap;row-gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px;gap:6px}
   .bar .seg,.bar .size-seg,#setBtn,#cfgBtn,#tlBtn,#capBtn,.bar .spacer{display:none!important}
   .bar h1{order:1;flex:1 1 0;min-width:0}
@@ -1139,7 +1139,7 @@ button.ladd:hover{background:none;color:var(--accent)}
 .kbg>div>span{min-width:104px;display:inline-flex;gap:3px;color:var(--ink3);font-size:11.5px}
 .kbg kbd{font-family:var(--f-num);font-size:10.5px;color:var(--ink);border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--pop);min-width:12px;text-align:center}
 @media (hover:none){.ladd.gadd{display:none}}
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .rwhere{max-width:40%;font-size:12px}
   .row,.row-in{min-height:62px}
   .row-in{padding:13px 16px 13px 18px}
@@ -1238,7 +1238,7 @@ button.ladd:hover{background:none;color:var(--accent)}
 @keyframes land{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);transform:scale(1.04)}100%{box-shadow:0 0 0 14px transparent;transform:none}}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hanko{mix-blend-mode:normal}}
 :root[data-theme="dark"] .hanko{mix-blend-mode:normal}
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .cmp{padding:calc(22px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px))}
   .cmp-h{margin-bottom:30px}.cmp-h h2{font-size:19px}.cmp-h p{display:none}
   .cmp-stage{grid-template-columns:1fr;gap:10px;justify-items:center}
@@ -1352,7 +1352,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .ecal-g button.on{background:var(--accent);color:#fff;font-weight:700}
 .ecal-g button:disabled{color:var(--ink3);opacity:.45;cursor:default}
 .ed-page{display:none}
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .scrim.edscrim{align-items:flex-end;padding:0}
   .scrim.edscrim .sheet.ed{width:100%;height:calc(100% - 10px - env(safe-area-inset-top,0px));max-height:none;border-radius:14px 14px 0 0;padding-bottom:0}
   .ed-nav{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 8px;flex:none;border-bottom:1px solid var(--line);background:var(--win)}
@@ -1383,7 +1383,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 @keyframes edIn{from{transform:translateX(100%)}}
 @keyframes edOut{to{transform:translateX(100%)}}
 /* ======================= iPhone（760px 以下）専用の見た目 ======================= */
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   :root{--ink2:#4F4C45;--ink3:#77736A;--line:rgba(50,44,32,.13);--ph-orange:#C95A12;--ph-red:#D2342A}
   @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink2:#C2BEB4;--ink3:#9A958B;--line:rgba(255,248,232,.12);--ph-orange:#F28C45;--ph-red:#FF6B5E}}
   :root[data-theme="dark"]{--ink2:#C2BEB4;--ink3:#9A958B;--line:rgba(255,248,232,.12);--ph-orange:#F28C45;--ph-red:#FF6B5E}
@@ -1426,7 +1426,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .lv .lgh .lgc{font-size:14px;font-weight:500;color:var(--ink3)}
   .lv .lgh b{font-weight:700}
 }
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   /* ---- top bar ---- */
   .bar.pbar,html .bar.pbar{display:block;height:auto;min-height:0;padding:env(safe-area-inset-top,0px) 0 0!important;background:var(--win);border-bottom:.5px solid transparent;position:relative;z-index:30;transition:background .2s,border-color .2s}
   .bar.pbar.compact{background:color-mix(in srgb,var(--win) 86%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);border-bottom-color:var(--line)}
@@ -1514,7 +1514,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   body:is([data-sec="more"],[data-sec="log"],[data-sec="review"],[data-sec="projects"]) .fab{display:none!important}
   .fab{border-radius:28px!important}
 }
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .pb .spacer{display:block!important;flex:1}
   .pb>*{order:0!important}
   .ph-sec button{height:auto!important;min-height:0!important;width:auto!important;padding:0!important;margin:0!important;line-height:1.3;display:inline;background:none!important}
@@ -1522,7 +1522,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .ph-ig+.ph-ig{margin-top:24px}
   .ph-head:has(.ph-meta) .cnt{display:none}
 }
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .desk-only{display:none!important}
   .ph-close,.ph-poph{display:inline-flex}
   /* 小窓はすべて下からのシートに */
@@ -1553,9 +1553,9 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .setpop .hint{font-size:13px}
   .setpop .stygrid{grid-template-columns:repeat(3,1fr)}
 }
-@media (min-width:761px){.ph-close,.ph-poph{display:none!important}}
-@media (min-width:761px){.sr-x{display:none}.sr-done{font-size:0}.sr-done input{margin-right:4px}.sr-done::after{content:"完了も";font-size:12px}}
-@media (max-width:760px){
+@media (min-width:761px) and (min-height:501px), (min-width:761px) and (pointer:fine){.ph-close,.ph-poph{display:none!important}}
+@media (min-width:761px) and (min-height:501px), (min-width:761px) and (pointer:fine){.sr-x{display:none}.sr-done{font-size:0}.sr-done input{margin-right:4px}.sr-done::after{content:"完了も";font-size:12px}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   #search.scrim{align-items:stretch!important;padding:0!important;background:var(--win)!important}
   #search .sheet{width:100%!important;max-width:none!important;height:100%;max-height:none!important;border-radius:0!important;box-shadow:none!important;border:0!important;background:var(--win)!important;display:flex;flex-direction:column;padding:calc(6px + env(safe-area-inset-top,0px)) 0 0!important}
   #search .cap-in{display:flex;flex-wrap:wrap;align-items:center;gap:0;padding:4px 16px 8px;border:0!important}
@@ -1576,7 +1576,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   #search .sr-empty{font-size:15px;line-height:1.7;color:var(--ink3);padding:20px 24px}
   #search .sr-foot{display:none}
 }
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   /* 付箋を書く画面：付箋を小さく、置き場所を一画面に */
   .cmp{padding:calc(10px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px))!important}
   .cmp-x{top:calc(8px + env(safe-area-inset-top,0px))!important;right:12px!important}
@@ -1596,7 +1596,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .cmp-foot{font-size:14px!important;margin-top:12px!important}
   .cmp-ib{font-size:14px!important}
 }
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   /* 移動先シート */
   .mvsheet{background:var(--win)!important}
   .mvs-t{font-size:19px!important;font-weight:700;white-space:normal!important;line-break:strict}
@@ -1630,7 +1630,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .rv-foot .spacer{display:none}
   .rv-foot .btn{flex:1;height:46px;font-size:17px!important;font-weight:700;border-radius:12px;justify-content:center}
 }
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .rv-t b{font-size:17px!important;font-weight:400!important;white-space:normal!important;line-break:strict}
   .rv-t small{font-size:13.5px!important;white-space:normal!important}
   .rv-a{height:34px;display:inline-flex;align-items:center;padding:0 13px!important;font-size:14px!important;border-radius:17px!important;background:var(--sel);border-color:transparent!important;color:var(--ink)!important}
@@ -1638,7 +1638,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .rv-a.del{color:var(--ph-red)!important}
   .rv-row>.dot{margin-top:6px;align-self:flex-start}
 }
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .guide{overflow-x:hidden}
   .guide .nb{white-space:normal!important}
   .guide .g-cover{grid-template-columns:minmax(0,1fr)!important}
@@ -1659,7 +1659,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .pr-card .pr-t b{font-size:17px!important}.pr-card .pr-na{font-size:14.5px!important}.pr-card .pr-c i{font-size:13px!important}.pr-card .pr-sub{font-size:13px!important}
 }
 .fp-h>span{margin-left:8px}
-@media (max-width:760px){.fp-h>span{margin-left:0}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){.fp-h>span{margin-left:0}}
 .logrow .ldel{color:var(--ink3)!important;display:flex;align-items:center;padding:3px!important;opacity:.55}
 .logrow .ldel svg.i{width:13px;height:13px}
 .logrow:hover .ldel{opacity:1}.logrow .ldel:hover{color:var(--now)!important;background:color-mix(in srgb,var(--now) 10%,transparent)!important}
@@ -1667,8 +1667,8 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .log-purge .btn{color:var(--now);display:inline-flex;align-items:center;gap:6px}.log-purge .btn svg.i{width:13px;height:13px}
 .log-purge .btn.armed{background:var(--now);color:#fff;border-color:transparent}
 .log-purge small{font-size:12px;color:var(--ink3)}
-@media (max-width:760px){.logrow .ldel{opacity:1;padding:8px!important;margin:-6px -6px -6px 0}.logrow .ldel svg.i{width:16px;height:16px}.log-purge{margin:28px 16px 8px}.log-purge .btn{min-height:44px;font-size:15px}.log-purge small{font-size:13px}}
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){.logrow .ldel{opacity:1;padding:8px!important;margin:-6px -6px -6px 0}.logrow .ldel svg.i{width:16px;height:16px}.log-purge{margin:28px 16px 8px}.log-purge .btn{min-height:44px;font-size:15px}.log-purge small{font-size:13px}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .tab{min-width:0}
   .tab .tn{max-width:100%;padding:0 3px;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .tp-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:12px}
@@ -1707,7 +1707,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .bar h1 .vsum{font-size:12px;font-weight:400;color:var(--ink3);margin-left:4px;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;align-self:center}
 @media (max-width:1180px){.bar h1 .vsum{display:none}}
 .vm-off{margin-left:auto;font-size:11px;color:var(--ink3)}
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .tabs[data-n="7"] .tab{font-size:10px!important}
   .tabs[data-n="7"] .tab .tn{padding:0 1px}
   .tab.nol .tn{display:none}
@@ -1718,7 +1718,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
   .ph-ico.g-view{background:#5B6CC9}.ph-ico.g-waiting{background:#8C7AE6}.ph-ico.g-someday{background:#2FA38A}.ph-ico.g-tickler{background:#C98A1B}
 }
 /* お気に入りの編集シート：PC では中央の小窓として表示（iPhone のシートと同じ部品） */
-@media (min-width:761px){
+@media (min-width:761px) and (min-height:501px), (min-width:761px) and (pointer:fine){
 .vx .ph-ig{background:var(--pop);border-radius:12px;overflow:hidden;margin:0 16px}
 .vx .ph-head .ph-ig,.vx .ph-sh .ph-ig{margin-left:0;margin-right:0}
 .vx .ph-ir{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:6px 14px 6px 16px;font-size:17px;color:var(--ink);text-align:left;box-sizing:border-box}
@@ -1822,7 +1822,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .ag-ed input{flex:1;min-width:0;height:28px;border:1px solid var(--line);border-radius:6px;padding:0 8px;font:inherit;font-size:13.5px;background:var(--win);color:var(--ink)}
 .ag-ed .ag-sepl{flex:1;font-size:12px;color:var(--ink3);border-top:1px dashed var(--line2);padding-top:2px;text-align:center}
 .ag-ed .ag-del{width:auto;min-width:26px;padding:0 6px;font-size:12px}.ag-ed .ag-del.armed{color:#fff;background:var(--ph-red,#E5534B)}
-@media (max-width:760px){.ag-s input,.ag-ed input{font-size:16px}.agpop{width:auto;max-height:78vh}.agpop .fp-item.ag-it{min-height:48px}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){.ag-s input,.ag-ed input{font-size:16px}.agpop{width:auto;max-height:78vh}.agpop .fp-item.ag-it{min-height:48px}}
 .agpop .fp-item{width:100%;box-sizing:border-box}.agpop .fp-item>span:not(.ag-av){flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar h1:has(.ag-av){flex:none}.bar h1 .ttl:has(.ag-av){overflow:visible}.bar h1 .ag-nm{flex:none}
 .bar h1 .ag-sw{width:24px!important;height:24px!important;padding:0!important;min-width:0!important;border:0!important;background:none!important}
@@ -1867,7 +1867,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .agp-del{min-width:26px;height:26px;padding:0 6px;border-radius:6px;color:var(--ink3);font-size:12px;display:flex;align-items:center;justify-content:center}.agp-del:hover{background:var(--sel)}.agp-del.armed{background:#E5534B;color:#fff}
 .agp-hint{font-size:11.5px;color:var(--ink3);padding:0 6px 6px;line-height:1.6}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .agp-it.hl,:root:not([data-theme="light"]) .agp-it.on{background:rgba(140,122,230,.22)}}
-@media (max-width:760px){.agpop{width:auto!important;border-radius:14px 14px 0 0!important;max-height:80vh!important}.agp-s input,.agp-addin input,.agp-er input{font-size:16px}.agp-it{min-height:46px;font-size:16px}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){.agpop{width:auto!important;border-radius:14px 14px 0 0!important;max-height:80vh!important}.agp-s input,.agp-addin input,.agp-er input{font-size:16px}.agp-it{min-height:46px;font-size:16px}}
 .agp-x{width:28px;height:28px;border-radius:50%;background:var(--sel);color:var(--ink2);display:flex;align-items:center;justify-content:center;margin-left:6px;flex:none}.agp-x svg.i{width:13px;height:13px}
 .agp-dt{width:26px;display:flex;justify-content:center;flex:none}.agp-dt .dot{width:11px;height:11px;border-radius:3px}
 .agp-it.sub{padding-left:26px}.agp-it.sub .agp-dt .dot{width:7px;height:7px;border-radius:50%}.agp-it.sub+.agp-it::before,.agp-it+.agp-it.sub::before{left:70px}
@@ -1880,7 +1880,7 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .icpick{z-index:1100!important}
 .sbopt{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}.sbopt>span{font-size:12.5px;color:var(--ink2)}
 .agp-dim{position:fixed;inset:0;background:rgba(20,16,10,.28);z-index:975;animation:fade .18s}
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .agpop.agp-float{left:8px!important;right:8px!important;top:auto!important;bottom:calc(62px + env(safe-area-inset-bottom,0px))!important;width:auto!important;border-radius:22px!important;max-height:min(68vh,calc(100% - 140px))!important;padding:0!important;box-shadow:0 18px 44px -10px rgba(40,30,10,.38),0 0 0 .5px rgba(40,30,10,.12)!important;animation:agpUp .22s cubic-bezier(.2,.8,.2,1)!important}
   html.vh-fix .agpop.agp-float{bottom:calc(62px + var(--bpad))!important}
   .agpop.agp-float::before{margin:7px auto 0!important}
@@ -1963,23 +1963,27 @@ button.po:hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
 .qk-msg span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .qk-msg svg.i{width:14px;height:14px;color:#3BAE77;stroke-width:2.4;flex:none}.qk-msg button{color:var(--accent);font-weight:600;flex:none}
 .qk-msg.warn{color:var(--now)}
-@media (min-width:761px){.qk{left:50%;right:auto;bottom:auto;top:16vh;width:560px;margin-left:-280px;border-radius:14px;padding:16px 18px 12px;animation:rise .2s cubic-bezier(.2,.9,.3,1.1)}.qk-grab{display:none}}
-@media (max-width:760px){.qk-t{font-size:19px}.qk-n,.qk-who input{font-size:16px}.qk-ib{width:36px;height:40px}.qk{padding-left:12px;padding-right:12px}}
+@media (min-width:761px) and (min-height:501px), (min-width:761px) and (pointer:fine){.qk{left:50%;right:auto;bottom:auto;top:16vh;width:560px;margin-left:-280px;border-radius:14px;padding:16px 18px 12px;animation:rise .2s cubic-bezier(.2,.9,.3,1.1)}.qk-grab{display:none}}
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){.qk-t{font-size:19px}.qk-n,.qk-who input{font-size:16px}.qk-ib{width:36px;height:40px}.qk{padding-left:12px;padding-right:12px}}
 @media (max-width:370px){.qk-dest{font-size:13px}.qk-ib{width:34px}}
 /*PH-END*/
 /* iOS のホーム画面アプリで、表示領域が画面より短く報告される不具合の補正。
    ページ全体の高さは変えず、画面下端に付く要素だけを --gap 分だけ下へずらす（JS で html.vh-fix を付ける） */
 html.vh-fix{--bpad:max(env(safe-area-inset-bottom,0px),20px)}
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   html.vh-fix .side,html.vh-fix .scrim,html.vh-fix .guide,html.vh-fix .cmp{bottom:calc(-1 * var(--gap))}
   html.vh-fix .tabs{bottom:calc(-1 * var(--gap));height:calc(58px + var(--bpad));padding-bottom:var(--bpad);box-sizing:border-box}
   html.vh-fix .fab{bottom:calc(74px + var(--bpad) - var(--gap))}
   html.vh-fix .toast{bottom:calc(144px + var(--bpad) - var(--gap))}
   html.vh-fix .ed-scroll,html.vh-fix .edp-body{padding-bottom:calc(28px + var(--bpad))}
 }
-@media (display-mode:standalone) and (max-width:760px){.bar{padding-top:calc(16px + env(safe-area-inset-top,0px))}}
+@media (display-mode:standalone) and (max-width:760px), (display-mode:standalone) and (pointer:coarse) and (max-height:500px){.bar{padding-top:calc(16px + env(safe-area-inset-top,0px))}}
+/* iPhone を横にしたとき：縦に戻すよう案内する（iPhone のブラウザでは向きを固定できないため） */
+.rot-lock{display:none}
+@media (orientation:landscape) and (max-height:500px){html.ios .rot-lock{display:flex;position:fixed;inset:0;z-index:5000;background:var(--win);color:var(--ink2);flex-direction:column;align-items:center;justify-content:center;gap:14px;font-size:15px;text-align:center;padding:24px}
+  html.ios .rot-lock svg.i{width:46px;height:46px;stroke-width:1.4;color:var(--ink3);transform:rotate(-90deg)}html.ios body{overflow:hidden}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-@media (max-width:760px){
+@media (max-width:760px), (pointer:coarse) and (max-height:500px){
   .app{grid-template-columns:1fr}
   .side{position:fixed;left:0;top:0;bottom:0;width:250px;z-index:800;transform:translateX(-105%);transition:transform .3s;padding-top:calc(14px + env(safe-area-inset-top,0px));background:var(--win)}
   .side.open{transform:none;box-shadow:var(--shadow-pop)}
@@ -2005,6 +2009,7 @@ html.vh-fix{--bpad:max(env(safe-area-inset-bottom,0px),20px)}
 </div>
 <nav class="tabs" id="tabs" aria-label="リスト"></nav>
 <button class="fab" id="fab" aria-label="すばやく書き出す"></button>
+<div class="rot-lock" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.2"/><path d="M10.5 18.5h3"/></svg>縦向きでお使いください</div>
 <div class="toast" id="toast"><span id="toastMsg"></span><button id="toastAct" hidden></button></div>
 
 <script>
@@ -2182,10 +2187,26 @@ function seed(){
   add('done','朝のメールを片付ける','work',20,['pc','mail'],0,0,{doneAt:t0-3*3600e3,prevStatus:'next'});
   return {v:2,areas,tasks,sample:true,ui:{view:'board',section:'next',zoom:.85,tl:true}};
 }
-function load(){
-  try{const j=localStorage.getItem(KEY);if(j)S=JSON.parse(j)}catch(e){}
+/* 保存先は IndexedDB（容量の上限が localStorage の約5MBよりずっと大きい）。使えない環境では localStorage に保存する */
+const IDB={db:null};
+const idbOpen=()=>new Promise((res,rej)=>{let r;try{r=indexedDB.open('fusen',1)}catch(e){rej(e);return}
+  r.onupgradeneeded=()=>{r.result.createObjectStore('kv')};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);r.onblocked=()=>rej(new Error('blocked'))});
+const idbGet=k=>new Promise((res,rej)=>{const q=IDB.db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)});
+const idbPut=(k,v)=>new Promise((res,rej)=>{const tx=IDB.db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=()=>res();tx.onerror=tx.onabort=()=>rej(tx.error||new Error('abort'))});
+function storeWarn(){if(lsWarned)return;lsWarned=true;setTimeout(()=>toast('この端末に保存できませんでした。空き容量を確かめてください'),0)}
+function putKV(k,v){if(IDB.db){idbPut(k,v).catch(()=>{try{localStorage.setItem(k,v)}catch(e){storeWarn()}})}else{try{localStorage.setItem(k,v)}catch(e){storeWarn()}}}
+async function load(){
+  let j=null,sb=null,moved=false;const lj=localStorage.getItem(KEY),lsb=localStorage.getItem(SKEY);
+  try{IDB.db=await idbOpen();j=await idbGet(KEY);sb=await idbGet(SKEY)}catch(e){IDB.db=null}
+  const at=x=>{try{return JSON.parse(x).savedAt||0}catch(e){return -1}};
+  /* localStorage にしかない（引っ越し前）か、IndexedDB に書けずに localStorage へ逃がした分の方が新しいときは、そちらを使う */
+  if(lj!=null&&(j==null||at(lj)>at(j))){j=lj;sb=lsb!=null?lsb:sb;moved=!!IDB.db}
+  try{if(j)S=JSON.parse(j)}catch(e){}
+  initSB(sb);
   if(!S||!Array.isArray(S.tasks))S=seed();
   normalize();
+  if(moved){try{await idbPut(KEY,JSON.stringify(S));if(sb!=null)await idbPut(SKEY,sb);localStorage.removeItem(KEY);localStorage.removeItem(SKEY)}catch(e){}}
+  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 }
 function normalize(){
   if(!Array.isArray(S.areas))S.areas=[];
@@ -2214,7 +2235,7 @@ function normalize(){
   rollover();
 }
 function rollover(){const t=todayKey();let n=0;S.tasks.forEach(k=>{if(k.sched&&k.sched.date!==t&&k.status!=='done'){k.sched=null;n++}});return n}
-let saveT,lsWarned=false;const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(!lsWarned){lsWarned=true;setTimeout(()=>toast('この端末の保存容量がいっぱいで、保存できませんでした。設定で完了ログを残す期間を短くしてください'),0)}}};function save(){clearTimeout(saveT);saveT=setTimeout(()=>{saveT=0;saveLocal();pushNow()},150)}
+let saveT,lsWarned=false;const saveLocal=()=>{if(S){S.savedAt=Date.now();putKV(KEY,JSON.stringify(S))}};function save(){clearTimeout(saveT);saveT=setTimeout(()=>{saveT=0;saveLocal();pushNow()},150)}
 const flushSave=()=>{if(!saveT)return;clearTimeout(saveT);saveT=0;saveLocal();pushNow()};
 addEventListener('pagehide',flushSave);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S){if(purgeOld()){save();render()}else updBadge(true)}});if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});document.addEventListener('visibilitychange',()=>{if(document.hidden)flushSave()});
 const F={tags:new Set(),labels:new Set(),people:new Set(),area:null,time:null,due:null,energy:null};
@@ -2725,7 +2746,7 @@ function setZoom(z){
 }
 
 /* ---------- list ---------- */
-const narrow=()=>matchMedia('(max-width:760px)').matches;
+const PHONE_MQ='(max-width:760px), (pointer:coarse) and (max-height:500px)';const narrow=()=>matchMedia(PHONE_MQ).matches;
 const isList=()=>narrow()||S.ui.view==='list';
 const filterOn=()=>!!(F.tags.size||F.labels.size||F.people.size||F.time||F.due||F.energy);
 const LSORT=[{id:'manual',l:'手動（ドラッグで並べ替え）'},{id:'area',l:'エリアごと'},{id:'due',l:'締切が近い順'},{id:'min',l:'所要時間が短い順'}];
@@ -3225,7 +3246,7 @@ function allSlots(){const t=Array.isArray(S.ui.tabs)?S.ui.tabs.slice(0,5):[];
   return t}
 const tabSlots=()=>allSlots().slice(0,tabN()-2);
 const tabIcon=(k,ty)=>((S.ui.tabIcons||{})[k])||(ty==='sec'?(TABSEC[k.slice(4)]||[])[1]:ty==='view'?(viewOf(k.slice(5))?.icon||'filter'):ty==='menu'?(SMENU[k.slice(5)]||[])[1]:ty==='proj'?'clip':'folder');
-const SMENU={lists:['GTD','u-clipboard-list','Inbox・Next・Someday などから選ぶ'],areas:['エリア','folder','エリア・サブエリアから選ぶ'],views:['条件','filter','お気に入りから選ぶ'],projects:['プロジェクト','clip','プロジェクトから選ぶ'],agenda:['Agenda','user','人・会議から選ぶ'],places:['場所','pin','場所・道具から選ぶ'],search:['検索','search','全部のタスクから探す（完了したものも可）']};
+const SMENU={lists:['GTD','u-clipboard-list','Inbox・Next・Someday などから選ぶ'],areas:['エリア','folder','エリア・サブエリアから選ぶ'],views:['お気に入り','star','お気に入りから選ぶ'],projects:['プロジェクト','clip','プロジェクトから選ぶ'],agenda:['Agenda','user','人・会議から選ぶ'],places:['場所','pin','場所・道具から選ぶ'],search:['検索','search','全部のタスクから探す（完了したものも可）']};
 const MLISTS=['inbox','next','calendar','waiting','someday','tickler','projects'];
 const menuCovers=(m,ck)=>m==='lists'?MLISTS.some(x=>ck==='sec:'+x):m==='areas'?ck.startsWith('area:'):m==='views'?ck.startsWith('view:'):m==='projects'?ck.startsWith('proj:')||ck==='sec:projects':m==='agenda'?ck.startsWith('ag:'):m==='places'?ck.startsWith('pl:'):false;
 const coveredByMenu=ck=>tabSlots().some(x=>x&&x.startsWith('menu:')&&menuCovers(x.slice(5),ck));
@@ -3607,7 +3628,7 @@ function layoutBlocks(list){
 function toggleTL(){S.ui.tl=!S.ui.tl;save();if(S.ui.tl)tlJustOpened=true;fitForTL(S.ui.tl);applyTL();$('#tlBtn')?.classList.toggle('on',S.ui.tl)}
 let zoomBeforeTL=null;
 function fitForTL(opening){
-  const sc=$('#boardScroll');if(!sc||S.ui.view!=='board'||innerWidth<=760)return;
+  const sc=$('#boardScroll');if(!sc||S.ui.view!=='board'||narrow())return;
   if(!opening){if(zoomBeforeTL){setZoom(zoomBeforeTL);zoomBeforeTL=null}return}
   const r=sc.getBoundingClientRect(),newRight=r.right-268;
   const vis=$$('.plane .stk:not(.gone)').map(e=>e.getBoundingClientRect()).filter(b=>b.right>r.left&&b.left<r.right&&b.bottom>r.top&&b.top<r.bottom);
@@ -4828,7 +4849,7 @@ const FB_CONFIG={
   appId:"1:234781332475:web:bd747e15d65fbef2b0715e"
 };
 const FBV='10.14.1';
-const APPV='2026-10-08 13:31';
+const APPV='2026-10-08 13:52';
 /* 同期のしくみ（読み込み・書き込みの回数を抑えるための工夫）
    - タスク1件 = ドキュメント1件。中身は f:{項目名: JSON文字列} と、サーバーで付く更新時刻 u。
      書き込むときは「変わった項目だけ」を merge で送るので、2台で別々の項目を変えても両方残る。
@@ -4843,10 +4864,10 @@ const SKEY='fusen.sync';
 /* SB：この端末が最後にサーバーとそろえた内容の控え
    v:形式 / uid / b:{タスクID:{項目:ハッシュ}} / mb:設定の控え / cur:受け取った最新の更新時刻 / at:最後に全件を確かめた時刻 / tomb:{削除したID:記録した時刻}
    h:旧形式（タスク全体のハッシュ）の控え。移行のときだけ使う */
-let SB={};try{SB=JSON.parse(localStorage.getItem(SKEY)||'{}')||{}}catch(e){SB={}}
-if(SB.v!==2)SB={uid:SB.uid||null,v:0,h:SB.h||{},b:{},mb:null,cur:0,at:0,tomb:{}};
-if(!SB.b)SB.b={};if(!SB.tomb)SB.tomb={};
-const saveSB=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SB))}catch(e){}};
+let SB={b:{},tomb:{}};
+function initSB(raw){try{SB=JSON.parse(raw||'{}')||{}}catch(e){SB={}}
+  if(SB.v!==2)SB={uid:SB.uid||null,v:0,h:SB.h||{},b:{},mb:null,cur:0,at:0,tomb:{}};if(!SB.b)SB.b={};if(!SB.tomb)SB.tomb={}}
+const saveSB=()=>putKV(SKEY,JSON.stringify(SB));
 const TOMB_MS=45*864e5,STALE_MS=40*864e5;
 const LEG=new Set();/* 旧形式（j）のままのドキュメント。次の書き込みで全項目を書き直す */
 let FB=null;
@@ -5272,6 +5293,7 @@ document.addEventListener('pointerdown',e=>{if(!narrow())return;const op=$('.fpo
 let VHINFO={};
 /* iPhone / iPad のホーム画面アプリだけが対象。Mac の Safari で「Dock に追加」したアプリには適用しない */
 const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+if(IOS)document.documentElement.classList.add('ios');
 const fixVH=()=>{const de=document.documentElement;const st=IOS&&(navigator.standalone===true||matchMedia('(display-mode: standalone)').matches);
   const sh=innerHeight>innerWidth?Math.max(screen.width,screen.height):Math.min(screen.width,screen.height);
   const gap=st?Math.round(sh-innerHeight):0;VHINFO={st,sh,ih:innerHeight,gap};
@@ -5280,9 +5302,9 @@ const fixVH=()=>{const de=document.documentElement;const st=IOS&&(navigator.stan
   const adj=set?+S.ui.vhAdj:auto;VHINFO.adj=adj;VHINFO.auto=!set;
   const g=Math.max(0,gap)+adj;if(st&&g>0&&g<220){de.classList.add('vh-fix');de.style.setProperty('--gap',g+'px')}else{de.classList.remove('vh-fix');de.style.removeProperty('--gap')}};
 addEventListener('resize',fixVH);addEventListener('orientationchange',()=>setTimeout(fixVH,350));addEventListener('pageshow',fixVH);
-load();if(purgeOld())save();fixVH();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
+(async()=>{await load();if(purgeOld())save();fixVH();if(narrow())S.ui.tl=false;applyLook();$('#fab').innerHTML=ic('plus');$('#fab').onclick=openPlus;render();
 setTimeout(()=>{$$('.due-b.back').forEach(e=>{const b=e.parentNode;e.remove();if(b&&b.classList.contains('badges')&&!b.children.length)b.remove()})},6100);
-fbInit();
+fbInit()})();
 })();
 </script>
 
